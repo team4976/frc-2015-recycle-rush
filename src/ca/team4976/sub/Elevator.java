@@ -11,21 +11,17 @@ public class Elevator {
         currentLevel = 0;
     }
 
-    public void teleOpLoop() {
-        if (Controller.Button._360_A.isDownOnce()) {
+    public void checkController() {
+        if (Controller.Button._360_RIGHT_BUMPER.isDownOnce()) {
             queuedLevels++;
-        } else if (Controller.Button._360_B.isDownOnce()) {
+        } else if (Controller.Button._360_LEFT_BUMPER.isDownOnce()) {
             queuedLevels--;
-        } else if (Controller.Button._360_X.isDownOnce()) {
+        } else if (Controller.Button._360_A.isDownOnce()) {
             releaseElevator();
-        } else if (Controller.Button._360_Y.isDownOnce()) {
+        } else if (Controller.Button._360_START.isDownOnce()) {
             groundElevator();
         }
         checkQueuedLevels();
-    }
-
-    public void autoLoop() {
-
     }
 
     private void checkQueuedLevels() {
@@ -38,25 +34,25 @@ public class Elevator {
         }
     }
 
-    private void releaseElevator() {
+    public void releaseElevator() {
         elevatorDown();
         currentLevel = 0;
     }
 
-    private void groundElevator() {
+    public void groundElevator() {
         while (currentLevel > 0) {
             elevatorDown();
         }
         currentLevel = 0;
     }
 
-    private void elevatorUp() {
+    public void elevatorUp() {
         if (currentLevel < 4) {
             currentLevel++;
         }
     }
 
-    private void elevatorDown() {
+    public void elevatorDown() {
         if (currentLevel > 0) {
             currentLevel--;
         }

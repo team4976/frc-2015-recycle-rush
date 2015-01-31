@@ -14,7 +14,7 @@ public class Controller {
         _360_LEFT_BUMPER(5),
         _360_RIGHT_BUMPER(6),
         _360_BACK(7),
-        _360_SELECT(8),
+        _360_START(8),
         _360_LEFT_STICK(9),
         _360_RIGHT_STICK(10);
 
