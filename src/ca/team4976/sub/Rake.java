@@ -1,12 +1,12 @@
 
-package org.usfirst.frc.team4976.rake;
+package ca.team4976.sub;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Robot extends IterativeRobot {
+public class Rake {
 	
     public void robotInit() {
     	buttonWasReleased = true;
