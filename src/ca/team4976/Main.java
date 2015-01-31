@@ -3,17 +3,20 @@ package ca.team4976;
 import ca.team4976.in.Controller;
 import ca.team4976.sub.Elevator;
 import ca.team4976.sub.Gripper;
+import ca.team4976.sub.Rake;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Main extends IterativeRobot {
 
     Elevator elevator;
     Gripper gripper;
+    Rake rake;
 
     public void robotInit() {
         Controller.init(1);
         elevator = new Elevator();
         gripper = new Gripper();
+        rake = new Rake();
     }
 
     public void disabledInit() {
@@ -32,11 +35,12 @@ public class Main extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-
     }
 
     public void teleopPeriodic() {
-        elevator.checkController();
+        elevator.update();
+        gripper.update();
+        rake.update();
     }
 
     public void autonomousPeriodic() {

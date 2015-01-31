@@ -1,67 +1,56 @@
 
 package ca.team4976.sub;
 
+import ca.team4976.in.Controller;
 import edu.wpi.first.wpilibj.SafePWM;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Gripper {
 
-    boolean isUp;
+    boolean isDown;
 
-    Solenoid pneumatic1;
-    Solenoid pneumatic2;
-    SafePWM motor1;
-    SafePWM motor2;
+    Solenoid leftSolenoid;
+    Solenoid rightSolenoid;
+    SafePWM leftMotor;
+    SafePWM rightMotor;
 
     public Gripper() {
-        pneumatic1 = new Solenoid(0);
-        pneumatic2 = new Solenoid(1);
-        motor1 = new SafePWM(2);
-        motor2 = new SafePWM(3);
+        leftSolenoid = new Solenoid(0);
+        rightSolenoid = new Solenoid(1);
+        leftMotor = new SafePWM(2);
+        rightMotor = new SafePWM(3);
 
-        isUp = true;
+        isDown = false;
     }
 
-    public void teleopPeriodic() {
-        // Check for input, process input.
-        if (!checkContainer()){
-            if (controller.getRawButton(2 /*SELECT*/)) {
-                resetGripper();
+    public void update() {
+        if (!checkContainer()) {
+            if (Controller.Button._360_START.isDownOnce())
+                isDown = false;
+            else if (Controller.Button._360_X.isDownOnce()) {
+                isDown = !isDown;
+                setPneumatics();
             }
-            else if(controller.getRawButton(3 /*X*/)) {
-                toggleState();
-            }
-            setPneumatics();
-        }
-        else {
-            if (rotateContainer()){
-                // Signal to elevator that container is ready.
+        } else {
+            if (rotateContainer()) {
+
             }
         }
 
-        if (!isUp) {
-            motor1.setRaw(150);
-            motor2.setRaw(104);
-        }
-        else {
-            motor1.setRaw(127);
-            motor2.setRaw(127);
-
+        if (isDown) {
+            leftMotor.setRaw(150);
+            rightMotor.setRaw(104);
+        } else {
+            leftMotor.setRaw(127);
+            rightMotor.setRaw(127);
         }
 
     }
 
-    public void testPeriodic() {
-
-    }
-
-    private void toggleState() {
-        isUp = !isUp;
-    }
 
     private void setPneumatics() {
-        pneumatic1.set(isUp);
-        pneumatic2.set(isUp);
+        leftSolenoid.set(isDown);
+        rightSolenoid.set(isDown);
     }
 
     private boolean checkContainer() {
@@ -73,16 +62,12 @@ public class Gripper {
 
     private boolean rotateContainer() {
         if (/*Handle sensor reads false*/ false) {
-            motor1.setRaw(150);
-            motor2.setRaw(150);
+            leftMotor.setRaw(150);
+            rightMotor.setRaw(150);
             return false;
         }
         return true;
 
-    }
-
-    private void resetGripper() {
-        isUp = true;
     }
 
 }

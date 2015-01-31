@@ -11,7 +11,7 @@ public class Elevator {
         currentLevel = 0;
     }
 
-    public void checkController() {
+    public void update() {
         if (Controller.Button._360_RIGHT_BUMPER.isDownOnce()) {
             queuedLevels++;
         } else if (Controller.Button._360_LEFT_BUMPER.isDownOnce()) {
@@ -57,5 +57,5 @@ public class Elevator {
             currentLevel--;
         }
     }
-    
+
 }
