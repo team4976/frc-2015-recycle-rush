@@ -12,13 +12,13 @@ public class Elevator {
     }
 
     public void update() {
-        if (Controller.Button._360_RIGHT_BUMPER.isDownOnce()) {
+        if (Controller.Button.RIGHT_BUMPER.isDownOnce()) {
             queuedLevels++;
-        } else if (Controller.Button._360_LEFT_BUMPER.isDownOnce()) {
+        } else if (Controller.Button.LEFT_BUMPER.isDownOnce()) {
             queuedLevels--;
-        } else if (Controller.Button._360_A.isDownOnce()) {
+        } else if (Controller.Button.A.isDownOnce()) {
             releaseElevator();
-        } else if (Controller.Button._360_START.isDownOnce()) {
+        } else if (Controller.Button.START.isDownOnce()) {
             groundElevator();
         }
         checkQueuedLevels();

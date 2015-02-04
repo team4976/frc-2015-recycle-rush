@@ -7,16 +7,16 @@ public class Controller {
     private static Joystick joystick;
 
     public static enum Button {
-        _360_A(1),
-        _360_B(2),
-        _360_X(3),
-        _360_Y(4),
-        _360_LEFT_BUMPER(5),
-        _360_RIGHT_BUMPER(6),
-        _360_BACK(7),
-        _360_START(8),
-        _360_LEFT_STICK(9),
-        _360_RIGHT_STICK(10);
+        A(1),
+        B(2),
+        X(3),
+        Y(4),
+        LEFT_BUMPER(5),
+        RIGHT_BUMPER(6),
+        BACK(7),
+        START(8),
+        LEFT_STICK(9),
+        RIGHT_STICK(10);
 
         private int port;
         private boolean wasReleased;
@@ -42,8 +42,8 @@ public class Controller {
     }
 
     public static enum Trigger {
-        _360_LEFT(2),
-        _360_RIGHT(3);
+        LEFT(2),
+        RIGHT(3);
 
         public int axis;
 
@@ -75,8 +75,8 @@ public class Controller {
     }
 
     public static enum Stick {
-        _360_LEFT(0, 1),
-        _360_RIGHT(4, 5);
+        LEFT(0, 1),
+        RIGHT(4, 5);
 
         public int hAxis, vAxis;
 
@@ -109,7 +109,7 @@ public class Controller {
 
     }
 
-    public static void init(int joyPort) {
+    public static void setInputPort(int joyPort) {
         joystick = new Joystick(joyPort);
     }
 

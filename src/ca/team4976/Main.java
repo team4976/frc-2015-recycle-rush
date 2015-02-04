@@ -4,7 +4,7 @@ import ca.team4976.in.Controller;
 import ca.team4976.sub.Elevator;
 import ca.team4976.sub.Gripper;
 import ca.team4976.sub.Rake;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.*;
 
 public class Main extends IterativeRobot {
 
@@ -13,9 +13,9 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-        Controller.init(1);
-        elevator = new Elevator();
-        gripper = new Gripper();
+        Controller.setInputPort(0);
+        //elevator = new Elevator();
+        //gripper = new Gripper();
         rake = new Rake();
     }
 
@@ -38,8 +38,6 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        elevator.update();
-        gripper.update();
         rake.update();
     }
 

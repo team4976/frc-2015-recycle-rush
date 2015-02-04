@@ -25,12 +25,10 @@ public class Gripper {
 
     public void update() {
         if (!checkContainer()) {
-            if (Controller.Button._360_START.isDownOnce())
+            if (Controller.Button.START.isDown())
                 isDown = false;
-            else if (Controller.Button._360_X.isDownOnce()) {
+            else if (Controller.Button.X.isDownOnce())
                 isDown = !isDown;
-                setPneumatics();
-            }
         } else {
             if (rotateContainer()) {
 
@@ -45,6 +43,7 @@ public class Gripper {
             rightMotor.setRaw(127);
         }
 
+        setPneumatics();
     }
 
 

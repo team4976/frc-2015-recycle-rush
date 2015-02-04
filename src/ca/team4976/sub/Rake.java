@@ -8,17 +8,23 @@ public class Rake {
 
     public Rake() {
         extendCylinders = false;
-        rakeSolenoid = new Solenoid(11, 1);
+        rakeSolenoid1 = new Solenoid(11, 1);
+        rakeSolenoid2 = new Solenoid(11, 0);
+
     }
 
     public boolean extendCylinders;
-    public Solenoid rakeSolenoid;
+    public Solenoid rakeSolenoid1;
+    public Solenoid rakeSolenoid2;
 
     public void update() {
-        if (Controller.Button._360_Y.isDownOnce()) {
+        if (Controller.Button.START.isDown())
+            extendCylinders = false;
+        else if (Controller.Button.Y.isDownOnce())
             extendCylinders = !extendCylinders;
-            rakeSolenoid.set(extendCylinders);
-        }
+
+        rakeSolenoid1.set(extendCylinders);
+        rakeSolenoid2.set(extendCylinders);
     }
 
 }
