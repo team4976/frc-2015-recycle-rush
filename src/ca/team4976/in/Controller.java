@@ -109,6 +109,40 @@ public class Controller {
 
     }
 
+    public static enum DPad {
+        NONE(-1),
+        NORTH(0),
+        NORTH_EAST(45),
+        EAST(90),
+        SOUTH_EAST(135),
+        SOUTH(180),
+        SOUTH_WEST(225),
+        WEST(270),
+        NORTH_WEST(315);
+
+        public int angle;
+        public boolean wasReleased;
+
+        private DPad(int angle) {
+            this.angle = angle;
+            wasReleased = true;
+        }
+
+        public boolean isDown() {
+            return joystick.getPOV() == angle;
+        }
+
+        public boolean isDownOnce() {
+            if (wasReleased && isDown()) {
+                wasReleased = false;
+                return true;
+            } else if (!isDown())
+                wasReleased = true;
+            return false;
+        }
+
+    }
+
     public static void setInputPort(int joyPort) {
         joystick = new Joystick(joyPort);
     }
