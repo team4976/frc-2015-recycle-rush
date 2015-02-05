@@ -3,57 +3,59 @@ package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Gripper {
 
-    boolean isDown;
+    boolean isExtended;
 
     DigitalInput temp;
 
-    Solenoid leftSolenoid;
-    Solenoid rightSolenoid;
-    Victor leftMotor;
-    Victor rightMotor;
+    Solenoid solenoid1;
+    Solenoid solenoid2;
 
-    public Gripper() {
-        leftSolenoid = new Solenoid(11,2);
-        rightSolenoid = new Solenoid(11,3);
-        leftMotor = new Victor(2);
-        rightMotor = new Victor(3);
+    /**
+     * Initializes the gripper subsystem, called in robotInit();
+     *
+     * @param nodeID    The Node ID for the PCM on the CAN setup
+     * @param port1     The Port ID for the first solenoid on the PCM
+     * @param port2     The Port ID for the second solenoid on the PCM
+     */
+    public Gripper(int nodeID, int port1, int port2) {
+        solenoid1 = new Solenoid(11,2);
+        solenoid2 = new Solenoid(11,3);
 
         temp = new DigitalInput(0);
-        isDown = false;
+        isExtended = false;
     }
 
     public void update() {
         if (checkContainer()) {
             if (Controller.Button.START.isDown())
-                isDown = false;
+                isExtended = false;
             else if (Controller.Button.X.isDownOnce())
-                isDown = !isDown;
+                isExtended = !isExtended;
         } else {
             rotateContainer();
         }
 
-        if (isDown) {
-            leftMotor.set(0.5);
-            rightMotor.set(-0.5);
+        if (isExtended) {
         } else {
-            leftMotor.set(0);
-            rightMotor.set(0);
         }
 
         System.out.println(checkContainer());
-        setPneumatics();
+        extendSolenoids(isExtended);
     }
 
-
-    private void setPneumatics() {
-        leftSolenoid.set(isDown);
-        rightSolenoid.set(isDown);
+    /**
+     * Extends the gripper solenoids
+     *
+     * @param extend    Determines whether or not the solenoids extend
+     */
+    private void extendSolenoids(boolean extend) {
+        solenoid1.set(extend);
+        solenoid2.set(extend);
     }
 
     private boolean checkContainer() {
@@ -61,8 +63,6 @@ public class Gripper {
     }
 
     private void rotateContainer() {
-            leftMotor.set(0.5);
-            rightMotor.set(0.5);
     }
 
 }
