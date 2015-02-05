@@ -2,47 +2,51 @@
 package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
-import edu.wpi.first.wpilibj.SafePWM;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Gripper {
 
     boolean isDown;
 
+    DigitalInput temp;
+
     Solenoid leftSolenoid;
     Solenoid rightSolenoid;
-    SafePWM leftMotor;
-    SafePWM rightMotor;
+    Victor leftMotor;
+    Victor rightMotor;
 
     public Gripper() {
-        leftSolenoid = new Solenoid(0);
-        rightSolenoid = new Solenoid(1);
-        leftMotor = new SafePWM(2);
-        rightMotor = new SafePWM(3);
+        leftSolenoid = new Solenoid(11,2);
+        rightSolenoid = new Solenoid(11,3);
+        leftMotor = new Victor(2);
+        rightMotor = new Victor(3);
 
+        temp = new DigitalInput(0);
         isDown = false;
     }
 
     public void update() {
-        if (!checkContainer()) {
+        if (checkContainer()) {
             if (Controller.Button.START.isDown())
                 isDown = false;
             else if (Controller.Button.X.isDownOnce())
                 isDown = !isDown;
         } else {
-            if (rotateContainer()) {
-
-            }
+            rotateContainer();
         }
 
         if (isDown) {
-            leftMotor.setRaw(150);
-            rightMotor.setRaw(104);
+            leftMotor.set(0.5);
+            rightMotor.set(-0.5);
         } else {
-            leftMotor.setRaw(127);
-            rightMotor.setRaw(127);
+            leftMotor.set(0);
+            rightMotor.set(0);
         }
 
+        System.out.println(checkContainer());
         setPneumatics();
     }
 
@@ -53,20 +57,12 @@ public class Gripper {
     }
 
     private boolean checkContainer() {
-        if (/*Sensor reading is true*/ false) {
-            return true;
-        }
-        return false;
+        return temp.get();
     }
 
-    private boolean rotateContainer() {
-        if (/*Handle sensor reads false*/ false) {
-            leftMotor.setRaw(150);
-            rightMotor.setRaw(150);
-            return false;
-        }
-        return true;
-
+    private void rotateContainer() {
+            leftMotor.set(0.5);
+            rightMotor.set(0.5);
     }
 
 }

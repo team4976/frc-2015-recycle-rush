@@ -18,7 +18,6 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-
         AdvancedGyro.gyros[1] = new Gyro(1);
 
         AdvancedEncoder.encoders[0] = new Encoder(0, 1, 2);
@@ -31,7 +30,7 @@ public class Main extends IterativeRobot {
 
         Controller.setInputPort(0);
         //elevator = new Elevator();
-        //gripper = new Gripper();
+        gripper = new Gripper();
         rake = new Rake();
     }
 
@@ -40,7 +39,6 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopInit() {
-
         AdvancedGyro.gyros[1].reset();
         AdvancedEncoder.encoders[0].reset();
     }
@@ -57,6 +55,7 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
         rake.update();
+        gripper.update();
     }
 
     public void autonomousPeriodic() {
