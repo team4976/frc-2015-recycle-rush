@@ -110,7 +110,7 @@ public class Controller {
     }
 
     public static enum DPad {
-        NONE(-1),
+        NOT(-1),
         NORTH(0),
         NORTH_EAST(45),
         EAST(90),
@@ -129,15 +129,24 @@ public class Controller {
         }
 
         public boolean isDown() {
-            return joystick.getPOV() == angle;
+            return isDown(0);
+        }
+
+        public boolean isDown(int port) {
+            return (joystick.getPOV(port) == angle);
         }
 
         public boolean isDownOnce() {
-            if (wasReleased && isDown()) {
+            return isDownOnce(0);
+        }
+
+        public boolean isDownOnce(int port) {
+            if (wasReleased && isDown(port)) {
                 wasReleased = false;
                 return true;
-            } else if (!isDown())
+            } else if (!isDown(port))
                 wasReleased = true;
+
             return false;
         }
 

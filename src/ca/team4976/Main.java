@@ -31,7 +31,7 @@ public class Main extends IterativeRobot {
         Controller.setInputPort(0);
         //elevator = new Elevator();
         gripper = new Gripper();
-        rake = new Rake();
+        rake = new Rake(11, 0, 1);
     }
 
     public void disabledInit() {
