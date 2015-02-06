@@ -8,10 +8,10 @@ public class CustomRobotDrive {
 
     public void arcadeDrive(double steering, double throttle) {
 
-        Motors.pwmMotors[0].set(throttle + steering);
-        Motors.pwmMotors[1].set(throttle + steering);
-        Motors.pwmMotors[2].set(-throttle - steering);
-        Motors.pwmMotors[3].set(-throttle - steering);
+        Motors.pwmMotors[Motors.DRIVE_MOTOR_1].set(throttle + steering);
+        Motors.pwmMotors[Motors.DRIVE_MOTOR_2].set(throttle + steering);
+        Motors.pwmMotors[Motors.DRIVE_MOTOR_3].set(-throttle - steering);
+        Motors.pwmMotors[Motors.DRIVE_MOTOR_4].set(-throttle - steering);
     }
 
     public double ramp(double speed, double error) {
