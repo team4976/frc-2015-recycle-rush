@@ -10,6 +10,7 @@ public class Gripper {
 
     //Determines if the solenoid is extended
     public boolean isExtended;
+    public boolean containerAligned;
 
     public long startTime;
 
@@ -30,6 +31,7 @@ public class Gripper {
      */
     public Gripper(int nodeID, int leftPort, int rightPort, int leftCAN, int rightCAN) {
         isExtended = false;
+        containerAligned = false;
 
         leftSolenoid = new Solenoid(nodeID, leftPort);
         rightSolenoid = new Solenoid(nodeID, rightPort);
@@ -43,7 +45,7 @@ public class Gripper {
      */
     public void update() {
 
-        //If the Start button is down
+        //If the Start button is down reset the gripper
         if (Controller.Button.START.isDown())
             isExtended = false;
 
@@ -57,16 +59,51 @@ public class Gripper {
         extendSolenoids(isExtended);
 
         //If container is not oriented and the gripper is down
-        if (!containerOriented() && isExtended) {
+        /*if (!containerOriented() && isExtended) {
             driveMotors(1.0, 1.0);
             //If container is oriented and the gripper is down
+            //We rewrote your code. How does it feel?
+            //Suck it.
         } else if (containerOriented() && isExtended) {
-            driveMotors(1.0, -1.0);
+            if (!container) {
+                container = true;
+            }
+            else {
+                driveMotors(1.0, -1.0);
+            }
+
         } else {
             driveMotors(0.0, 0.0);
         }
+        */
 
-        containerOriented();
+        // If the gripper is down.
+        if (isExtended) {
+            // If the container is ready for rotation.
+            if (containerAligned) {
+                // If the motors are being stressed.
+                if (motorsStressed()) {
+                    // TEMP: Stop the gripper
+                    isExtended = false; // TEMP
+                }
+                // If the motors are not being stressed, rotate container.
+                else {
+                    driveMotors(1.0,1.0);
+                }
+            }
+            // If the container is not ready for rotation.
+            else {
+                // If the motors are being stressed, the container is ready for rotation.
+                if (motorsStressed()) {
+                    containerAligned = true;
+                }
+                // If the motors are not being stressed, the container (if there is one) is not ready for rotation.
+                else {
+                    driveMotors(1.0,-1.0);
+                }
+            }
+        }
+
     }
 
     /**
@@ -84,7 +121,7 @@ public class Gripper {
      *
      * @return if the container is oriented
      */
-    public boolean containerOriented() {
+    public boolean motorsStressed() {
         if (System.currentTimeMillis() - startTime > 210)
             if (leftMotor.getOutputCurrent() > 0.5)
                 return true;
@@ -95,5 +132,7 @@ public class Gripper {
         leftMotor.set(leftSpeed);
         rightMotor.set(rightSpeed);
     }
+
+
 
 }
