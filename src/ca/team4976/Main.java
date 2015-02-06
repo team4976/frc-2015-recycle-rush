@@ -22,8 +22,8 @@ public class Main extends IterativeRobot {
     public void robotInit() {
         Gyros.gyros[1] = new Gyro(1);
 
-        Encoders.encoders[0] = new Encoder(0, 1, 2);
-        Encoders.encoders[1] = new Encoder(3, 4, 5);
+        //Encoders.encoders[0] = new Encoder(0, 1, 2);
+        //Encoders.encoders[1] = new Encoder(3, 4, 5);
 
         Motors.setDefaultMotors();
 
@@ -42,7 +42,7 @@ public class Main extends IterativeRobot {
 
     public void teleopInit() {
         Gyros.gyros[1].reset();
-        Encoders.encoders[0].reset();
+        //Encoders.encoders[0].reset();
     }
 
     public void autonomousInit() {

@@ -3,6 +3,7 @@ package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
 import ca.team4976.out.Motors;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -49,6 +50,7 @@ public class Gripper {
         if (Controller.Button.START.isDown())
             isExtended = false;
 
+
             //If the X button is down after it has been released (de-bouncing)
         else if (Controller.Button.X.isDownOnce()) {
             isExtended = !isExtended;
@@ -58,25 +60,6 @@ public class Gripper {
 
         extendSolenoids(isExtended);
 
-        //If container is not oriented and the gripper is down
-        /*if (!containerOriented() && isExtended) {
-            driveMotors(1.0, 1.0);
-            //If container is oriented and the gripper is down
-            //We rewrote your code. How does it feel?
-            //Suck it.
-        } else if (containerOriented() && isExtended) {
-            if (!container) {
-                container = true;
-            }
-            else {
-                driveMotors(1.0, -1.0);
-            }
-
-        } else {
-            driveMotors(0.0, 0.0);
-        }
-        */
-
         // If the gripper is down.
         if (isExtended) {
             // If the container is ready for rotation.
@@ -85,10 +68,12 @@ public class Gripper {
                 if (motorsStressed()) {
                     // TEMP: Stop the gripper
                     isExtended = false; // TEMP
+                    System.out.println("Stopping rotation.");
                 }
                 // If the motors are not being stressed, rotate container.
                 else {
                     driveMotors(1.0,1.0);
+                    System.out.println("Rotating.");
                 }
             }
             // If the container is not ready for rotation.
@@ -96,12 +81,18 @@ public class Gripper {
                 // If the motors are being stressed, the container is ready for rotation.
                 if (motorsStressed()) {
                     containerAligned = true;
+                    startTime = System.currentTimeMillis();
+                    System.out.println("Container ready for rotation.");
                 }
                 // If the motors are not being stressed, the container (if there is one) is not ready for rotation.
                 else {
                     driveMotors(1.0,-1.0);
+                    System.out.println("No container.");
                 }
             }
+        } else {
+            driveMotors(0, 0);
+            containerAligned = false;
         }
 
     }
@@ -122,7 +113,7 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        if (System.currentTimeMillis() - startTime > 210)
+        if (System.currentTimeMillis() - startTime > 1000)
             if (leftMotor.getOutputCurrent() > 0.5)
                 return true;
         return false;
