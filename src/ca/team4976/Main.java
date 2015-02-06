@@ -20,10 +20,6 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-        Gyros.gyros[1] = new Gyro(1);
-
-        //Encoders.encoders[0] = new Encoder(0, 1, 2);
-        //Encoders.encoders[1] = new Encoder(3, 4, 5);
 
         Motors.setDefaultMotors();
 
@@ -32,8 +28,8 @@ public class Main extends IterativeRobot {
         Controller.setInputPort(0);
 
         elevator = new Elevator();
-        rake = new Rake(11, 0, 1);
-        gripper = new Gripper(11, 2, 3, Motors.GRIPPER_MOTOR_LEFT, Motors.GRIPPER_MOTOR_RIGHT);
+        rake = new Rake(20, 0, 1);
+        gripper = new Gripper(20, 2, 3, Motors.GRIPPER_MOTOR_LEFT, Motors.GRIPPER_MOTOR_RIGHT);
     }
 
     public void disabledInit() {
@@ -41,8 +37,6 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopInit() {
-        Gyros.gyros[1].reset();
-        //Encoders.encoders[0].reset();
     }
 
     public void autonomousInit() {

@@ -3,7 +3,6 @@ package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
 import ca.team4976.out.Motors;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -11,8 +10,11 @@ public class Gripper {
 
     //Determines if the solenoid is extended
     public boolean isExtended;
-    public boolean containerAligned;
 
+    //Determines if the container is ready for alignment (sucked in) and is aligmned (fully rotated)
+    public boolean isSuckedIn, isAligned;
+
+    //Minimum delay before current is tested
     public long startTime;
 
     //The 2 solenoids for the gripper
@@ -32,7 +34,8 @@ public class Gripper {
      */
     public Gripper(int nodeID, int leftPort, int rightPort, int leftCAN, int rightCAN) {
         isExtended = false;
-        containerAligned = false;
+        isSuckedIn = false;
+        isAligned = false;
 
         leftSolenoid = new Solenoid(nodeID, leftPort);
         rightSolenoid = new Solenoid(nodeID, rightPort);
@@ -50,7 +53,6 @@ public class Gripper {
         if (Controller.Button.START.isDown())
             isExtended = false;
 
-
             //If the X button is down after it has been released (de-bouncing)
         else if (Controller.Button.X.isDownOnce()) {
             isExtended = !isExtended;
@@ -58,41 +60,46 @@ public class Gripper {
                 startTime = System.currentTimeMillis();
         }
 
+        //Extend the solenoids based on stored variable
         extendSolenoids(isExtended);
 
-        // If the gripper is down.
+        //If the gripper is extended
         if (isExtended) {
-            // If the container is ready for rotation.
-            if (containerAligned) {
-                // If the motors are being stressed.
+
+            //And the container is not fully sucked in
+            if (!isSuckedIn) {
+
+                //Spin motors in opposite directions to suck in container
+                driveMotors(-1.0, 1.0);
+
+                //If motors current gets too high (container is sucked in)
                 if (motorsStressed()) {
-                    // TEMP: Stop the gripper
-                    isExtended = false; // TEMP
-                    System.out.println("Stopping rotation.");
-                }
-                // If the motors are not being stressed, rotate container.
-                else {
-                    driveMotors(1.0,1.0);
-                    System.out.println("Rotating.");
-                }
-            }
-            // If the container is not ready for rotation.
-            else {
-                // If the motors are being stressed, the container is ready for rotation.
-                if (motorsStressed()) {
-                    containerAligned = true;
+                    isSuckedIn = true;
                     startTime = System.currentTimeMillis();
-                    System.out.println("Container ready for rotation.");
                 }
-                // If the motors are not being stressed, the container (if there is one) is not ready for rotation.
-                else {
-                    driveMotors(1.0,-1.0);
-                    System.out.println("No container.");
-                }
+
+                //Then, if the container is not yet fully aligned
+            } else if (!isAligned) {
+
+                //Spin motors in same direction to rotate container
+                driveMotors(1.0, 1.0);
+
+                //If motor current gets too high (container is aligned)
+                if (motorsStressed())
+                    isAligned = true;
+
+                //If container is sucked in and aligned
+            } else {
+
+                //Stop motors
+                driveMotors(0.0, 0.0);
             }
+
+            //If the gripper is not down, reset the state and stop motors
         } else {
-            driveMotors(0, 0);
-            containerAligned = false;
+            driveMotors(0.0, 0.0);
+            isSuckedIn = false;
+            isAligned = false;
         }
 
     }
@@ -123,7 +130,6 @@ public class Gripper {
         leftMotor.set(leftSpeed);
         rightMotor.set(rightSpeed);
     }
-
 
 
 }
