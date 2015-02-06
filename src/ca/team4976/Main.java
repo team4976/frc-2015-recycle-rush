@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.*;
 
 public class Main extends IterativeRobot {
 
+    DriveTrain drive;
+
     Elevator elevator;
     Gripper gripper;
-    DriveTrain drive;
     Rake rake;
 
     public void robotInit() {
@@ -28,7 +29,7 @@ public class Main extends IterativeRobot {
         Controller.setInputPort(0);
         //elevator = new Elevator();
         rake = new Rake(11, 0, 1);
-        gripper = new Gripper(11, 2, 3);
+        gripper = new Gripper(11, 2, 3, Motors.GRIPPER_MOTOR_LEFT, Motors.GRIPPER_MOTOR_RIGHT);
     }
 
     public void disabledInit() {

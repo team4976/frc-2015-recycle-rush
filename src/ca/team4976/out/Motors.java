@@ -10,10 +10,10 @@ public class Motors {
     public static final int DRIVE_MOTOR_3 = 2;
     public static final int DRIVE_MOTOR_4 = 3;
 
-    public static final int ELEVATOR_MOTOR = 4;
+    public static final int ELEVATOR_MOTOR = 0;
 
-    public static final int GRIPPER_MOTOR_LEFT = 5;
-    public static final int GRIPPER_MOTOR_RIGHT = 6;
+    public static final int GRIPPER_MOTOR_LEFT = 1;
+    public static final int GRIPPER_MOTOR_RIGHT = 2;
 
     public static final Talon[] pwmMotors = new Talon[4];
     public static final CANTalon[] canMotors = new CANTalon[3];
@@ -28,10 +28,10 @@ public class Motors {
         pwmMotors[pwm3] = new Talon(pwm3);
         pwmMotors[pwm4] = new Talon(pwm4);
 
-        canMotors[can1] = new CANTalon(can1);
+        canMotors[can1] = new CANTalon(can1 + 11);
 
-        canMotors[can2] = new CANTalon(can2);
-        canMotors[can3] = new CANTalon(can3);
+        canMotors[can2] = new CANTalon(can2 + 11);
+        canMotors[can3] = new CANTalon(can3 + 11);
     }
 
 }

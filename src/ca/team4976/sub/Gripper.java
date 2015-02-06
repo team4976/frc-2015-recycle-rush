@@ -2,67 +2,98 @@
 package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Victor;
+import ca.team4976.out.Motors;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Gripper {
 
-    boolean isExtended;
+    //Determines if the solenoid is extended
+    public boolean isExtended;
 
-    DigitalInput temp;
+    public long startTime;
 
-    Solenoid solenoid1;
-    Solenoid solenoid2;
+    //The 2 solenoids for the gripper
+    public Solenoid leftSolenoid;
+    public Solenoid rightSolenoid;
+
+    //The 2 motors for the gripper
+    public CANTalon leftMotor;
+    public CANTalon rightMotor;
 
     /**
      * Initializes the gripper subsystem, called in robotInit();
      *
      * @param nodeID    The Node ID for the PCM on the CAN setup
-     * @param port1     The Port ID for the first solenoid on the PCM
-     * @param port2     The Port ID for the second solenoid on the PCM
+     * @param leftPort  The Port ID for the first solenoid on the PCM
+     * @param rightPort The Port ID for the second solenoid on the PCM
      */
-    public Gripper(int nodeID, int port1, int port2) {
-        solenoid1 = new Solenoid(11,2);
-        solenoid2 = new Solenoid(11,3);
-
-        temp = new DigitalInput(0);
+    public Gripper(int nodeID, int leftPort, int rightPort, int leftCAN, int rightCAN) {
         isExtended = false;
+
+        leftSolenoid = new Solenoid(nodeID, leftPort);
+        rightSolenoid = new Solenoid(nodeID, rightPort);
+
+        leftMotor = Motors.canMotors[leftCAN];
+        rightMotor = Motors.canMotors[rightCAN];
     }
 
+    /**
+     * Called periodically during teleopPeriodic();
+     */
     public void update() {
-        if (checkContainer()) {
-            if (Controller.Button.START.isDown())
-                isExtended = false;
-            else if (Controller.Button.X.isDownOnce())
-                isExtended = !isExtended;
-        } else {
-            rotateContainer();
+
+        //If the Start button is down
+        if (Controller.Button.START.isDown())
+            isExtended = false;
+
+            //If the X button is down after it has been released (de-bouncing)
+        else if (Controller.Button.X.isDownOnce()) {
+            isExtended = !isExtended;
+            if (isExtended)
+                startTime = System.currentTimeMillis();
         }
 
-        if (isExtended) {
-        } else {
-        }
-
-        System.out.println(checkContainer());
         extendSolenoids(isExtended);
+
+        //If container is not oriented and the gripper is down
+        if (!containerOriented() && isExtended) {
+            driveMotors(1.0, 1.0);
+            //If container is oriented and the gripper is down
+        } else if (containerOriented() && isExtended) {
+            driveMotors(1.0, -1.0);
+        } else {
+            driveMotors(0.0, 0.0);
+        }
+
+        containerOriented();
     }
 
     /**
      * Extends the gripper solenoids
      *
-     * @param extend    Determines whether or not the solenoids extend
+     * @param extend Determines whether or not the solenoids extend
      */
-    private void extendSolenoids(boolean extend) {
-        solenoid1.set(extend);
-        solenoid2.set(extend);
+    public void extendSolenoids(boolean extend) {
+        leftSolenoid.set(extend);
+        rightSolenoid.set(extend);
     }
 
-    private boolean checkContainer() {
-        return temp.get();
+    /**
+     * Determines if the container is oriented
+     *
+     * @return if the container is oriented
+     */
+    public boolean containerOriented() {
+        if (System.currentTimeMillis() - startTime > 210)
+            if (leftMotor.getOutputCurrent() > 0.5)
+                return true;
+        return false;
     }
 
-    private void rotateContainer() {
+    public void driveMotors(double leftSpeed, double rightSpeed) {
+        leftMotor.set(leftSpeed);
+        rightMotor.set(rightSpeed);
     }
 
 }
