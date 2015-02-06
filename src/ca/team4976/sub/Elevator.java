@@ -16,22 +16,15 @@ public class Elevator {
             queuedLevels++;
         } else if (Controller.Button.LEFT_BUMPER.isDownOnce()) {
             queuedLevels--;
-        } else if (Controller.Button.A.isDownOnce()) {
-            releaseElevator();
-        } else if (Controller.Button.START.isDownOnce()) {
-            groundElevator();
         }
         checkQueuedLevels();
     }
 
     private void checkQueuedLevels() {
-        if (queuedLevels > 0) {
+        if (queuedLevels > 0)
             elevatorUp();
-            currentLevel--;
-        } else if (queuedLevels < 0) {
+        else if (queuedLevels < 0)
             elevatorDown();
-            currentLevel++;
-        }
     }
 
     public void releaseElevator() {
@@ -40,9 +33,7 @@ public class Elevator {
     }
 
     public void groundElevator() {
-        while (currentLevel > 0) {
-            elevatorDown();
-        }
+        elevatorDown();
         currentLevel = 0;
     }
 

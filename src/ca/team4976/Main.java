@@ -1,7 +1,8 @@
 package ca.team4976;
 
-import ca.team4976.in.AdvancedEncoder;
-import ca.team4976.in.AdvancedGyro;
+import ca.team4976.in.DigitalInputs;
+import ca.team4976.in.Encoders;
+import ca.team4976.in.Gyros;
 import ca.team4976.in.Controller;
 import ca.team4976.out.Motors;
 import ca.team4976.sub.DriveTrain;
@@ -19,15 +20,18 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-        AdvancedGyro.gyros[1] = new Gyro(1);
+        Gyros.gyros[1] = new Gyro(1);
 
-        AdvancedEncoder.encoders[0] = new Encoder(0, 1, 2);
-        AdvancedEncoder.encoders[1] = new Encoder(3, 4, 5);
+        Encoders.encoders[0] = new Encoder(0, 1, 2);
+        Encoders.encoders[1] = new Encoder(3, 4, 5);
 
         Motors.setDefaultMotors();
 
+        DigitalInputs.setDefaultInputs();
+
         Controller.setInputPort(0);
-        //elevator = new Elevator();
+
+        elevator = new Elevator();
         rake = new Rake(11, 0, 1);
         gripper = new Gripper(11, 2, 3, Motors.GRIPPER_MOTOR_LEFT, Motors.GRIPPER_MOTOR_RIGHT);
     }
@@ -37,8 +41,8 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopInit() {
-        AdvancedGyro.gyros[1].reset();
-        AdvancedEncoder.encoders[0].reset();
+        Gyros.gyros[1].reset();
+        Encoders.encoders[0].reset();
     }
 
     public void autonomousInit() {
@@ -54,6 +58,7 @@ public class Main extends IterativeRobot {
     public void teleopPeriodic() {
         rake.update();
         gripper.update();
+        elevator.update();
     }
 
     public void autonomousPeriodic() {
