@@ -19,9 +19,9 @@ public class Main extends IterativeRobot {
     public void robotInit() {
         Controller.setInputPort(0);
 
-        elevator = new Elevator();
+        //elevator = new Elevator();
         //rake = new Rake();
-        //gripper = new Gripper();
+        gripper = new Gripper();
     }
 
     public void disabledInit() {
@@ -41,8 +41,8 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
         //rake.update();
-        //gripper.update();
-        elevator.update();
+        gripper.update();
+        //elevator.update();
     }
 
     public void autonomousPeriodic() {

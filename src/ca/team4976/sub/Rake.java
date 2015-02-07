@@ -29,8 +29,8 @@ public class Rake {
             isExtended = !isExtended;
 
         //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.RAKE_LEFT.set(isExtended);
-        Output.PneumaticSolenoid.RAKE_RIGHT.set(isExtended);
+        //Output.PneumaticSolenoid.RAKE_LEFT.set(isExtended);
+        //Output.PneumaticSolenoid.RAKE_RIGHT.set(isExtended);
     }
 
 }
