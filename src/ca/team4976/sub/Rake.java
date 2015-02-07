@@ -7,7 +7,7 @@ import ca.team4976.out.Output;
 
 public class Rake {
 
-    private boolean isManualMode = false;
+    private boolean isManualMode = true;
     public boolean isExtended;
     public boolean isRightExtended;
     public boolean isLeftExtended;
@@ -37,15 +37,15 @@ public class Rake {
 
         } else {
             //If the Start button is down
-            if (Controller2.Button.START.isDown())
+            if (Controller.Button.START.isDown())
                 isExtended = false;
 
                 //If the A button is down after it has been releases (de-bouncing)
-            else if (Controller2.Button.A.isDown())
+            else if (Controller.Button.A.isDown())
                 isRightExtended = !isRightExtended;
 
                 //If the B button is down after it has been releases (de-bouncing)
-            else if (Controller2.Button.B.isDown())
+            else if (Controller.Button.B.isDown())
                 isLeftExtended = !isLeftExtended;
         }
         //Extend the solenoids based on stored variable
