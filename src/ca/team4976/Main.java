@@ -20,12 +20,11 @@ public class Main extends IterativeRobot {
         Controller.setInputPort(0);
 
         elevator = new Elevator();
-        rake = new Rake();
-        gripper = new Gripper();
+        //rake = new Rake();
+        //gripper = new Gripper();
     }
 
     public void disabledInit() {
-
     }
 
     public void teleopInit() {
@@ -35,15 +34,14 @@ public class Main extends IterativeRobot {
     }
 
     public void testInit() {
-
     }
 
     public void disabledPeriodic() {
     }
 
     public void teleopPeriodic() {
-        rake.update();
-        gripper.update();
+        //rake.update();
+        //gripper.update();
         elevator.update();
     }
 

@@ -1,6 +1,7 @@
 package ca.team4976.out;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -39,22 +40,22 @@ public class Output {
     }
 
     public static enum PneumaticSolenoid {
-        RAKE_LEFT(0),
-        RAKE_RIGHT(1),
-        GRIPPER_LEFT(2),
-        GRIPPER_RIGHT(3),
-        GRIPPER_KICKER(4);
+        RAKE_LEFT(0, 1),
+        RAKE_RIGHT(2, 3),
+        GRIPPER_LEFT(4, 5),
+        GRIPPER_RIGHT(6, 7);
 
-        public int portID;
-        public Solenoid solenoid;
+        public int port1, port2;
+        public DoubleSolenoid solenoid;
 
-        private PneumaticSolenoid(int portID) {
-            this.portID = portID;
-            solenoid = new Solenoid(20, this.portID);
+        private PneumaticSolenoid(int port1, int port2) {
+            this.port1 = port1;
+            this.port2 = port2;
+            solenoid = new DoubleSolenoid(20, this.port1, this.port2);
         }
 
         public void set(boolean extend) {
-            solenoid.set(extend);
+            solenoid.set(DoubleSolenoid.Value.kForward);
         }
 
     }

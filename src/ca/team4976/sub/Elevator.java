@@ -1,6 +1,8 @@
 package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
+import ca.team4976.in.Input;
+import ca.team4976.out.Output;
 
 public class Elevator {
 
@@ -17,7 +19,11 @@ public class Elevator {
         } else if (Controller.Button.LEFT_BUMPER.isDownOnce()) {
             queuedLevels--;
         }
-        checkQueuedLevels();
+
+        if (Input.Digital.ELEVATOR_A2B.get() && queuedLevels > 0)
+            Output.Motor.ELEVATOR.set(0.0);
+        else
+            checkQueuedLevels();
     }
 
     private void checkQueuedLevels() {
