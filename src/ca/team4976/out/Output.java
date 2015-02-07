@@ -42,7 +42,8 @@ public class Output {
         RAKE_LEFT(0),
         RAKE_RIGHT(1),
         GRIPPER_LEFT(2),
-        GRIPPER_RIGHT(3);
+        GRIPPER_RIGHT(3),
+        GRIPPER_KICKER(4);
 
         public int portID;
         public Solenoid solenoid;

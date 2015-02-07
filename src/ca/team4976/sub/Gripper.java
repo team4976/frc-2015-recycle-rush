@@ -7,7 +7,7 @@ import ca.team4976.out.Output;
 public class Gripper {
 
     //Determines if the solenoid is extended
-    public boolean isExtended;
+    public boolean gripperExtended, kickerExtended;
 
     //Determines if the container is ready for alignment (sucked in) and is aligned (fully rotated)
     public boolean isSuckedIn, isAligned;
@@ -19,7 +19,8 @@ public class Gripper {
      * Initializes the gripper subsystem, called in robotInit();
      */
     public Gripper() {
-        isExtended = false;
+        gripperExtended = false;
+        kickerExtended = false;
         isSuckedIn = false;
         isAligned = false;
     }
@@ -30,22 +31,30 @@ public class Gripper {
     public void update() {
 
         //If the Start button is down reset the gripper
-        if (Controller.Button.START.isDown())
-            isExtended = false;
-        
+        if (Controller.Button.START.isDown()) {
+            gripperExtended = false;
+            kickerExtended = false;
+        }
             //If the X button is down after it has been released (de-bouncing)
         else if (Controller.Button.X.isDownOnce()) {
-            isExtended = !isExtended;
-            if (isExtended)
+            gripperExtended = !gripperExtended;
+            if (gripperExtended)
                 startTime = System.currentTimeMillis();
+        }
+        else if (Controller.Button.A.isDownOnce()) {
+            kickerExtended = !kickerExtended;
         }
 
         //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_LEFT.set(isExtended);
-        Output.PneumaticSolenoid.GRIPPER_RIGHT.set(isExtended);
+        Output.PneumaticSolenoid.GRIPPER_LEFT.set(gripperExtended);
+        Output.PneumaticSolenoid.GRIPPER_RIGHT.set(gripperExtended);
+
 
         //If the gripper is extended
-        if (isExtended) {
+        if (gripperExtended) {
+
+            // Only extend the kicker based on user input if the gripper is extended.
+            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
             //And the container is not fully sucked in
             if (!isSuckedIn) {
@@ -81,6 +90,8 @@ public class Gripper {
 
             //If the gripper is not down, reset the state and stop motors
         } else {
+            // Pull the kicker in if the gripper is up.
+            Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
             Output.Motor.GRIPPER_LEFT.set(0);
             Output.Motor.GRIPPER_RIGHT.set(0);
             isSuckedIn = false;
