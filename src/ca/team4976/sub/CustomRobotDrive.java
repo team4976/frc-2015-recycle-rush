@@ -1,6 +1,6 @@
 package ca.team4976.sub;
 
-import ca.team4976.out.Motors;
+import ca.team4976.out.Output;
 
 public class CustomRobotDrive {
 
@@ -8,10 +8,10 @@ public class CustomRobotDrive {
 
     public void arcadeDrive(double steering, double throttle) {
 
-        Motors.pwmMotors[Motors.DRIVE_MOTOR_1].set(throttle + steering);
-        Motors.pwmMotors[Motors.DRIVE_MOTOR_2].set(throttle + steering);
-        Motors.pwmMotors[Motors.DRIVE_MOTOR_3].set(-throttle - steering);
-        Motors.pwmMotors[Motors.DRIVE_MOTOR_4].set(-throttle - steering);
+        Output.Motor.DRIVE_LEFT_1.set(throttle + steering);
+        Output.Motor.DRIVE_LEFT_2.set(throttle + steering);
+        Output.Motor.DRIVE_RIGHT_1.set(-throttle - steering);
+        Output.Motor.DRIVE_RIGHT_1.set(-throttle - steering);
     }
 
     public double ramp(double speed, double error) {
