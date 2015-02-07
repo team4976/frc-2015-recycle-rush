@@ -28,24 +28,24 @@ public class Rake {
 
         if (!isManualMode) {
             //If the Start button is down
-            if (Controller.Button.START.isDown())
+            if (Controller.Primary.Button.START.isDown())
                 isExtended = false;
 
                 //If the Y button is down after it has been released (de-bouncing)
-            else if (Controller.Button.Y.isDownOnce())
+            else if (Controller.Primary.Button.Y.isDownOnce())
                 isExtended = !isExtended;
 
         } else {
             //If the Start button is down
-            if (Controller.Button.START.isDown())
+            if (Controller.Primary.Button.START.isDown())
                 isExtended = false;
 
                 //If the A button is down after it has been releases (de-bouncing)
-            else if (Controller.Button.A.isDownOnce())
+            else if (Controller.Primary.Button.A.isDownOnce())
                 isRightExtended = !isRightExtended;
 
                 //If the B button is down after it has been releases (de-bouncing)
-            else if (Controller.Button.B.isDownOnce())
+            else if (Controller.Primary.Button.B.isDownOnce())
                 isLeftExtended = !isLeftExtended;
         }
 
