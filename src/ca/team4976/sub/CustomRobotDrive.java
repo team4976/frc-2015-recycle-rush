@@ -11,7 +11,7 @@ public class CustomRobotDrive {
         Output.Motor.DRIVE_LEFT_1.set(throttle + steering);
         Output.Motor.DRIVE_LEFT_2.set(throttle + steering);
         Output.Motor.DRIVE_RIGHT_1.set(-throttle - steering);
-        Output.Motor.DRIVE_RIGHT_1.set(-throttle - steering);
+        Output.Motor.DRIVE_RIGHT_2.set(-throttle - steering);
     }
 
     public double ramp(double speed, double error) {

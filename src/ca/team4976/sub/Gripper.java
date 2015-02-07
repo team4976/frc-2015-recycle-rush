@@ -38,17 +38,17 @@ public class Gripper {
         laserDetector = Input.Digital.CONTAINER_POSITION_LASER.get();
         System.out.println(laserDetector);
         //If the Start button is down reset the gripper
-        if (Controller.Button.START.isDown()) {
+        if (Controller.Primary.Button.START.isDown()) {
             gripperExtended = false;
             kickerExtended = false;
         }
             //If the X button is down after it has been released (de-bouncing)
-        else if (Controller.Button.X.isDownOnce()) {
+        else if (Controller.Primary.Button.X.isDownOnce()) {
             gripperExtended = !gripperExtended;
             if (gripperExtended)
                 startTime = System.currentTimeMillis();
         }
-        else if (Controller.Button.A.isDownOnce()) {
+        else if (Controller.Primary.Button.A.isDownOnce()) {
             kickerExtended = !kickerExtended;
         }
 

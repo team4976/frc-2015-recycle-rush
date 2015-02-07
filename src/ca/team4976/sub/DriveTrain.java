@@ -7,9 +7,9 @@ import ca.team4976.in.Gyros;
 
 public class DriveTrain extends CustomRobotDrive {
 
-    Controller.Stick steeringAxis = Controller.Stick.LEFT;
-    Controller.Trigger leftTrigger = Controller.Trigger.LEFT;
-    Controller.Trigger RightTrigger = Controller.Trigger.RIGHT;
+    Controller.Primary.Stick steeringAxis = Controller.Primary.Stick.LEFT;
+    Controller.Primary.Trigger leftTrigger = Controller.Primary.Trigger.LEFT;
+    Controller.Primary.Trigger RightTrigger = Controller.Primary.Trigger.RIGHT;
 
     private double throttle = 0.5;
     private int gear = 2;
@@ -26,17 +26,17 @@ public class DriveTrain extends CustomRobotDrive {
 
         if (useDeadBand) {
 
-            double[] drive = DeadBand.evaluteDeadBand(steeringAxis.horizontal(), Controller.Trigger.totalValue(RightTrigger, leftTrigger));
+            double[] drive = DeadBand.evaluteDeadBand(steeringAxis.horizontal(), Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger));
 
             arcadeDrive(drive[0] * throttle, drive[1] * throttle);
 
-        } else arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
+        } else arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
     }
 
     public void updateGear() {
 
-        if (Controller.DPad.NORTH.isDownOnce() && gear < 3) gear++;
-        if (Controller.DPad.SOUTH.isDownOnce() && gear > 1) gear--;
+        if (Controller.Primary.DPad.NORTH.isDownOnce() && gear < 3) gear++;
+        if (Controller.Primary.DPad.SOUTH.isDownOnce() && gear > 1) gear--;
 
         updateThrottle();
     }
@@ -54,8 +54,8 @@ public class DriveTrain extends CustomRobotDrive {
 
     public void updateAutoTurn() {
 
-        if (Controller.DPad.EAST.isDownOnce() && gear < 3) autoTurnFlag++;
-        if (Controller.DPad.WEST.isDownOnce() && gear > 1) autoTurnFlag--;
+        if (Controller.Primary.DPad.EAST.isDownOnce() && gear < 3) autoTurnFlag++;
+        if (Controller.Primary.DPad.WEST.isDownOnce() && gear > 1) autoTurnFlag--;
 
         if (autoTurnFlag < 0) {
 

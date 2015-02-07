@@ -22,7 +22,7 @@ public class Input {
     }
 
     public enum DigitalEncoder {
-        ELEVATOR(6, 7, 8, 1E-3);
+        ELEVATOR(6, 7, 8, 1E-10);
 
         private Encoder encoder;
 

@@ -7,16 +7,14 @@ import ca.team4976.out.Output;
 
 public class Rake {
 
-    private boolean isManualMode = false;
-    public boolean isExtended;
-    public boolean isRightExtended;
-    public boolean isLeftExtended;
+    public boolean isLeftExtended, isRightExtended;
 
     /**
      * Initializes the rake subsystem, called in robotInit();
      */
     public Rake() {
-        isExtended = false;
+        isLeftExtended = false;
+        isRightExtended = false;
     }
 
     //Determines if the solenoid is extended
@@ -26,42 +24,34 @@ public class Rake {
      */
     public void update() {
 
-        if (!isManualMode) {
-            //If the Start button is down
-            if (Controller.Button.START.isDown())
-                isExtended = false;
+        //If the Start button is down
+        if (Controller.Primary.Button.START.isDown()) {
+            isLeftExtended = false;
+            isRightExtended = false;
+        }
 
-                //If the Y button is down after it has been released (de-bouncing)
-            else if (Controller.Button.Y.isDownOnce())
-                isExtended = !isExtended;
-
-        } else {
-            //If the Start button is down
-            if (Controller.Button.START.isDown())
-                isExtended = false;
-
-                //If the A button is down after it has been releases (de-bouncing)
-            else if (Controller.Button.A.isDownOnce())
-                isRightExtended = !isRightExtended;
-
-                //If the B button is down after it has been releases (de-bouncing)
-            else if (Controller.Button.B.isDownOnce())
+        //If the Y button is down after it has been released (de-bouncing)
+        else if (Controller.Primary.Button.Y.isDownOnce()) {
+            if (isLeftExtended != isRightExtended) {
+                isLeftExtended = false;
+                isRightExtended = false;
+            } else {
                 isLeftExtended = !isLeftExtended;
+                isRightExtended = !isRightExtended;
+            }
         }
 
-        //**************************************************
-        //Output to solenoids
-        //**************************************************
+        //If the A button is down after it has been releases (de-bouncing)
+        if (Controller.Secondary.Button.A.isDownOnce())
+            isRightExtended = !isRightExtended;
 
-        if (isManualMode) {
-            //Extend the solenoids based on stored variable
-            Output.PneumaticSolenoid.RAKE_LEFT.set(isLeftExtended);
-            Output.PneumaticSolenoid.RAKE_RIGHT.set(isRightExtended);
-        }
-        else {
-            Output.PneumaticSolenoid.RAKE_LEFT.set(isExtended);
-            Output.PneumaticSolenoid.RAKE_RIGHT.set(isExtended);
-        }
+            //If the B button is down after it has been releases (de-bouncing)
+        else if (Controller.Secondary.Button.B.isDownOnce())
+            isLeftExtended = !isLeftExtended;
+
+        //Extend the solenoids based on stored variable
+        Output.PneumaticSolenoid.RAKE_LEFT.set(isLeftExtended);
+        Output.PneumaticSolenoid.RAKE_RIGHT.set(isRightExtended);
 
     }
 }

@@ -12,14 +12,14 @@ public class Main extends IterativeRobot {
 
     DriveTrain drive;
 
-    Elevator elevator;
-    Gripper gripper;
     Rake rake;
+    Gripper gripper;
+    Elevator elevator;
 
     public void robotInit() {
-        //elevator = new Elevator();
-        //rake = new Rake();
-        gripper = new Gripper();
+        rake = new Rake();
+        //gripper = new Gripper();
+        elevator = new Elevator();
     }
 
     public void disabledInit() {
@@ -38,9 +38,9 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        //rake.update();
-        gripper.update();
-        //elevator.update();
+        rake.update();
+        //gripper.update();
+        elevator.update();
     }
 
     public void autonomousPeriodic() {

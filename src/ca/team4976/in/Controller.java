@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 @SuppressWarnings("unused")
 public class Controller {
 
-    public static Joystick[] joystick = {new Joystick(0), new Joystick(1)};
+    public static Joystick[] joystick = {new Joystick(0), new Joystick(3)};
 
     public static class Primary {
 
