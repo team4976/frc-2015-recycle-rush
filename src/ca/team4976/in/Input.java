@@ -5,17 +5,15 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class Input {
 
-    //TODO: Encoders and gyros
     public enum Digital {
         ELEVATOR_GROUND(0),
-        ELEVATOR_A2B(1);
+        ELEVATOR_TOP(1),
+        CONTAINER_POSITION_LASER(3);
 
-        public int id;
-        public DigitalInput di;
+        private DigitalInput di;
 
         private Digital(int id) {
-            this.id = id;
-            di = new DigitalInput(this.id);
+            di = new DigitalInput(id);
         }
 
         public boolean get() {
@@ -24,21 +22,21 @@ public class Input {
     }
 
     public enum DigitalEncoder {
-        ELEVATOR(6, 7, 8, 1);
+        ELEVATOR(6, 7, 8, 1E-3);
 
-        public int di1, di2, di3;
-        public Encoder encoder;
+        private Encoder encoder;
 
-        private DigitalEncoder(int di1, int di2, int di3, double dpp) {
-            this.di1 = di1;
-            this.di2 = di2;
-            this.di3 = di3;
-            encoder = new Encoder(this.di1, this.di2, this.di3);
+        private DigitalEncoder(int dio1, int dio2, int dio3, double dpp) {
+            encoder = new Encoder(dio1, dio2, dio3);
             encoder.setDistancePerPulse(dpp);
         }
 
         public int get() {
             return encoder.get();
+        }
+
+        public void reset() {
+            encoder.reset();
         }
 
     }
