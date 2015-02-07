@@ -46,15 +46,15 @@ public class Gripper {
         }
 
         //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_LEFT.set(gripperExtended);
-        Output.PneumaticSolenoid.GRIPPER_RIGHT.set(gripperExtended);
+        //Output.PneumaticSolenoid.GRIPPER_LEFT.set(gripperExtended);
+        //Output.PneumaticSolenoid.GRIPPER_RIGHT.set(gripperExtended);
 
 
         //If the gripper is extended
         if (gripperExtended) {
 
             // Only extend the kicker based on user input if the gripper is extended.
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+            //Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
             //And the container is not fully sucked in
             if (!isSuckedIn) {
@@ -91,7 +91,7 @@ public class Gripper {
             //If the gripper is not down, reset the state and stop motors
         } else {
             // Pull the kicker in if the gripper is up.
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
+            //Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
             Output.Motor.GRIPPER_LEFT.set(0);
             Output.Motor.GRIPPER_RIGHT.set(0);
             isSuckedIn = false;
