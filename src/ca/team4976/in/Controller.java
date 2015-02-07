@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class Controller {
 
-    private static Joystick joystick;
+    private static final Joystick joystick = new Joystick(0);
 
     public static enum Button {
         A(1),

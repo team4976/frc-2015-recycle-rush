@@ -40,11 +40,10 @@ public class Output {
     }
 
     public static enum PneumaticSolenoid {
-        //RAKE_LEFT(6, 7),
-        //RAKE_RIGHT(8, 9),
-        GRIPPER_LEFT(0, 1),
-        GRIPPER_RIGHT(2, 3),
-        GRIPPER_KICKER(4, 5);
+        RAKE_LEFT(6,7),
+        RAKE_RIGHT(4, 5),
+        GRIPPER_PNEUMATIC(2,3),
+        GRIPPER_KICKER(0, 1);
 
         public int port1, port2;
         public DoubleSolenoid solenoid;
@@ -56,7 +55,11 @@ public class Output {
         }
 
         public void set(boolean extend) {
+            if (extend)
             solenoid.set(DoubleSolenoid.Value.kForward);
+            else{
+                solenoid.set(DoubleSolenoid.Value.kReverse);
+            }
         }
 
     }

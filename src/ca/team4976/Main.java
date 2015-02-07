@@ -17,8 +17,6 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-        Controller.setInputPort(0);
-
         //elevator = new Elevator();
         //rake = new Rake();
         gripper = new Gripper();

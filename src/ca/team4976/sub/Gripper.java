@@ -2,6 +2,7 @@
 package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
+import ca.team4976.in.Input;
 import ca.team4976.out.Output;
 
 public class Gripper {
@@ -14,6 +15,11 @@ public class Gripper {
 
     //Minimum delay before current is tested
     public long startTime;
+
+    //Laser
+    public boolean laserDetector;
+
+    public float currentThreshold = 1;
 
     /**
      * Initializes the gripper subsystem, called in robotInit();
@@ -29,7 +35,8 @@ public class Gripper {
      * Called periodically during teleopPeriodic();
      */
     public void update() {
-
+        laserDetector = Input.Digital.CONTAINER_POSITION_LASER.get();
+        System.out.println(laserDetector);
         //If the Start button is down reset the gripper
         if (Controller.Button.START.isDown()) {
             gripperExtended = false;
@@ -46,14 +53,15 @@ public class Gripper {
         }
 
         //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_LEFT.set(gripperExtended);
-        Output.PneumaticSolenoid.GRIPPER_RIGHT.set(gripperExtended);
+        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+        System.out.println("The gripper state is " + gripperExtended);
 
 
         //If the gripper is extended
         if (gripperExtended) {
 
             // Only extend the kicker based on user input if the gripper is extended.
+            System.out.println("The kicker state is " + kickerExtended);
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
             //And the container is not fully sucked in
@@ -76,8 +84,8 @@ public class Gripper {
                 Output.Motor.GRIPPER_LEFT.set(1.0);
                 Output.Motor.GRIPPER_RIGHT.set(1.0);
 
-                //If motor current gets too high (container is aligned)
-                if (motorsStressed())
+                //If motor current gets too high (container is aligned) or laser returns true
+                if (motorsStressed() || laserDetector)
                     isAligned = true;
 
                 //If container is sucked in and aligned
@@ -106,7 +114,9 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        return (Output.Motor.GRIPPER_LEFT.getCurrent() > 0.5 && Output.Motor.GRIPPER_RIGHT.getCurrent() > 0.5) && (System.currentTimeMillis() - startTime > 1000);
+        System.out.println("Left " + Output.Motor.GRIPPER_LEFT.getCurrent());
+        System.out.println("Right " + Output.Motor.GRIPPER_RIGHT.getCurrent());
+        return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
     }
 
 
