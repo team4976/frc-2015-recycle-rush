@@ -60,12 +60,12 @@ public class Gripper {
         //If the gripper is extended
         if (gripperExtended) {
 
-            // Only extend the kicker based on user input if the gripper is extended.
-            System.out.println("The kicker state is " + kickerExtended);
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
-
             //And the container is not fully sucked in
             if (!isSuckedIn) {
+
+                // Only extend the kicker based on user input if the gripper is extended and their is no container.
+                System.out.println("The kicker state is " + kickerExtended);
+                Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
                 //Spin motors in opposite directions to suck in container
                 Output.Motor.GRIPPER_LEFT.set(-1.0);
