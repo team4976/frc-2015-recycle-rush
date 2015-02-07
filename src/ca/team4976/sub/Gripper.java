@@ -31,8 +31,6 @@ public class Gripper {
 
         //If the Start button is down reset the gripper
         if (Controller.Button.START.isDown())
-            //Spin motors in opposite directions to push out contatiner
-            driveMotors(1.0,-1.0);
             isExtended = false;
         
             //If the X button is down after it has been released (de-bouncing)
