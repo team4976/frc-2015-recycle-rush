@@ -19,40 +19,34 @@ public class Elevator {
         } else if (Controller.Button.LEFT_BUMPER.isDownOnce()) {
             queuedLevels--;
         }
-
-        if (Input.Digital.ELEVATOR_A2B.get() && queuedLevels > 0)
-            Output.Motor.ELEVATOR.set(0.0);
-        else
-            checkQueuedLevels();
+        checkQueuedLevels();
+        System.out.println("Queued Levels: " + queuedLevels);
+        System.out.println("Current Level: " + currentLevel);
+        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.get());
     }
 
     private void checkQueuedLevels() {
-        if (queuedLevels > 0)
+        if (!Input.Digital.ELEVATOR_TOP.get() && queuedLevels > 0 && currentLevel < 4)
             elevatorUp();
-        else if (queuedLevels < 0)
+        else if (!Input.Digital.ELEVATOR_GROUND.get() && queuedLevels < 0 && currentLevel > 0)
             elevatorDown();
-    }
-
-    public void releaseElevator() {
-        elevatorDown();
-        currentLevel = 0;
-    }
-
-    public void groundElevator() {
-        elevatorDown();
-        currentLevel = 0;
+        else if (Input.Digital.ELEVATOR_GROUND.get()) {
+            queuedLevels = 0;
+            currentLevel = 0;
+            Input.DigitalEncoder.ELEVATOR.reset();
+        }
     }
 
     public void elevatorUp() {
-        if (currentLevel < 4) {
+        Output.Motor.ELEVATOR.set(1.0);
+        if (Input.DigitalEncoder.ELEVATOR.get() >= currentLevel + 1)
             currentLevel++;
-        }
     }
 
     public void elevatorDown() {
-        if (currentLevel > 0) {
+        Output.Motor.ELEVATOR.set(-1.0);
+        if (Input.DigitalEncoder.ELEVATOR.get() <= currentLevel - 1)
             currentLevel--;
-        }
     }
 
 }

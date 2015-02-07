@@ -152,8 +152,4 @@ public class Controller {
 
     }
 
-    public static void setInputPort(int joyPort) {
-        joystick = new Joystick(joyPort);
-    }
-
 }

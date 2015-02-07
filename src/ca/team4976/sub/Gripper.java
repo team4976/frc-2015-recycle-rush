@@ -55,10 +55,11 @@ public class Gripper {
 
             // Only extend the kicker based on user input if the gripper is extended.
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+            System.out.println("Gripper extended");
 
             //And the container is not fully sucked in
             if (!isSuckedIn) {
-
+                System.out.println("Bin not sucked in");
                 //Spin motors in opposite directions to suck in container
                 Output.Motor.GRIPPER_LEFT.set(-1.0);
                 Output.Motor.GRIPPER_RIGHT.set(1.0);
@@ -67,22 +68,24 @@ public class Gripper {
                 if (motorsStressed()) {
                     isSuckedIn = true;
                     startTime = System.currentTimeMillis();
+                    System.out.println("Motor stressed in sucked in");
                 }
 
                 //Then, if the container is not yet fully aligned
             } else if (!isAligned) {
-
+                System.out.println("Bin not aligned");
                 //Spin motors in same direction to rotate container
                 Output.Motor.GRIPPER_LEFT.set(1.0);
                 Output.Motor.GRIPPER_RIGHT.set(1.0);
 
                 //If motor current gets too high (container is aligned)
-                if (motorsStressed())
+                if (motorsStressed()) {
                     isAligned = true;
-
+                    System.out.println("Motor stressed in aligned");
+                }
                 //If container is sucked in and aligned
             } else {
-
+                System.out.println("Aligned and sucked in");
                 //Stop motors
                 Output.Motor.GRIPPER_LEFT.set(0);
                 Output.Motor.GRIPPER_RIGHT.set(0);
@@ -106,7 +109,9 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        return (Output.Motor.GRIPPER_LEFT.getCurrent() > 0.5 && Output.Motor.GRIPPER_RIGHT.getCurrent() > 0.5) && (System.currentTimeMillis() - startTime > 1000);
+        System.out.println("Left Current: " + Output.Motor.GRIPPER_LEFT.getCurrent());
+        System.out.println("Right Current: " + Output.Motor.GRIPPER_RIGHT.getCurrent());
+        return (Output.Motor.GRIPPER_LEFT.getCurrent() > 0.75 && Output.Motor.GRIPPER_RIGHT.getCurrent() > 0.75) && (System.currentTimeMillis() - startTime > 1000);
     }
 
 

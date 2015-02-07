@@ -1,9 +1,6 @@
 package ca.team4976.out;
 
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.*;
 
 public class Output {
 
@@ -56,7 +53,10 @@ public class Output {
         }
 
         public void set(boolean extend) {
-            solenoid.set(DoubleSolenoid.Value.kForward);
+            if (extend)
+                solenoid.set(DoubleSolenoid.Value.kForward);
+            else
+                solenoid.set(DoubleSolenoid.Value.kReverse);
         }
 
     }
