@@ -12,7 +12,6 @@ public class Output {
         ELEVATOR(11, new CANTalon(11)),
         GRIPPER_LEFT(12, new CANTalon(12)),
         GRIPPER_RIGHT(13, new CANTalon(13));
-
         public int id;
         public Object motor;
 
@@ -37,10 +36,9 @@ public class Output {
     }
 
     public static enum PneumaticSolenoid {
-        //RAKE_LEFT(6, 7),
-        //RAKE_RIGHT(8, 9),
-        GRIPPER_LEFT(0, 1),
-        GRIPPER_RIGHT(2, 3),
+        RAKE_LEFT(6, 7),
+        RAKE_RIGHT(8, 9),
+        GRIPPER_PNEUMATIC(0, 1),
         GRIPPER_KICKER(4, 5);
 
         public int port1, port2;
