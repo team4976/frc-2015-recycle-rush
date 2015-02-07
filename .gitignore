@@ -3,3 +3,6 @@ build/
 dist/
 sysProps.xml
 Robot.iml
+RecycleRush-MAIN.iml
+.classpath
+.project
