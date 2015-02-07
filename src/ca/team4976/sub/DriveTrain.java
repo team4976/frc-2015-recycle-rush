@@ -1,9 +1,8 @@
 package ca.team4976.sub;
 
 
-import ca.team4976.in.Controller;
-import ca.team4976.in.Encoders;
-import ca.team4976.in.Gyros;
+import ca.team4976.io.Controller;
+import ca.team4976.io.Input;
 
 public class DriveTrain extends CustomRobotDrive {
 
@@ -30,7 +29,8 @@ public class DriveTrain extends CustomRobotDrive {
 
             arcadeDrive(drive[0] * throttle, drive[1] * throttle);
 
-        } else arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
+        } else
+            arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
     }
 
     public void updateGear() {
@@ -45,10 +45,14 @@ public class DriveTrain extends CustomRobotDrive {
 
         switch (gear) {
 
-            case 1: throttle = 0.4;
-            case 2: throttle = 0.7;
-            case 3: throttle = 1.0;
-            default: throttle = 0;
+            case 1:
+                throttle = 0.4;
+            case 2:
+                throttle = 0.7;
+            case 3:
+                throttle = 1.0;
+            default:
+                throttle = 0;
         }
     }
 
@@ -59,23 +63,29 @@ public class DriveTrain extends CustomRobotDrive {
 
         if (autoTurnFlag < 0) {
 
-            if (turnLeft(90, 0.3)) { Gyros.gyros[0].reset(); autoTurnFlag++; }
+            if (turnLeft(90, 0.3)) {
+                Input.AnalogGyro.DRIVE.reset();
+                autoTurnFlag++;
+            }
 
         } else if (autoTurnFlag > 0) {
 
-            if (turnRight(90, 0.3)) { Gyros.gyros[0].reset(); autoTurnFlag--; }
+            if (turnRight(90, 0.3)) {
+                Input.AnalogGyro.DRIVE.reset();
+                autoTurnFlag--;
+            }
         }
     }
 
     public boolean turnRight(double angle, double speed) {
 
-        if (Gyros.gyros[0].getAngle() > angle) {
+        if (Input.AnalogGyro.DRIVE.getAngle() > angle) {
 
             return true;
 
         } else {
 
-            speed = ramp(speed, angle - Gyros.gyros[0].getAngle());
+            speed = ramp(speed, angle - Input.AnalogGyro.DRIVE.getAngle());
 
             arcadeDrive(speed, 0);
 
@@ -85,14 +95,14 @@ public class DriveTrain extends CustomRobotDrive {
 
     public boolean turnLeft(double angle, double speed) {
 
-        if (Gyros.gyros[0].getAngle() < -angle) {
+        if (Input.AnalogGyro.DRIVE.getAngle() < -angle) {
 
             arcadeDrive(0, 0);
             return true;
 
         } else {
 
-            speed = ramp(speed, angle + Gyros.gyros[0].getAngle());
+            speed = ramp(speed, angle + Input.AnalogGyro.DRIVE.getAngle());
 
             arcadeDrive(-speed, 0);
 
@@ -102,14 +112,14 @@ public class DriveTrain extends CustomRobotDrive {
 
     public boolean forward(double distance, double speed) {
 
-        if (Encoders.encoders[0].getDistance() > distance) {
+        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() > distance) {
 
             arcadeDrive(0, 0);
             return true;
 
         } else {
 
-            speed = ramp(speed, distance - Encoders.encoders[0].getDistance());
+            speed = ramp(speed, distance - Input.DigitalEncoder.DRIVE_LEFT.getDistance());
 
             arcadeDrive(0, speed);
             return false;
@@ -118,14 +128,14 @@ public class DriveTrain extends CustomRobotDrive {
 
     public boolean back(double distance, double speed) {
 
-        if (Encoders.encoders[0].getDistance() < -distance) {
+        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() < -distance) {
 
             arcadeDrive(0, 0);
             return true;
 
         } else {
 
-            speed = ramp(speed, distance + Encoders.encoders[0].getDistance());
+            speed = ramp(speed, distance + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
 
             arcadeDrive(0, speed);
             return false;

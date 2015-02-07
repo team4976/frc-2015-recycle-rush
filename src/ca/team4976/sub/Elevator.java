@@ -1,8 +1,8 @@
 package ca.team4976.sub;
 
-import ca.team4976.in.Controller;
-import ca.team4976.in.Input;
-import ca.team4976.out.Output;
+import ca.team4976.io.Controller;
+import ca.team4976.io.Input;
+import ca.team4976.io.Output;
 
 public class Elevator {
 
@@ -30,14 +30,14 @@ public class Elevator {
             checkQueuedLevels();
         System.out.println("Queued Levels: " + queuedLevels);
         System.out.println("Current Level: " + currentLevel);
-        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.get());
+        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
     }
 
     private void checkQueuedLevels() {
         if (grounding) {
             Output.Motor.ELEVATOR.set(-1.0);
             queuedLevels = 0;
-            currentLevel = Input.DigitalEncoder.ELEVATOR.get() / 500;
+            currentLevel = (int) Input.DigitalEncoder.ELEVATOR.getDistance();
         }
         if (!Input.Digital.ELEVATOR_TOP.get() && queuedLevels > 0) {
             if (currentLevel < 4)
@@ -67,7 +67,7 @@ public class Elevator {
 
     public void elevatorUp() {
         Output.Motor.ELEVATOR.set(1.0);
-        if (Input.DigitalEncoder.ELEVATOR.get() >= (currentLevel + 1) * 500) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= currentLevel + 1) {
             currentLevel++;
             queuedLevels--;
         }
@@ -75,7 +75,7 @@ public class Elevator {
 
     public void elevatorDown() {
         Output.Motor.ELEVATOR.set(-1.0);
-        if (Input.DigitalEncoder.ELEVATOR.get() <= (currentLevel - 1) * 500) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= currentLevel - 1) {
             currentLevel--;
             queuedLevels++;
         }

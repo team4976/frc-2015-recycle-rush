@@ -1,8 +1,8 @@
 
 package ca.team4976.sub;
 
-import ca.team4976.in.Controller;
-import ca.team4976.out.Output;
+import ca.team4976.io.Controller;
+import ca.team4976.io.Output;
 
 
 public class Rake {

@@ -1,9 +1,9 @@
 
 package ca.team4976.sub;
 
-import ca.team4976.in.Controller;
-import ca.team4976.in.Input;
-import ca.team4976.out.Output;
+import ca.team4976.io.Controller;
+import ca.team4976.io.Input;
+import ca.team4976.io.Output;
 
 public class Gripper {
 
@@ -42,13 +42,12 @@ public class Gripper {
             gripperExtended = false;
             kickerExtended = false;
         }
-            //If the X button is down after it has been released (de-bouncing)
+        //If the X button is down after it has been released (de-bouncing)
         else if (Controller.Primary.Button.X.isDownOnce()) {
             gripperExtended = !gripperExtended;
             if (gripperExtended)
                 startTime = System.currentTimeMillis();
-        }
-        else if (Controller.Primary.Button.A.isDownOnce()) {
+        } else if (Controller.Primary.Button.A.isDownOnce()) {
             kickerExtended = !kickerExtended;
         }
 

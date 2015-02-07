@@ -1,6 +1,6 @@
 package ca.team4976.sub;
 
-import ca.team4976.out.Output;
+import ca.team4976.io.Output;
 
 public class CustomRobotDrive {
 
@@ -30,9 +30,13 @@ public class CustomRobotDrive {
         public static DeadBand DEADBANDTYPE = DeadBand.LINEAR;
         public static double deadBandZone = 0.2;
 
-        public static void setDeadBandType(DeadBand deadBandType) { DEADBANDTYPE = deadBandType; }
+        public static void setDeadBandType(DeadBand deadBandType) {
+            DEADBANDTYPE = deadBandType;
+        }
 
-        public static void setDeadBandZone(double size) { deadBandZone = size; }
+        public static void setDeadBandZone(double size) {
+            deadBandZone = size;
+        }
 
         public static double[] evaluteDeadBand(double x, double y) {
 
@@ -45,20 +49,27 @@ public class CustomRobotDrive {
 
                 case CONCENTRIC:
 
-                    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) < deadBandZone) { x = 0; y = 0; }
+                    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) < deadBandZone) {
+                        x = 0;
+                        y = 0;
+                    }
 
-                    return new double[] {x, y};
+                    return new double[]{x, y};
 
                 case CONCENTRIC_ADVANCED:
 
-                    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) < deadBandZone) { x = 0; y = 0; }
+                    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) < deadBandZone) {
+                        x = 0;
+                        y = 0;
+                    }
 
                     if (x > -deadBandZone && x < deadBandZone) x = 0;
                     if (y > -deadBandZone && y < deadBandZone) y = 0;
 
-                    return new double[] {x, y};
+                    return new double[]{x, y};
 
-                default: return new double[] { 0, 0 };
+                default:
+                    return new double[]{0, 0};
             }
         }
     }

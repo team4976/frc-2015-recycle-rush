@@ -1,4 +1,4 @@
-package ca.team4976.in;
+package ca.team4976.io;
 
 import edu.wpi.first.wpilibj.Joystick;
 
