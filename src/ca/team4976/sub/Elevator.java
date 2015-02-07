@@ -4,7 +4,7 @@ import ca.team4976.in.Controller;
 
 public class Elevator {
 
-    private int queuedLevels, currentLevel;
+    public int queuedLevels, currentLevel;
 
     public Elevator() {
         queuedLevels = 0;

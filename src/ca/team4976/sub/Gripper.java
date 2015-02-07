@@ -2,46 +2,26 @@
 package ca.team4976.sub;
 
 import ca.team4976.in.Controller;
-import ca.team4976.out.Motors;
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Solenoid;
+import ca.team4976.out.Output;
 
 public class Gripper {
 
     //Determines if the solenoid is extended
     public boolean isExtended;
 
-    //Determines if the container is ready for alignment (sucked in) and is aligmned (fully rotated)
+    //Determines if the container is ready for alignment (sucked in) and is aligned (fully rotated)
     public boolean isSuckedIn, isAligned;
 
     //Minimum delay before current is tested
     public long startTime;
 
-    //The 2 solenoids for the gripper
-    public Solenoid leftSolenoid;
-    public Solenoid rightSolenoid;
-
-    //The 2 motors for the gripper
-    public CANTalon leftMotor;
-    public CANTalon rightMotor;
-
     /**
      * Initializes the gripper subsystem, called in robotInit();
-     *
-     * @param nodeID    The Node ID for the PCM on the CAN setup
-     * @param leftPort  The Port ID for the first solenoid on the PCM
-     * @param rightPort The Port ID for the second solenoid on the PCM
      */
-    public Gripper(int nodeID, int leftPort, int rightPort, int leftCAN, int rightCAN) {
+    public Gripper() {
         isExtended = false;
         isSuckedIn = false;
         isAligned = false;
-
-        leftSolenoid = new Solenoid(nodeID, leftPort);
-        rightSolenoid = new Solenoid(nodeID, rightPort);
-
-        leftMotor = Motors.canMotors[leftCAN];
-        rightMotor = Motors.canMotors[rightCAN];
     }
 
     /**
@@ -61,7 +41,8 @@ public class Gripper {
         }
 
         //Extend the solenoids based on stored variable
-        extendSolenoids(isExtended);
+        Output.PneumaticSolenoid.GRIPPER_LEFT.set(isExtended);
+        Output.PneumaticSolenoid.GRIPPER_RIGHT.set(isExtended);
 
         //If the gripper is extended
         if (isExtended) {
@@ -70,7 +51,8 @@ public class Gripper {
             if (!isSuckedIn) {
 
                 //Spin motors in opposite directions to suck in container
-                driveMotors(-1.0, 1.0);
+                Output.Motor.GRIPPER_LEFT.set(-1.0);
+                Output.Motor.GRIPPER_RIGHT.set(1.0);
 
                 //If motors current gets too high (container is sucked in)
                 if (motorsStressed()) {
@@ -82,7 +64,8 @@ public class Gripper {
             } else if (!isAligned) {
 
                 //Spin motors in same direction to rotate container
-                driveMotors(1.0, 1.0);
+                Output.Motor.GRIPPER_LEFT.set(1.0);
+                Output.Motor.GRIPPER_RIGHT.set(1.0);
 
                 //If motor current gets too high (container is aligned)
                 if (motorsStressed())
@@ -92,26 +75,18 @@ public class Gripper {
             } else {
 
                 //Stop motors
-                driveMotors(0.0, 0.0);
+                Output.Motor.GRIPPER_LEFT.set(0);
+                Output.Motor.GRIPPER_RIGHT.set(0);
             }
 
             //If the gripper is not down, reset the state and stop motors
         } else {
-            driveMotors(0.0, 0.0);
+            Output.Motor.GRIPPER_LEFT.set(0);
+            Output.Motor.GRIPPER_RIGHT.set(0);
             isSuckedIn = false;
             isAligned = false;
         }
 
-    }
-
-    /**
-     * Extends the gripper solenoids
-     *
-     * @param extend Determines whether or not the solenoids extend
-     */
-    public void extendSolenoids(boolean extend) {
-        leftSolenoid.set(extend);
-        rightSolenoid.set(extend);
     }
 
     /**
@@ -120,15 +95,7 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        if (System.currentTimeMillis() - startTime > 1000)
-            if (leftMotor.getOutputCurrent() > 0.5)
-                return true;
-        return false;
-    }
-
-    public void driveMotors(double leftSpeed, double rightSpeed) {
-        leftMotor.set(leftSpeed);
-        rightMotor.set(rightSpeed);
+        return (Output.Motor.GRIPPER_LEFT.getCurrent() > 0.5 && Output.Motor.GRIPPER_RIGHT.getCurrent() > 0.5) && (System.currentTimeMillis() - startTime > 1000);
     }
 
 

@@ -1,10 +1,6 @@
 package ca.team4976;
 
-import ca.team4976.in.DigitalInputs;
-import ca.team4976.in.Encoders;
-import ca.team4976.in.Gyros;
 import ca.team4976.in.Controller;
-import ca.team4976.out.Motors;
 import ca.team4976.sub.DriveTrain;
 import ca.team4976.sub.Elevator;
 import ca.team4976.sub.Gripper;
@@ -20,16 +16,11 @@ public class Main extends IterativeRobot {
     Rake rake;
 
     public void robotInit() {
-
-        Motors.setDefaultMotors();
-
-        DigitalInputs.setDefaultInputs();
-
         Controller.setInputPort(0);
 
         elevator = new Elevator();
-        rake = new Rake(20, 0, 1);
-        gripper = new Gripper(20, 2, 3, Motors.GRIPPER_MOTOR_LEFT, Motors.GRIPPER_MOTOR_RIGHT);
+        rake = new Rake();
+        gripper = new Gripper();
     }
 
     public void disabledInit() {
