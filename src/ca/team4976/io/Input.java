@@ -22,10 +22,9 @@ public class Input {
         }
     }
 
-    //TODO: Marc fix the distancePerPulse values
     public enum DigitalEncoder {
-        DRIVE_LEFT(0, 1, 2, 0.1),
-        DRIVE_RIGHT(3, 4, 5, 0.1),
+        DRIVE_LEFT(0, 1, 2, 9.2E-3),
+        DRIVE_RIGHT(3, 4, 5, 9.2E-3),
         ELEVATOR(6, 7, 8, 1E-10);
 
         private Encoder encoder;

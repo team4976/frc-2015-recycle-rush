@@ -45,14 +45,11 @@ public class DriveTrain extends CustomRobotDrive {
 
         switch (gear) {
 
-            case 1:
-                throttle = 0.4;
-            case 2:
-                throttle = 0.7;
-            case 3:
-                throttle = 1.0;
-            default:
-                throttle = 0;
+            case 1: throttle = 0.4;
+            case 2: throttle = 0.7;
+            case 3: throttle = 1.0;
+
+            default: throttle = 0;
         }
     }
 
