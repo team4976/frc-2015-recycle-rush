@@ -42,7 +42,7 @@ public class Rake {
         }
 
         //If the A button is down after it has been releases (de-bouncing)
-        if (Controller.Secondary.Button.A.isDownOnce())
+        if (Controller.Secondary.Button.Y.isDownOnce())
             isRightExtended = !isRightExtended;
 
             //If the B button is down after it has been releases (de-bouncing)

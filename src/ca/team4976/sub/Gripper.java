@@ -21,6 +21,12 @@ public class Gripper {
 
     public float currentThreshold = 1;
 
+    double leftTrigger;
+    double rightTrigger;
+    boolean leftBumper;
+    boolean rightBumper;
+    boolean secondaryControllerActive;
+
     /**
      * Initializes the gripper subsystem, called in robotInit();
      */
@@ -29,6 +35,11 @@ public class Gripper {
         kickerExtended = false;
         isSuckedIn = false;
         isAligned = false;
+
+        leftTrigger = 0.0;
+        rightTrigger = 0.0;
+        leftBumper = false;
+        rightBumper = false;
     }
 
     /**
@@ -50,10 +61,13 @@ public class Gripper {
         } else if (Controller.Primary.Button.A.isDownOnce()) {
             kickerExtended = !kickerExtended;
         }
-        double leftTrigger = Controller.Secondary.Trigger.LEFT.value();
-        double rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
-        boolean leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
-        boolean rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
+
+
+        leftTrigger = Controller.Secondary.Trigger.LEFT.value();
+        rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
+        leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
+        rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
+
 
         if (leftTrigger > 0){
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
@@ -71,9 +85,11 @@ public class Gripper {
         }
 
         if (Controller.Secondary.Button.X.isDownOnce()) {
+            secondaryControllerActive = true;
             gripperExtended = !gripperExtended;
         }
-        if (Controller.Secondary.Button.Y.isDownOnce()) {
+        if (Controller.Secondary.Button.A.isDownOnce()) {
+            secondaryControllerActive = true;
             kickerExtended = !kickerExtended;
 
         }
@@ -118,12 +134,16 @@ public class Gripper {
             //If the gripper is not down, reset the state and stop motors
         } else {
             // Pull the kicker in if the gripper is up.
+            isSuckedIn = false;
+            isAligned = false;
+            if (secondaryControllerActive){
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
             Output.Motor.GRIPPER_LEFT.set(0);
             Output.Motor.GRIPPER_RIGHT.set(0);
-            isSuckedIn = false;
-            isAligned = false;
+
+            }
         }
+
 
     }
 
