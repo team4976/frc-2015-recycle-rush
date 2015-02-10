@@ -17,18 +17,12 @@ public class Main extends IterativeRobot {
         elevator = new Elevator();
     }
 
-    public void disabledInit() {
-    }
     public void teleopInit() {
+
     }
 
     public void autonomousInit() {
-    }
 
-    public void testInit() {
-    }
-
-    public void disabledPeriodic() {
     }
 
     public void teleopPeriodic() {
@@ -38,10 +32,6 @@ public class Main extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-
-    }
-
-    public void testPeriodic() {
 
     }
 
