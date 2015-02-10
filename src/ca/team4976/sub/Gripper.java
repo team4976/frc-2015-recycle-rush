@@ -21,10 +21,9 @@ public class Gripper {
 
     public float currentThreshold = 1;
 
-    double leftTrigger;
-    double rightTrigger;
-    boolean leftBumper;
-    boolean rightBumper;
+    double leftTrigger, rightTrigger;
+    boolean leftBumper, rightBumper;
+
     boolean secondaryControllerActive;
 
     /**
@@ -68,19 +67,24 @@ public class Gripper {
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
 
+        secondaryControllerActive = false;
 
         if (leftTrigger > 0){
+            secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
 
         }
         else if (leftBumper) {
+            secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(1.0);
         }
 
         if (rightTrigger > 0){
+            secondaryControllerActive = true;
             Output.Motor.GRIPPER_RIGHT.set(rightTrigger);
         }
         else if (rightBumper) {
+            secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(-1.0);
         }
 
@@ -93,10 +97,6 @@ public class Gripper {
             kickerExtended = !kickerExtended;
 
         }
-
-        //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-        System.out.println("The gripper state is " + gripperExtended);
 
 
         //If the gripper is extended
@@ -136,14 +136,21 @@ public class Gripper {
             // Pull the kicker in if the gripper is up.
             isSuckedIn = false;
             isAligned = false;
-            if (secondaryControllerActive){
+
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
             Output.Motor.GRIPPER_LEFT.set(0);
             Output.Motor.GRIPPER_RIGHT.set(0);
 
-            }
+
         }
 
+        //Override the kicker solenoid with the kickerExtended variable if the second controller was used.
+        if (secondaryControllerActive) {
+            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+        }
+
+        //Extend the solenoids based on stored variable
+        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
 
     }
 
