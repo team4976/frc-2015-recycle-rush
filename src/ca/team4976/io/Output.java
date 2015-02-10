@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Output {
 
+    public static double debug = 0.5;
+
     public static enum Motor {
         DRIVE_LEFT_1(0, new Talon(0)),
         DRIVE_LEFT_2(1, new Talon(1)),
@@ -25,9 +27,9 @@ public class Output {
 
         public void set(double speed) {
             if (motor instanceof Talon)
-                ((Talon) motor).set(speed);
+                ((Talon) motor).set(speed * debug);
             else if (motor instanceof CANTalon)
-                ((CANTalon) motor).set(speed);
+                ((CANTalon) motor).set(speed * debug);
         }
 
         public double getCurrent() {
