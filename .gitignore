@@ -6,3 +6,5 @@ Robot.iml
 RecycleRush-MAIN.iml
 .classpath
 .project
+.flooignore
+.floo

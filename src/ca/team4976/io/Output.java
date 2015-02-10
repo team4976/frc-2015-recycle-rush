@@ -7,27 +7,30 @@ import edu.wpi.first.wpilibj.Talon;
 public class Output {
 
     public static enum Motor {
-        DRIVE_LEFT_1(0, new Talon(0)),
-        DRIVE_LEFT_2(1, new Talon(1)),
-        DRIVE_RIGHT_1(2, new Talon(2)),
-        DRIVE_RIGHT_2(3, new Talon(3)),
-        ELEVATOR(11, new CANTalon(11)),
-        GRIPPER_LEFT(12, new CANTalon(12)),
-        GRIPPER_RIGHT(13, new CANTalon(13));
+        DRIVE_LEFT_1(0, 1.0, new Talon(0)),
+        DRIVE_LEFT_2(1, 1.0, new Talon(1)),
+        DRIVE_RIGHT_1(2, 1.0, new Talon(2)),
+        DRIVE_RIGHT_2(3, 1.0, new Talon(3)),
+        ELEVATOR(11, 0.5, new CANTalon(11)),
+        GRIPPER_LEFT(12, 0.5, new CANTalon(12)),
+        GRIPPER_RIGHT(13, 0.5,new CANTalon(13));
 
         public int id;
         public Object motor;
 
-        private Motor(int id, Object motor) {
+        public double modifier;
+
+        private Motor(int id, double modifier, Object motor) {
             this.id = id;
             this.motor = motor;
+            this.modifier = modifier;
         }
 
         public void set(double speed) {
             if (motor instanceof Talon)
-                ((Talon) motor).set(speed);
+                ((Talon) motor).set(speed * modifier);
             else if (motor instanceof CANTalon)
-                ((CANTalon) motor).set(speed);
+                ((CANTalon) motor).set(speed * modifier);
         }
 
         public double getCurrent() {
