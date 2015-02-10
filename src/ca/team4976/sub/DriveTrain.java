@@ -1,19 +1,25 @@
 package ca.team4976.sub;
 
-
 import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
 
+/**
+ * @author Marc Levesque
+ * @version 1.1.1
+ */
 public class DriveTrain extends CustomRobotDrive {
 
-    Controller.Primary.Stick steeringAxis = Controller.Primary.Stick.LEFT;
-    Controller.Primary.Trigger leftTrigger = Controller.Primary.Trigger.LEFT;
-    Controller.Primary.Trigger RightTrigger = Controller.Primary.Trigger.RIGHT;
+    Controller.Primary.Stick steeringAxis = Controller.Primary.Stick.LEFT; // makes things smaller later.
+    Controller.Primary.Trigger leftTrigger = Controller.Primary.Trigger.LEFT; // makes things smaller later.
+    Controller.Primary.Trigger RightTrigger = Controller.Primary.Trigger.RIGHT; // makes things smaller later.
 
-    private double throttle = 0.5;
-    private int gear = 2;
-    private int autoTurnFlag = 0;
+    private double throttle = 0.5; // is used to limit the final output to the drive.
+    private int gear = 2; // is used to determine the limit to the final drive.
+    private int autoTurnFlag = 0; // is use to determine how many auto turns should be preformed.
 
+    /**
+     * Initializer use to set the dead band settings
+     */
     public DriveTrain() {
 
         useDeadBand = true;
@@ -21,11 +27,14 @@ public class DriveTrain extends CustomRobotDrive {
         DeadBand.setDeadBandZone(0.15);
     }
 
+    /**
+     * called periodically in teleop to determine the output to the drive train based on the controller input.
+     */
     public void teleopArcadeDrive() {
 
         if (useDeadBand) {
 
-            double[] drive = DeadBand.evaluteDeadBand(steeringAxis.horizontal(), Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger));
+            double[] drive = DeadBand.evaluateDeadBand(steeringAxis.horizontal(), Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger));
 
             arcadeDrive(drive[0] * throttle, drive[1] * throttle);
 
@@ -33,6 +42,9 @@ public class DriveTrain extends CustomRobotDrive {
             arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
     }
 
+    /**
+     * called periodically in teleop to determine the gear based on the controller input.
+     */
     public void updateGear() {
 
         if (Controller.Primary.DPad.NORTH.isDownOnce() && gear < 3) gear++;
@@ -41,7 +53,10 @@ public class DriveTrain extends CustomRobotDrive {
         updateThrottle();
     }
 
-    public void updateThrottle() {
+    /**
+     * called but updateGear to change the throttle limit based on the gear.
+     */
+    private void updateThrottle() {
 
         switch (gear) {
 
@@ -53,6 +68,10 @@ public class DriveTrain extends CustomRobotDrive {
         }
     }
 
+    /**
+     * called periodically in teleop to determine the autoRotation of the robot in teleop.
+     * requires controller input to determine how many times to turn.
+     */
     public void updateAutoTurn() {
 
         if (Controller.Primary.DPad.EAST.isDownOnce() && gear < 3) autoTurnFlag++;
@@ -74,6 +93,12 @@ public class DriveTrain extends CustomRobotDrive {
         }
     }
 
+    /**
+     * @param angle is the angles want the robot to turn to.
+     * @param speed is the speed at which we want the robot to turn at.
+     *
+     * @return a value from true or false to determine if we have completed the turn.
+     */
     public boolean turnRight(double angle, double speed) {
 
         if (Input.AnalogGyro.DRIVE.getAngle() > angle) {
@@ -90,6 +115,12 @@ public class DriveTrain extends CustomRobotDrive {
         }
     }
 
+    /**
+     * @param angle is the angles want the robot to turn to.
+     * @param speed is the speed at which we want the robot to turn at.
+     *
+     * @return a value from true or false to determine if we have completed the turn.
+     */
     public boolean turnLeft(double angle, double speed) {
 
         if (Input.AnalogGyro.DRIVE.getAngle() < -angle) {
@@ -107,6 +138,12 @@ public class DriveTrain extends CustomRobotDrive {
         }
     }
 
+    /**
+     * @param distance is the distance we want the robot to drive to.
+     * @param speed is the speed at which we want the robot to turn at.
+     *
+     * @return a value from true or false to determine if we have completed the turn.
+     */
     public boolean forward(double distance, double speed) {
 
         if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() > distance) {
@@ -123,6 +160,12 @@ public class DriveTrain extends CustomRobotDrive {
         }
     }
 
+    /**
+     * @param distance is the distance we want the robot to drive to.
+     * @param speed is the speed at which we want the robot to turn at.
+     *
+     * @return a value from true or false to determine if we have completed the turn.
+     */
     public boolean back(double distance, double speed) {
 
         if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() < -distance) {

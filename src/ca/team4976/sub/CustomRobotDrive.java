@@ -2,13 +2,15 @@ package ca.team4976.sub;
 
 import ca.team4976.io.Output;
 
+/**
+ * @author Marc Levesque
+ * @version 1.1.1
+ */
 public class CustomRobotDrive {
 
     public boolean useDeadBand = false; // boolean to determine is dead band is in use.
 
     /**
-     * @author Marc Levesque
-     *
      * @param steering takes a value from -1 to 1 and determines the difference at which the wheels spin
      * @param throttle takes a value from -1 to 1 and determines the speed at which the wheels spin
      */
@@ -21,8 +23,6 @@ public class CustomRobotDrive {
     }
 
     /**
-     * @author Marc Levesque
-     *
      * @param speed takes a value from 0 to 1 to finalize the output speed.
      * @param error take a value of the distance to target.
      *
@@ -37,8 +37,6 @@ public class CustomRobotDrive {
 
 
     /**
-     * @author Marc Levesque
-     *
      * DeadBand enum contains methods for evaulating deadband and setting the deadband type.
      */
     public static enum DeadBand {
@@ -52,8 +50,6 @@ public class CustomRobotDrive {
 
 
         /**
-         * @author Marc Levesque
-         *
          * @param deadBandType is the Type of dead band to be used.
          *
          *        LINEAR: if and axis is within the dead band it gets reset to 0.
@@ -65,16 +61,12 @@ public class CustomRobotDrive {
         }
 
         /**
-         * @author Marc Levesque
-         *
          * @param size is a value from 0 - 1 of the zone at which the deadband will be applied.
          */
         public static void setDeadBandZone(double size) { deadBandZone = size;  }
 
 
         /**
-         * @author Marc Levesque
-         *
          * @param x is the first axis with values from -1 to 1.
          * @param y is the second axis with values from -1 to 1.
          *
