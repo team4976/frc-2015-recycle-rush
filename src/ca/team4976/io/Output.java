@@ -42,10 +42,10 @@ public class Output {
     }
 
     public static enum PneumaticSolenoid {
-        RAKE_LEFT(2, 3),
-        RAKE_RIGHT(4, 5),
-        GRIPPER_PNEUMATIC(6, 7),
-        GRIPPER_KICKER(0, 1);
+        RAKE_LEFT(0, 1),
+        RAKE_RIGHT(2, 3),
+        GRIPPER_PNEUMATIC(4, 5),
+        GRIPPER_KICKER(6, 7);
 
         public int port1, port2;
         public DoubleSolenoid solenoid;

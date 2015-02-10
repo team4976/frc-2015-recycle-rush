@@ -30,14 +30,13 @@ public class Elevator {
             checkQueuedLevels();
         System.out.println("Queued Levels: " + queuedLevels);
         System.out.println("Current Level: " + currentLevel);
-        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
-    }
+            System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
+        }
 
     private void checkQueuedLevels() {
         if (grounding) {
             Output.Motor.ELEVATOR.set(-1.0);
             queuedLevels = 0;
-            currentLevel = (int) Input.DigitalEncoder.ELEVATOR.getDistance();
         }
         if (!Input.Digital.ELEVATOR_TOP.get() && queuedLevels > 0) {
             if (currentLevel < 4)
@@ -52,7 +51,7 @@ public class Elevator {
         } else if (Input.Digital.ELEVATOR_GROUND.get()) {
             queuedLevels = 0;
             currentLevel = 0;
-            Input.DigitalEncoder.ELEVATOR.reset();
+            //Input.DigitalEncoder.ELEVATOR.reset();
             grounding = false;
             Output.Motor.ELEVATOR.set(0.0);
         } else if (Input.Digital.ELEVATOR_TOP.get()) {
@@ -67,7 +66,7 @@ public class Elevator {
 
     public void elevatorUp() {
         Output.Motor.ELEVATOR.set(1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= currentLevel + 1) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= (currentLevel + 1) * 1000) {
             currentLevel++;
             queuedLevels--;
         }
@@ -75,7 +74,7 @@ public class Elevator {
 
     public void elevatorDown() {
         Output.Motor.ELEVATOR.set(-1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= currentLevel - 1) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= (currentLevel - 1) * 1000) {
             currentLevel--;
             queuedLevels++;
         }
