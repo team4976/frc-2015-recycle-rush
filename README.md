@@ -23,7 +23,7 @@
 </ul>
 <h5>Step #3:</h5> Add WPILib to Project
 <ul>
-<li>Go to File > Project Settings and select the src module to add JARs and directories</li>
+<li>Go to File > Project Setings / Project Structure and select the src module to add JARs and directories</li>
 <img src="http://i.imgur.com/zNBFuxZ.png"/>
 <li>Navigate to and add C:\Users\<username>\wpilib\java\current\lib\ or equivalent</li>
 <img src="http://i.imgur.com/vOEwTe4.png"/>
