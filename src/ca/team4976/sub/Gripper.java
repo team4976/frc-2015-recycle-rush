@@ -50,6 +50,33 @@ public class Gripper {
         } else if (Controller.Primary.Button.A.isDownOnce()) {
             kickerExtended = !kickerExtended;
         }
+        double leftTrigger = Controller.Secondary.Trigger.LEFT.value();
+        double rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
+        boolean leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
+        boolean rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
+
+        if (leftTrigger > 0){
+            Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
+
+        }
+        else if (leftBumper) {
+            Output.Motor.GRIPPER_LEFT.set(1.0);
+        }
+
+        if (rightTrigger > 0){
+            Output.Motor.GRIPPER_RIGHT.set(rightTrigger);
+        }
+        else if (rightBumper) {
+            Output.Motor.GRIPPER_LEFT.set(-1.0);
+        }
+
+        if (Controller.Secondary.Button.X.isDownOnce()) {
+            gripperExtended = !gripperExtended;
+        }
+        if (Controller.Secondary.Button.Y.isDownOnce()) {
+            kickerExtended = !kickerExtended;
+
+        }
 
         //Extend the solenoids based on stored variable
         Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
@@ -68,13 +95,6 @@ public class Gripper {
 
                 //Spin motors in opposite directions to suck in container
                 Output.Motor.GRIPPER_LEFT.set(-1.0);
-                Output.Motor.GRIPPER_RIGHT.set(1.0);
-
-                //If motors current gets too high (container is sucked in)
-                if (motorsStressed()) {
-                    isSuckedIn = true;
-                    startTime = System.currentTimeMillis();
-                }
 
                 //Then, if the container is not yet fully aligned
             } else if (!isAligned) {

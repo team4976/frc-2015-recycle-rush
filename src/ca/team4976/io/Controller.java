@@ -2,7 +2,6 @@ package ca.team4976.io;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-@SuppressWarnings("unused")
 public class Controller {
 
     public static Joystick[] joystick = {new Joystick(0), new Joystick(3)};
