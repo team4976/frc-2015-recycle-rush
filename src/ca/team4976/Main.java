@@ -16,7 +16,7 @@ public class Main extends IterativeRobot {
     public void robotInit() {
         //rake = new Rake();
         gripper = new Gripper();
-        //elevator = new Elevator();
+        elevator = new Elevator();
     }
 
     public void teleopInit() {

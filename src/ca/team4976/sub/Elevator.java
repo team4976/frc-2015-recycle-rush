@@ -6,7 +6,7 @@ import ca.team4976.io.Output;
 
 public class Elevator {
 
-    public int queuedLevels, currentLevel;
+    public static int queuedLevels, currentLevel;
     public boolean grounding;
 
     public Elevator() {
