@@ -1,12 +1,8 @@
-
 package ca.team4976.sub;
-
 import ca.team4976.io.Controller;
-import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 public class Gripper {
-
     //Determines if the solenoids are extended
     public boolean gripperExtended, kickerExtended;
 
@@ -15,9 +11,6 @@ public class Gripper {
 
     //Minimum delay before current is tested
     public long startTime;
-
-    //Laser
-    public boolean laserDetector;
 
     public double currentThreshold = 0.5;
 
@@ -40,14 +33,10 @@ public class Gripper {
         leftBumper = false;
         rightBumper = false;
     }
-
     /**
      * Called periodically during teleopPeriodic();
      */
     public void update() {
-        //Update laser detector
-        laserDetector = Input.Digital.CONTAINER_POSITION_LASER.get();
-
         //Update triggers and bumpers
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
@@ -94,7 +83,7 @@ public class Gripper {
             secondaryControllerActive = true;
             gripperExtended = !gripperExtended;
         }
-        if (Controller.Secondary.Button.A.isDownOnce()) {
+        else if (Controller.Secondary.Button.A.isDownOnce()) {
             secondaryControllerActive = true;
             kickerExtended = !kickerExtended;
         }
@@ -116,20 +105,6 @@ public class Gripper {
                         isSuckedIn = true;
                         startTime = System.currentTimeMillis();
                     }
-
-//                    //Then, if the container is not yet fully aligned
-//                } else if (!isAligned) {
-//                    //Spin motors in same direction to rotate container
-//                    Output.Motor.GRIPPER_LEFT.set(1.0);
-//                    Output.Motor.GRIPPER_RIGHT.set(1.0);
-//
-//                    //If motor current gets too high (container is aligned) or laser returns true
-//                    if (motorsStressed() || laserDetector) {
-//                        isAligned = true;
-//                        startTime = System.currentTimeMillis();
-//                    }
-
-                    //If container is sucked in and aligned
                 } else {
                     //Stop motors
                     Output.Motor.GRIPPER_LEFT.set(0);
