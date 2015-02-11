@@ -75,7 +75,6 @@ public class Gripper {
         if (leftTrigger > 0){
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
-
         }
         else if (leftBumper) {
             secondaryControllerActive = true;
@@ -98,9 +97,7 @@ public class Gripper {
         if (Controller.Secondary.Button.A.isDownOnce()) {
             secondaryControllerActive = true;
             kickerExtended = !kickerExtended;
-
         }
-
 
         //If the gripper is extended
         if (gripperExtended) {
@@ -151,8 +148,6 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        System.out.println("Left " + Output.Motor.GRIPPER_LEFT.getCurrent());
-        System.out.println("Right " + Output.Motor.GRIPPER_RIGHT.getCurrent());
         return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
     }
 
