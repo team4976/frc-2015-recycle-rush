@@ -67,7 +67,8 @@ public class Gripper {
         }//If the A button is pressed change the Kicker state
         else if (Controller.Primary.Button.A.isDownOnce()) {
             secondaryControllerActive = false;
-            kickerExtended = !kickerExtended;
+            if(gripperExtended) 
+                kickerExtended = !kickerExtended;
         }
 
         //Secondary controls
@@ -135,6 +136,7 @@ public class Gripper {
                     Output.Motor.GRIPPER_RIGHT.set(0);
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
+                    System.out.println("Current level: " + Elevator.currentLevel + " and queued level: " + Elevator.queuedLevels);
                     if (Elevator.currentLevel == 0 && Elevator.queuedLevels >= 1)
                         resetGripper();
                 }
@@ -149,13 +151,13 @@ public class Gripper {
                 Output.Motor.GRIPPER_RIGHT.set(0);
             }
 
-            //Extend the solenoids based on stored variable
-            Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-
             //Override the kicker solenoid with the kickerExtended variable if the second controller was used.
         } else {
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
         }
+        
+        //Extend the solenoids based on stored variable
+        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
     }
     /**
      * Determines if the container is oriented
