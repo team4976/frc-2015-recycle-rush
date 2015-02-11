@@ -14,8 +14,8 @@ public class Main extends IterativeRobot {
     Elevator elevator;
 
     public void robotInit() {
-        rake = new Rake();
-        //gripper = new Gripper();
+        //rake = new Rake();
+        gripper = new Gripper();
         //elevator = new Elevator();
     }
 
@@ -28,9 +28,11 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        rake.update();
-        //gripper.update();
+        //rake.update();
+        gripper.update();
         //elevator.update();
+        //System.out.println(Output.Motor.GRIPPER_LEFT.getCurrent());
+        //System.out.println(Output.Motor.GRIPPER_RIGHT.getCurrent());
     }
 
     public void autonomousPeriodic() {

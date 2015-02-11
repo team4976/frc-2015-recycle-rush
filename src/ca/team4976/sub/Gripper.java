@@ -39,6 +39,9 @@ public class Gripper {
         rightTrigger = 0.0;
         leftBumper = false;
         rightBumper = false;
+        
+        secondaryControllerActive = false;
+        
     }
 
     /**
@@ -47,6 +50,7 @@ public class Gripper {
     public void update() {
         laserDetector = Input.Digital.CONTAINER_POSITION_LASER.get();
 
+        
         //Initialize triggers and bumpers
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
@@ -75,72 +79,98 @@ public class Gripper {
         if (leftTrigger > 0){
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
+            System.out.println("Left Trigger Manual Down");
+                    
         }
         else if (leftBumper) {
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(1.0);
+            System.out.println("Left Bumper Manual Down");
         }
 
         if (rightTrigger > 0){
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_RIGHT.set(rightTrigger);
+            System.out.println("Right Trigger Manual Down");
         }
         else if (rightBumper) {
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(-1.0);
+            System.out.println("Right Bumper Manual Down");
         }
 
         if (Controller.Secondary.Button.X.isDownOnce()) {
             secondaryControllerActive = true;
             gripperExtended = !gripperExtended;
+            System.out.println("X Button Manual Down");
         }
         if (Controller.Secondary.Button.A.isDownOnce()) {
             secondaryControllerActive = true;
             kickerExtended = !kickerExtended;
+            System.out.println("A Button Manual Down");
         }
 
-        //If the gripper is extended
-        if (gripperExtended) {
-            //And the container is not fully sucked in
-            if (!isSuckedIn) {
-                // Only extend the kicker based on user input if the gripper is extended and their is no container.
-                Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
-
-                //Spin motors in opposite directions to suck in container
-                Output.Motor.GRIPPER_LEFT.set(-1.0);
-                Output.Motor.GRIPPER_RIGHT.set(1.0);
-
-                //Then, if the container is not yet fully aligned
-            }else if (!isAligned) {
-                //Spin motors in same direction to rotate container
-                Output.Motor.GRIPPER_LEFT.set(1.0);
-                Output.Motor.GRIPPER_RIGHT.set(1.0);
-
-                //If motor current gets too high (container is aligned) or laser returns true
-                if (motorsStressed() || laserDetector)
-                    isAligned = true;
-                //If container is sucked in and aligned
-            } else {
-                //Stop motors
-                Output.Motor.GRIPPER_LEFT.set(0);
-                Output.Motor.GRIPPER_RIGHT.set(0);
-            }
-            //If the gripper is not down, reset the state and stop motors
-        } else {
-            // Pull the kicker in if the gripper is up.
-            isSuckedIn = false;
-            isAligned = false;
-
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
-            Output.Motor.GRIPPER_LEFT.set(0);
-            Output.Motor.GRIPPER_RIGHT.set(0);
-        }
+        //Extend the solenoids based on stored variable
+        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+        
         //Override the kicker solenoid with the kickerExtended variable if the second controller was used.
         if (secondaryControllerActive) {
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
         }
-        //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+        else {
+
+            System.out.println("Primary Controller Active");
+            
+            //If the gripper is extended
+            if (gripperExtended) {
+                System.out.println("Gripper Extended");
+                //And the container is not fully sucked in
+                if (!isSuckedIn) {
+                    System.out.println("Container not ready");
+                    // Only extend the kicker based on user input if the gripper is extended and their is no container.
+                    Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+
+                    //Spin motors in opposite directions to suck in container
+                    Output.Motor.GRIPPER_LEFT.set(-1.0);
+                    Output.Motor.GRIPPER_RIGHT.set(1.0);
+
+                    //If motor current gets too high (container is sucked in) or laser returns true
+                    if (motorsStressed() || laserDetector)
+                        isSuckedIn = true;
+                        startTime = System.currentTimeMillis();
+                    
+                    //Then, if the container is not yet fully aligned
+                } else if (!isAligned) {
+                    System.out.println("Container is not aligned");
+                    //Spin motors in same direction to rotate container
+                    Output.Motor.GRIPPER_LEFT.set(1.0);
+                    Output.Motor.GRIPPER_RIGHT.set(1.0);
+
+                    //If motor current gets too high (container is aligned) or laser returns true
+                    if (motorsStressed() || laserDetector) {
+                        isAligned = true;
+                        startTime = System.currentTimeMillis();
+                    }
+                    
+                    //If container is sucked in and aligned
+                } else {
+                    System.out.println("Container aligned");
+                    //Stop motors
+                    Output.Motor.GRIPPER_LEFT.set(0);
+                    Output.Motor.GRIPPER_RIGHT.set(0);
+                }
+                //If the gripper is not down, reset the state and stop motors
+            } else {
+                // Pull the kicker in if the gripper is up.
+                isSuckedIn = false;
+                isAligned = false;
+
+                Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
+                Output.Motor.GRIPPER_LEFT.set(0);
+                Output.Motor.GRIPPER_RIGHT.set(0);
+            }
+        }
+        
     }
     /**
      * Determines if the container is oriented
@@ -148,6 +178,8 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
+        System.out.println(Output.Motor.GRIPPER_LEFT.getCurrent());
+        System.out.println(Output.Motor.GRIPPER_RIGHT.getCurrent());
         return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
     }
 
