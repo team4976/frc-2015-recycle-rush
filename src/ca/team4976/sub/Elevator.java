@@ -52,7 +52,7 @@ public class Elevator {
         } else if (Input.Digital.ELEVATOR_GROUND.get()) {
             queuedLevels = 0;
             currentLevel = 0;
-            //Input.DigitalEncoder.ELEVATOR.reset();
+            Input.DigitalEncoder.ELEVATOR.reset();
             grounding = false;
             Output.Motor.ELEVATOR.set(0.0);
         } else if (Input.Digital.ELEVATOR_TOP.get()) {
