@@ -68,7 +68,7 @@ public class Gripper {
         else if (Controller.Primary.Button.A.isDownOnce()  && !containerIsReady) {
             secondaryControllerActive = false;
             // Only toggle if the gripper is down and the elevator is not at level 0
-            if(gripperExtended && Elevator.currentLevel != 0)
+            if(gripperExtended && levels[1] != 0)
                 kickerExtended = !kickerExtended;
         }
 
@@ -139,8 +139,8 @@ public class Gripper {
 
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
-                    System.out.println("Current level: " + Elevator.currentLevel + " and queued level: " + Elevator.queuedLevels);
-                    if (Elevator.currentLevel == 0 && Elevator.queuedLevels >= 1)
+                    System.out.println("Current level: " + levels[1] + " and queued level: " + levels[0]);
+                    if (levels[1] == 0 && levels[0] >= 1)
                         resetGripper();
                 }
                 //If the gripper is not down, reset the state and stop motors
