@@ -6,7 +6,7 @@ import ca.team4976.io.Output;
 
 public class Elevator {
 
-    public static int queuedLevels, currentLevel;
+    public int queuedLevels, currentLevel;
     public boolean grounding;
 
     public Elevator() {
@@ -15,7 +15,7 @@ public class Elevator {
         grounding = false;
     }
 
-    public void update() {
+    public int[] update() {
         if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce())
             queuedLevels++;
         else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce())
@@ -30,8 +30,9 @@ public class Elevator {
             checkQueuedLevels();
         System.out.println("Queued Levels: " + queuedLevels);
         System.out.println("Current Level: " + currentLevel);
-            System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
-        }
+        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
+        return new int[] { queuedLevels, currentLevel };
+    }
 
     private void checkQueuedLevels() {
         if (grounding) {

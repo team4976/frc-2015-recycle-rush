@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj.*;
 public class Main extends IterativeRobot {
 
     Rake rake;
-    Gripper gripper;
     Elevator elevator;
+    Gripper gripper;
 
     public void robotInit() {
         //rake = new Rake();
-        gripper = new Gripper();
         elevator = new Elevator();
+        gripper = new Gripper();
     }
 
     public void teleopInit() {
@@ -29,8 +29,8 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
         //rake.update();
-        gripper.update();
-        //elevator.update();
+        int[] values = elevator.update();
+        gripper.update(values);
         //System.out.println(Output.Motor.GRIPPER_LEFT.getCurrent());
         //System.out.println(Output.Motor.GRIPPER_RIGHT.getCurrent());
     }

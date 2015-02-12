@@ -1,5 +1,6 @@
 package ca.team4976.sub;
 import ca.team4976.io.Controller;
+import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 public class Gripper {
@@ -17,7 +18,8 @@ public class Gripper {
     double leftTrigger, rightTrigger;
     boolean leftBumper, rightBumper;
 
-    boolean secondaryControllerActive;
+    boolean secondaryControllerActive,containerIsReady;
+
 
     /**
      * Initializes the gripper subsystem, called in robotInit();
@@ -32,35 +34,48 @@ public class Gripper {
         rightTrigger = 0.0;
         leftBumper = false;
         rightBumper = false;
+        containerIsReady = false;
     }
     /**
      * Called periodically during teleopPeriodic();
+     * levels[0] = queuedLevels
+     * levels[1] = currentLevel
      */
-    public void update() {
-        //Update triggers and bumpers
+    public void update(int[] levels) {
+        //Update triggers and bumpers for the second controller
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
 
-        //If the Start button is down reset the gripper
-        if (Controller.Primary.Button.START.isDown()) {
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Primary Controls
+        ////////////////////////////////////////////////////////////////////////////////
+
+
+        //If the Start button is down on either remote, reset the gripper
+        if (Controller.Primary.Button.START.isDownOnce() || Controller.Secondary.Button.START.isDownOnce()) {
             resetGripper();
         }
-        //If the X button is down change gripper state
-        else if (Controller.Primary.Button.X.isDownOnce()) {
+        //If the X button is down on remote one, change gripper state
+        else if (Controller.Primary.Button.X.isDownOnce() && !containerIsReady) {
             secondaryControllerActive = false;
             gripperExtended = !gripperExtended;
             if (gripperExtended)
                 startTime = System.currentTimeMillis();
-        }//If the A button is pressed change the Kicker state
-        else if (Controller.Primary.Button.A.isDownOnce()) {
+        }//If the A button is pressed on remote one, change the kicker state
+        else if (Controller.Primary.Button.A.isDownOnce()  && !containerIsReady) {
             secondaryControllerActive = false;
-            if(gripperExtended) 
+            // Only toggle if the gripper is down and the elevator is not at level 0
+            if(gripperExtended && Elevator.currentLevel != 0)
                 kickerExtended = !kickerExtended;
         }
 
-        //Secondary controls
+        ////////////////////////////////////////////////////////////////////////////////
+        // Secondary Controls
+        ////////////////////////////////////////////////////////////////////////////////
+
         if (leftTrigger > 0){
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
@@ -69,6 +84,9 @@ public class Gripper {
             secondaryControllerActive = true;
             Output.Motor.GRIPPER_LEFT.set(1.0);
         }
+        else if (secondaryControllerActive) {
+            Output.Motor.GRIPPER_LEFT.set(0);
+        }
 
         if (rightTrigger > 0){
             secondaryControllerActive = true;
@@ -76,7 +94,10 @@ public class Gripper {
         }
         else if (rightBumper) {
             secondaryControllerActive = true;
-            Output.Motor.GRIPPER_LEFT.set(-1.0);
+            Output.Motor.GRIPPER_RIGHT.set(-1.0);
+        }
+        else if (secondaryControllerActive) {
+            Output.Motor.GRIPPER_RIGHT.set(0);
         }
 
         if (Controller.Secondary.Button.X.isDownOnce()) {
@@ -87,6 +108,10 @@ public class Gripper {
             secondaryControllerActive = true;
             kickerExtended = !kickerExtended;
         }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Processing inputs
+        ////////////////////////////////////////////////////////////////////////////////
 
         // If the secondary controller is not active (primary is active)
         if (!secondaryControllerActive) {
@@ -109,6 +134,9 @@ public class Gripper {
                     //Stop motors
                     Output.Motor.GRIPPER_LEFT.set(0);
                     Output.Motor.GRIPPER_RIGHT.set(0);
+
+                    containerIsReady = true;
+
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
                     System.out.println("Current level: " + Elevator.currentLevel + " and queued level: " + Elevator.queuedLevels);
@@ -134,19 +162,26 @@ public class Gripper {
         //Extend the solenoids based on stored variable
         Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
     }
+
     /**
      * Determines if the container is oriented
      *
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
+        //System.out.println("The left motor current is " + Output.Motor.GRIPPER_LEFT.getCurrent());
+        //System.out.println("The right motor current is " + Output.Motor.GRIPPER_RIGHT.getCurrent());
         return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
     }
 
+    /**
+     * Resets the gripper
+     */
     public void resetGripper() {
         gripperExtended = false;
         kickerExtended = false;
         secondaryControllerActive = false;
+        containerIsReady = false;
     }
 
 }
