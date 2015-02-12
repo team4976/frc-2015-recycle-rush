@@ -4,9 +4,9 @@ import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
 
 /**
- * @author Marc Levesque
- * @version 1.1.1
- */
+* @author Marc Levesque
+* @version 1.1.1
+*/
 public class DriveTrain extends CustomRobotDrive {
 
     Controller.Primary.Stick steeringAxis = Controller.Primary.Stick.LEFT; // makes things smaller later.

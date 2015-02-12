@@ -3,9 +3,9 @@ package ca.team4976.sub;
 import ca.team4976.io.Output;
 
 /**
- * @author Marc Levesque
- * @version 1.1.1
- */
+* @author Marc Levesque
+* @version 1.1.1
+*/
 public class CustomRobotDrive {
 
     public boolean useDeadBand = false; // boolean to determine is dead band is in use.
