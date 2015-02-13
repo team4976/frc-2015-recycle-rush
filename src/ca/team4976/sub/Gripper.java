@@ -139,7 +139,7 @@ public class Gripper {
 
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
-                    if (levels[1] == 1 && levels[0] >= 0)
+                    if (levels[1] >= 1 && levels[0] >= 0)
                         resetGripper();
                 }
                 //If the gripper is not down, reset the state and stop motors

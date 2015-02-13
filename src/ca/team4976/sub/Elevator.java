@@ -64,7 +64,7 @@ public class Elevator {
 
     public void elevatorUp() {
         Output.Motor.ELEVATOR.set(1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= (currentLevel + 1) * 1000) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= (currentLevel + 1)) {
             currentLevel++;
             queuedLevels--;
         }
@@ -72,7 +72,7 @@ public class Elevator {
 
     public void elevatorDown() {
         Output.Motor.ELEVATOR.set(-1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= (currentLevel - 1) * 1000) {
+        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= (currentLevel - 1)) {
             currentLevel--;
             queuedLevels++;
         }

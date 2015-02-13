@@ -1,7 +1,6 @@
 package ca.team4976;
 
 import ca.team4976.io.Input;
-import ca.team4976.io.Output;
 import ca.team4976.sub.DriveTrain;
 import ca.team4976.sub.Elevator;
 import ca.team4976.sub.Gripper;
@@ -35,6 +34,9 @@ public class Main extends IterativeRobot {
         int[] values = elevator.update();
         gripper.update(values);
         drive.teleopArcadeDrive();
+        System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
+        System.out.println("current level: " + values[1] + " | queued levels: " + values[0]);
+        System.out.println("encoder.getDistance(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
     }
 
     public void autonomousPeriodic() {
