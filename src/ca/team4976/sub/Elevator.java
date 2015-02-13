@@ -28,9 +28,6 @@ public class Elevator {
             Output.Motor.ELEVATOR.set(-0.5);
         else
             checkQueuedLevels();
-        System.out.println("Queued Levels: " + queuedLevels);
-        System.out.println("Current Level: " + currentLevel);
-        System.out.println("encoder.get(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
         return new int[] { queuedLevels, currentLevel };
     }
 

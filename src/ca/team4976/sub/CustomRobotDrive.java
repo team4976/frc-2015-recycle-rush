@@ -53,7 +53,7 @@ public class CustomRobotDrive {
          * @param deadBandType is the Type of dead band to be used.
          *
          *        LINEAR: if and axis is within the dead band it gets reset to 0.
-         *        CONCENTRIC: if the parabola of both axis' are withing the dead band both axis' get reset to 0.
+         *        CONCENTRIC: if the parabola of both axis' are within the dead band both axis' get reset to 0.
          *        CONCENTRIC_ADVANCED: first we check CONCENTRIC then we CHECK LINEAR.
          */
         public static void setDeadBandType(DeadBand deadBandType) {

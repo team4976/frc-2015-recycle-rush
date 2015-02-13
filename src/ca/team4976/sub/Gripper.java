@@ -139,8 +139,7 @@ public class Gripper {
 
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
-                    System.out.println("Current level: " + levels[1] + " and queued level: " + levels[0]);
-                    if (levels[1] == 0 && levels[0] >= 1)
+                    if (levels[1] == 1 && levels[0] >= 0)
                         resetGripper();
                 }
                 //If the gripper is not down, reset the state and stop motors
@@ -169,8 +168,6 @@ public class Gripper {
      * @return if the container is oriented
      */
     public boolean motorsStressed() {
-        //System.out.println("The left motor current is " + Output.Motor.GRIPPER_LEFT.getCurrent());
-        //System.out.println("The right motor current is " + Output.Motor.GRIPPER_RIGHT.getCurrent());
         return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
     }
 

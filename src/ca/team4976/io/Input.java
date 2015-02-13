@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj.Gyro;
 public class Input {
 
     public enum Digital {
-        ELEVATOR_GROUND(4),
-        ELEVATOR_TOP(5);
-        //CONTAINER_POSITION_LASER(9);
+        ELEVATOR_GROUND(10),
+        ELEVATOR_TOP(11);
 
         private DigitalInput di;
 
@@ -23,9 +22,9 @@ public class Input {
     }
 
     public enum DigitalEncoder {
-        //DRIVE_LEFT(0, 1, 2, 9.2E-3),
-        //DRIVE_RIGHT(3, 4, 5, 9.2E-3),
-        ELEVATOR(6, 7, 8, 1);
+        DRIVE_LEFT(0, 1, 2, 9.2E-3),
+        DRIVE_RIGHT(3, 4, 5, 9.2E-3),
+        ELEVATOR(6, 7, 8, 1E-3);
 
         private Encoder encoder;
 
