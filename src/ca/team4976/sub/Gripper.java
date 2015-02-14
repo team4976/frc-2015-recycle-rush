@@ -8,7 +8,7 @@ public class Gripper {
     public boolean gripperExtended, kickerExtended;
 
     //Determines if the container is ready for alignment(sucked in) and is aligned (fully rotated)
-    public boolean isSuckedIn, isAligned;
+    public boolean isSuckedIn;
 
     //Minimum delay before current is tested
     public long startTime;
@@ -28,7 +28,6 @@ public class Gripper {
         gripperExtended = false;
         kickerExtended = false;
         isSuckedIn = false;
-        isAligned = false;
 
         leftTrigger = 0.0;
         rightTrigger = 0.0;
@@ -38,10 +37,8 @@ public class Gripper {
     }
     /**
      * Called periodically during teleopPeriodic();
-     * levels[0] = queuedLevels
-     * levels[1] = currentLevel
      */
-    public void update(int[] levels) {
+    public void update(int currentLevel, int queuedLevels) {
         //Update triggers and bumpers for the second controller
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
@@ -68,7 +65,7 @@ public class Gripper {
         else if (Controller.Primary.Button.A.isDownOnce()  && !containerIsReady) {
             secondaryControllerActive = false;
             // Only toggle if the gripper is down and the elevator is not at level 0
-            if(gripperExtended && levels[1] != 0)
+            if(gripperExtended && currentLevel != 0)
                 kickerExtended = !kickerExtended;
         }
 
@@ -139,16 +136,17 @@ public class Gripper {
 
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
-                    if (levels[1] >= 1 && levels[0] >= 0)
+                    if (currentLevel >= 1 && queuedLevels >= 0)
                         resetGripper();
                 }
                 //If the gripper is not down, reset the state and stop motors
             } else {
                 // Pull the kicker in if the gripper is up.
                 isSuckedIn = false;
-                isAligned = false;
 
-                Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
+                if (currentLevel != 0)
+                    Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
+                
                 Output.Motor.GRIPPER_LEFT.set(0);
                 Output.Motor.GRIPPER_RIGHT.set(0);
             }

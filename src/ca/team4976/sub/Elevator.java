@@ -6,8 +6,8 @@ import ca.team4976.io.Output;
 
 public class Elevator {
 
-    public int queuedLevels, currentLevel;
-    public boolean grounding;
+    private int queuedLevels, currentLevel;
+    private boolean grounding;
 
     public Elevator() {
         queuedLevels = 0;
@@ -15,7 +15,7 @@ public class Elevator {
         grounding = false;
     }
 
-    public int[] update() {
+    public void update() {
         if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce())
             queuedLevels++;
         else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce())
@@ -28,7 +28,6 @@ public class Elevator {
             Output.Motor.ELEVATOR.set(-0.5);
         else
             checkQueuedLevels();
-        return new int[] { queuedLevels, currentLevel };
     }
 
     private void checkQueuedLevels() {
@@ -62,7 +61,7 @@ public class Elevator {
         }
     }
 
-    public void elevatorUp() {
+    private void elevatorUp() {
         Output.Motor.ELEVATOR.set(1.0);
         if (Input.DigitalEncoder.ELEVATOR.getDistance() >= (currentLevel + 1)) {
             currentLevel++;
@@ -70,12 +69,21 @@ public class Elevator {
         }
     }
 
-    public void elevatorDown() {
+    private void elevatorDown() {
         Output.Motor.ELEVATOR.set(-1.0);
         if (Input.DigitalEncoder.ELEVATOR.getDistance() <= (currentLevel - 1)) {
             currentLevel--;
             queuedLevels++;
         }
+    }
+    
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+    
+    public int getQueuedLevels() {
+        return queuedLevels;
+        
     }
 
 }

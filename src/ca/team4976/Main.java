@@ -31,11 +31,11 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
         rake.update();
-        int[] values = elevator.update();
-        gripper.update(values);
+        elevator.update();
+        gripper.update(elevator.getCurrentLevel(), elevator.getQueuedLevels());
         drive.teleopArcadeDrive();
         System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
-        System.out.println("current level: " + values[1] + " | queued levels: " + values[0]);
+        System.out.println("current level: " + elevator.getCurrentLevel() + " | queued levels: " + elevator.getQueuedLevels());
         System.out.println("encoder.getDistance(): " + Input.DigitalEncoder.ELEVATOR.getDistance());
     }
 
