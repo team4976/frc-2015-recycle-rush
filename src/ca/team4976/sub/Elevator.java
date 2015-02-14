@@ -43,16 +43,57 @@ public class Elevator {
     }
 
     private void goToDesiredLevel() {
-        if (desiredLevel == 0) {
+        currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
 
-        } else if (desiredLevel == 1) {
+        if (desiredLevel == 0 && !Input.Digital.ELEVATOR_GROUND.get()) {
+            Output.Motor.ELEVATOR.set(-1.0);
+            checkGround();
+        } else if (desiredLevel == 1 && !withinThreshold(1)) {
+            if (desiredLevel < currentLevel) {
+                Output.Motor.ELEVATOR.set(-1.0);
+                checkGround();
+            } else if (desiredLevel > currentLevel) {
+                Output.Motor.ELEVATOR.set(1.0);
+                checkTop();
+            }
+        } else if (desiredLevel == 2 && !withinThreshold(2)) {
+            if (desiredLevel < currentLevel) {
+                Output.Motor.ELEVATOR.set(-1.0);
+                checkGround();
+            } else if (desiredLevel > currentLevel) {
+                Output.Motor.ELEVATOR.set(1.0);
+                checkTop();
+            }
+        } else if (desiredLevel == 3 && !withinThreshold(3)) {
+            if (desiredLevel < currentLevel) {
+                Output.Motor.ELEVATOR.set(-1.0);
+                checkGround();
+            } else if (desiredLevel > currentLevel) {
+                Output.Motor.ELEVATOR.set(1.0);
+                checkTop();
+            }
+        } else if (desiredLevel == 4 && !Input.Digital.ELEVATOR_TOP.get()) {
+            Output.Motor.ELEVATOR.set(1.0);
+            checkTop();
+        } else {
+            Output.Motor.ELEVATOR.set(0.0);
+            checkGround();
+        }
+    }
 
-        } else if (desiredLevel == 2) {
+    private void checkGround() {
+        if (Input.Digital.ELEVATOR_GROUND.get() && (desiredLevel == 0 || desiredLevel < currentLevel)) {
+            desiredLevel = 0;
+            currentLevel = 0;
+            Input.DigitalEncoder.ELEVATOR.reset();
+        }
+    }
 
-        } else if (desiredLevel == 3) {
-
-        } else if (desiredLevel == 4) {
-
+    private void checkTop() {
+        if (Input.Digital.ELEVATOR_TOP.get() && (desiredLevel == 4 || desiredLevel > currentLevel)) {
+            desiredLevel = 4;
+            currentLevel = 4;
+            Input.DigitalEncoder.ELEVATOR.set(4);
         }
     }
 
