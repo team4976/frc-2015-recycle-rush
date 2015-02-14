@@ -21,11 +21,13 @@ public class Elevator {
     }
 
     private void checkPrimaryController() {
-        if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce() && desiredLevel < 4)
+        if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce() && desiredLevel < 4) {
             elevatorUp();
-        else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0)
+            currentLevel = -1;
+        } else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0) {
             elevatorDown();
-        else if (Controller.Primary.Button.START.isDownOnce())
+            currentLevel = 5;
+        } else if (Controller.Primary.Button.START.isDownOnce())
             elevatorToLevel(0);
     }
 
@@ -48,10 +50,12 @@ public class Elevator {
                 Output.Motor.ELEVATOR.set(1.0);
             } else if (desiredLevel < currentLevel) {
                 Output.Motor.ELEVATOR.set(-1.0);
-                currentLevel = (int) (Input.DigitalEncoder.ELEVATOR.getDistance());
+                if (atLevel(0.1))
+                    currentLevel = desiredLevel;
             } else if (desiredLevel > currentLevel) {
                 Output.Motor.ELEVATOR.set(1.0);
-                currentLevel = (int) (Input.DigitalEncoder.ELEVATOR.getDistance());
+                if (atLevel(0.1))
+                    currentLevel = desiredLevel;
             }
         } else {
             Output.Motor.ELEVATOR.set(0.0);
@@ -66,6 +70,7 @@ public class Elevator {
         } else if (Input.Digital.ELEVATOR_TOP.get()) {
             currentLevel = 4;
             desiredLevel = 4;
+            Input.DigitalEncoder.ELEVATOR.set(4);
         }
     }
 
@@ -87,6 +92,10 @@ public class Elevator {
     
     public int getDesiredLevel() {
         return desiredLevel;
+    }
+    
+    private boolean atLevel(double percent) {
+        return (Input.DigitalEncoder.ELEVATOR.getDistance() >= desiredLevel - percent && Input.DigitalEncoder.ELEVATOR.getDistance() <= desiredLevel + percent);
     }
 
 }

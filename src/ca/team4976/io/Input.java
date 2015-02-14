@@ -27,6 +27,7 @@ public class Input {
         ELEVATOR(6, 7, 8, 2.3E-4);
 
         private Encoder encoder;
+        private double distance;
 
         private DigitalEncoder(int dio1, int dio2, int dio3, double dpp) {
             encoder = new Encoder(dio1, dio2, dio3);
@@ -34,11 +35,18 @@ public class Input {
         }
 
         public double getDistance() {
-            return encoder.getDistance();
+            distance += encoder.getDistance();
+            encoder.reset();
+            return distance;
         }
 
+        public void set(double value) {
+            distance = value;
+        }
+        
         public void reset() {
             encoder.reset();
+            distance = 0;
         }
 
     }
