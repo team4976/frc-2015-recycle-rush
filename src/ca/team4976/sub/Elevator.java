@@ -106,7 +106,8 @@ public class Elevator {
     }
 
     public void elevatorToLevel(int level) {
-        desiredLevel = level;
+        if (level >= 0 && level <= 4)
+            desiredLevel = level;
     }
 
     public double getCurrentLevel() {

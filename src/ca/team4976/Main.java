@@ -31,8 +31,8 @@ public class Main extends IterativeRobot {
         elevator.update();
         gripper.update(elevator);
         drive.teleopArcadeDrive();
-        System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
-        System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
+        //System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
+        //System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
     }
 
     public void autonomousPeriodic() {

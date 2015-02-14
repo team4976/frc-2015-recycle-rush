@@ -14,7 +14,7 @@ public class GripperV2 {
 
     boolean containerIsReady;
 
-    boolean xMode, aMode;
+    boolean xMode, aMode, doSwitch;
 
 
     /**
@@ -33,6 +33,7 @@ public class GripperV2 {
         gripperMotorSpeed = 0.0;
         xMode = false;
         aMode = false;
+        doSwitch = false;
     }
 
     public void update(Elevator elevator) {
@@ -58,7 +59,7 @@ public class GripperV2 {
                 gripperExtended = false;
                 kickerExtended = false;
                 gripperMotorSpeed = 0.0;
-
+                doSwitch = true;
             }
             else {
                 aMode = true;
@@ -66,6 +67,8 @@ public class GripperV2 {
                 gripperExtended = true;
                 kickerExtended = true;
                 gripperMotorSpeed = 1.0;
+                doSwitch = true;
+
             }
 
         }
@@ -78,6 +81,7 @@ public class GripperV2 {
                 gripperExtended = false;
                 kickerExtended = false;
                 gripperMotorSpeed = 0.0;
+                doSwitch = true;
 
             }
             else {
@@ -86,6 +90,8 @@ public class GripperV2 {
                 gripperExtended = true;
                 kickerExtended = false;
                 gripperMotorSpeed = 1.0;
+                doSwitch = true;
+
             }
         }
         if (Controller.Primary.Button.Y.isDownOnce()){
@@ -108,31 +114,32 @@ public class GripperV2 {
         }
 
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////
-        //Secondary controls
-        ///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+        // Secondary Controls
+        ////////////////////////////////////////////////////////////////////////////////
+
         if (leftTrigger > 0){
             secondaryControllerActive = true;
-            gripperMotorSpeed = leftTrigger;
+            Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
         }
         else if (leftBumper) {
             secondaryControllerActive = true;
-            gripperMotorSpeed = 1.0;
+            Output.Motor.GRIPPER_LEFT.set(1.0);
         }
-        else if (secondaryControllerActive && rightTrigger != 0) {
-            gripperMotorSpeed = 0.0;
+        else if (secondaryControllerActive) {
+            Output.Motor.GRIPPER_LEFT.set(0);
         }
 
-         if (rightTrigger > 0){
+        if (rightTrigger > 0){
             secondaryControllerActive = true;
-            gripperMotorSpeed = rightTrigger;
+            Output.Motor.GRIPPER_RIGHT.set(rightTrigger);
         }
         else if (rightBumper) {
             secondaryControllerActive = true;
-            gripperMotorSpeed = 1.0;
+            Output.Motor.GRIPPER_RIGHT.set(-1.0);
         }
-        else if (secondaryControllerActive && leftTrigger != 0) {
-            gripperMotorSpeed = 0.0;
+        else if (secondaryControllerActive) {
+            Output.Motor.GRIPPER_RIGHT.set(0);
         }
 
         if (Controller.Secondary.Button.X.isDownOnce()) {
@@ -146,45 +153,56 @@ public class GripperV2 {
 
         // If the elevator is in the process of lifting the container
         // out of the gripper, reset the gripper
-        if (elevator.withinThreshold(1) && elevator.getDesiredLevel() >= 1)
+        if (elevator.getCurrentLevel() <= 1 && elevator.getDesiredLevel() >= 1 && containerIsReady)
             resetGripper();
 
         if (!secondaryControllerActive) {
-            System.out.println("Primary controller active.");
+            //System.out.println("Primary controller active.");
             if (!containerIsReady) {
-                System.out.println("Container is not ready");
+                //System.out.println("Container is not ready");
                 if (xMode) {
                     Output.Motor.GRIPPER_LEFT.set(gripperMotorSpeed);
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
                     System.out.println("Gripper (X): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (!elevator.withinThreshold(0)) {
+                    
+                    if (elevator.getCurrentLevel() >= 1 && doSwitch) {
                         System.out.println("Kicker (X): " + kickerExtended);
-                        Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+                        Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
+                        elevator.elevatorToLevel(0);
+                        doSwitch = false;
                     }
-                    else {
-                        //elevator.elevatorToLevel(1);
+                    else if (doSwitch) {
+                        elevator.elevatorToLevel(1);
+                        
                     }
                 } else if (aMode) {
                     Output.Motor.GRIPPER_LEFT.set(gripperMotorSpeed);
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
                     System.out.println("Gripper (A): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (!elevator.withinThreshold(0)) {
+                    if (elevator.getCurrentLevel() >= 1 && doSwitch) {
                         System.out.println("Kicker (A): " + kickerExtended);
-                        Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+                        Output.PneumaticSolenoid.GRIPPER_KICKER.set(true);
+                        elevator.elevatorToLevel(0);
+                        doSwitch = false;
                     }
-                    else {
-                        //elevator.elevatorToLevel(1);
+                    else if (doSwitch) {
+                        elevator.elevatorToLevel(1);
+                        
                     }
                 } else {
                     Output.Motor.GRIPPER_LEFT.set(0);
                     Output.Motor.GRIPPER_RIGHT.set(0);
-                    Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (!elevator.withinThreshold(0))
+                    Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(false);
+                    if (elevator.getCurrentLevel() >= 1 && doSwitch) {
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
-                    else {
-                        //elevator.elevatorToLevel(1);
+                        elevator.elevatorToLevel(0);
+                        doSwitch = false;
+                    }
+                    else if (doSwitch) {
+                        elevator.elevatorToLevel(1);
+                        
                     }
                 }
             }
@@ -196,8 +214,6 @@ public class GripperV2 {
         else {
             Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
-            Output.Motor.GRIPPER_LEFT.set(gripperMotorSpeed);
-            Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
         }
     }
 
