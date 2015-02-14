@@ -35,7 +35,7 @@ public class GripperV2 {
         aMode = false;
     }
 
-    public void update(int currentLevel, int queuedLevels) {
+    public void update(Elevator elevator) {
 
         containerIsReady = Input.Digital.GRIPPER_LASER.get();
 
@@ -142,36 +142,45 @@ public class GripperV2 {
 
         // If the elevator is in the process of lifting the container
         // out of the gripper, reset the gripper
-        if (currentLevel >= 1 && queuedLevels >= 1)
+        if (elevator.withinThreshold(1) && elevator.getDesiredLevel() >= 1)
             resetGripper();
 
         if (!secondaryControllerActive) {
+            System.out.println("Primary controller active.");
             if (!containerIsReady) {
+                System.out.println("Container is not ready");
                 if (xMode) {
                     Output.Motor.GRIPPER_LEFT.set(gripperMotorSpeed);
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
+                    System.out.println("Gripper (X): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (currentLevel != 0)
+                    if (elevator.withinThreshold(0)) {
+                        System.out.println("Kicker (X): " + kickerExtended);
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+                    }
                     else {
-                        // Request elevator level 1
+                        //elevator.elevatorToLevel(1);
                     }
                 } else if (aMode) {
                     Output.Motor.GRIPPER_LEFT.set(gripperMotorSpeed);
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
+                    System.out.println("Gripper (A): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (currentLevel != 0)
+                    if (elevator.withinThreshold(0)) {
+                        System.out.println("Kicker (A): " + kickerExtended);
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+                    }
                     else {
-                        // Request elevator level 1
+                        //elevator.elevatorToLevel(1);
                     }
                 } else {
                     Output.Motor.GRIPPER_LEFT.set(0);
                     Output.Motor.GRIPPER_RIGHT.set(0);
-                    if (currentLevel != 0)
+                    Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+                    if (elevator.withinThreshold(0))
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
                     else {
-                        // request elevator level 1
+                        //elevator.elevatorToLevel(1);
                     }
                 }
             }

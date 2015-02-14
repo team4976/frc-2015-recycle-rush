@@ -9,7 +9,7 @@ public class Input {
     public enum Digital {
         ELEVATOR_GROUND(10),
         ELEVATOR_TOP(11),
-        GRIPPER_LASER(9);
+        GRIPPER_LASER(12);
 
         private DigitalInput di;
 
@@ -42,6 +42,7 @@ public class Input {
         }
 
         public void set(double value) {
+            encoder.reset();
             distance = value;
         }
         
