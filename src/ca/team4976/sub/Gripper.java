@@ -38,7 +38,7 @@ public class Gripper {
     /**
      * Called periodically during teleopPeriodic();
      */
-    public void update(int currentLevel, int queuedLevels) {
+    public void update(int currentLevel, int desiredLevel) {
         //Update triggers and bumpers for the second controller
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
@@ -136,7 +136,7 @@ public class Gripper {
 
                     // If the elevator is in the process of lifting the container
                     // out of the gripper, reset the gripper
-                    if (currentLevel >= 1 && queuedLevels >= 0)
+                    if (currentLevel >= 1 && desiredLevel >= 1)
                         resetGripper();
                 }
                 //If the gripper is not down, reset the state and stop motors

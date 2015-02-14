@@ -6,84 +6,87 @@ import ca.team4976.io.Output;
 
 public class Elevator {
 
-    private int queuedLevels, currentLevel;
-    private boolean grounding;
+    private int currentLevel, desiredLevel;
 
     public Elevator() {
-        queuedLevels = 0;
         currentLevel = 0;
-        grounding = false;
+        desiredLevel = 0;
     }
 
     public void update() {
-        if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce())
-            queuedLevels++;
-        else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce())
-            queuedLevels--;
+        checkPrimaryController();
+        if (checkSecondaryController())
+            goToDesiredLevel();
+        checkHomes();
+    }
+
+    private void checkPrimaryController() {
+        if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce() && desiredLevel < 4)
+            elevatorUp();
+        else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0)
+            elevatorDown();
         else if (Controller.Primary.Button.START.isDownOnce())
-            grounding = !grounding;
-        if (!Input.Digital.ELEVATOR_TOP.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) < 0)
+            elevatorToLevel(0);
+    }
+
+    private boolean checkSecondaryController() {
+        if (!Input.Digital.ELEVATOR_TOP.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) < 0) {
             Output.Motor.ELEVATOR.set(0.5);
-        else if (!Input.Digital.ELEVATOR_GROUND.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) > 0)
+            return false;
+        } else if (!Input.Digital.ELEVATOR_GROUND.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) > 0) {
             Output.Motor.ELEVATOR.set(-0.5);
-        else
-            checkQueuedLevels();
+            return false;
+        }
+        return true;
     }
 
-    private void checkQueuedLevels() {
-        if (grounding) {
-            Output.Motor.ELEVATOR.set(-1.0);
-            queuedLevels = 0;
+    private void goToDesiredLevel() {
+        if (currentLevel != desiredLevel) {
+            if (desiredLevel == 0) {
+                Output.Motor.ELEVATOR.set(-1.0);
+            } else if (desiredLevel == 4) {
+                Output.Motor.ELEVATOR.set(1.0);
+            } else if (desiredLevel < currentLevel) {
+                Output.Motor.ELEVATOR.set(-1.0);
+                currentLevel = (int) (Input.DigitalEncoder.ELEVATOR.getDistance());
+            } else if (desiredLevel > currentLevel) {
+                Output.Motor.ELEVATOR.set(1.0);
+                currentLevel = (int) (Input.DigitalEncoder.ELEVATOR.getDistance());
+            }
+        } else {
+            Output.Motor.ELEVATOR.set(0.0);
         }
-        if (!Input.Digital.ELEVATOR_TOP.get() && queuedLevels > 0) {
-            if (currentLevel < 4)
-                elevatorUp();
-            else
-                queuedLevels = 0;
-        } else if (!Input.Digital.ELEVATOR_GROUND.get() && queuedLevels < 0) {
-            if (currentLevel > 0)
-                elevatorDown();
-            else
-                queuedLevels = 0;
-        } else if (Input.Digital.ELEVATOR_GROUND.get()) {
-            queuedLevels = 0;
+    }
+    
+    private void checkHomes() {
+        if (Input.Digital.ELEVATOR_GROUND.get()) {
             currentLevel = 0;
+            desiredLevel = 0;
             Input.DigitalEncoder.ELEVATOR.reset();
-            grounding = false;
-            Output.Motor.ELEVATOR.set(0.0);
         } else if (Input.Digital.ELEVATOR_TOP.get()) {
-            queuedLevels = 0;
             currentLevel = 4;
-            grounding = false;
-            Output.Motor.ELEVATOR.set(0.0);
-        } else if (!grounding) {
-            Output.Motor.ELEVATOR.set(0.0);
+            desiredLevel = 4;
         }
     }
 
-    private void elevatorUp() {
-        Output.Motor.ELEVATOR.set(1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() >= (currentLevel + 1)) {
-            currentLevel++;
-            queuedLevels--;
-        }
+    public void elevatorUp() {
+        desiredLevel++;
     }
 
-    private void elevatorDown() {
-        Output.Motor.ELEVATOR.set(-1.0);
-        if (Input.DigitalEncoder.ELEVATOR.getDistance() <= (currentLevel - 1)) {
-            currentLevel--;
-            queuedLevels++;
-        }
+    public void elevatorDown() {
+        desiredLevel--;
+    }
+
+    public void elevatorToLevel(int level) {
+        desiredLevel = level;
     }
     
     public int getCurrentLevel() {
-        return currentLevel;
+        return currentLevel;        
     }
     
-    public int getQueuedLevels() {
-        return queuedLevels;
-        
+    public int getDesiredLevel() {
+        return desiredLevel;
     }
 
 }
