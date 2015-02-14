@@ -10,12 +10,16 @@ public class Main extends IterativeRobot {
     Elevator elevator;
     GripperV2 gripper;
     DriveTrain drive;
+    DigitalOutput lights;
 
     public void robotInit() {
         rake = new Rake();
         elevator = new Elevator();
         gripper = new GripperV2();
         drive = new DriveTrain();
+        lights = new DigitalOutput(9);
+        lightDelay = System.currentTimeMillis();
+        lightOn = true;
     }
 
     public void teleopInit() {
@@ -26,7 +30,15 @@ public class Main extends IterativeRobot {
 
     }
 
+    public boolean lightOn;
+    public long lightDelay;
+
     public void teleopPeriodic() {
+        if (System.currentTimeMillis() - lightDelay >= 1000) {
+            lightOn = !lightOn;
+            lightDelay = System.currentTimeMillis();
+        }
+        lights.set(lightOn);
         rake.update();
         elevator.update();
         gripper.update(elevator.getCurrentLevel(), elevator.getDesiredLevel());
