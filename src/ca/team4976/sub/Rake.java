@@ -31,7 +31,7 @@ public class Rake {
         }
 
         //If the Y button is down after it has been released (de-bouncing)
-        else if (Controller.Primary.Button.Y.isDownOnce()) {
+        else if (Controller.Primary.Button.RIGHT_STICK.isDownOnce()) {
             if (isLeftExtended != isRightExtended) {
                 isLeftExtended = false;
                 isRightExtended = false;

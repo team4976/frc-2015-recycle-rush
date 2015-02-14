@@ -61,6 +61,7 @@ public class Gripper {
             gripperExtended = !gripperExtended;
             if (gripperExtended)
                 startTime = System.currentTimeMillis();
+
         }//If the A button is pressed on remote one, change the kicker state
         else if (Controller.Primary.Button.A.isDownOnce()  && !containerIsReady) {
             secondaryControllerActive = false;
@@ -115,6 +116,7 @@ public class Gripper {
             //If the gripper is extended
             if (gripperExtended) {
                 //And the container is not fully sucked in
+
                 if (!isSuckedIn) {
                     // Only extend the kicker based on user input if the gripper is extended and their is no container.
                     Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);

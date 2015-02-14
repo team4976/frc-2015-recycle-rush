@@ -8,13 +8,13 @@ public class Main extends IterativeRobot {
 
     Rake rake;
     Elevator elevator;
-    Gripper gripper;
+    GripperV2 gripper;
     DriveTrain drive;
 
     public void robotInit() {
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new Gripper();
+        gripper = new GripperV2();
         drive = new DriveTrain();
     }
 

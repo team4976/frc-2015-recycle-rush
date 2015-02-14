@@ -8,7 +8,8 @@ public class Input {
 
     public enum Digital {
         ELEVATOR_GROUND(10),
-        ELEVATOR_TOP(11);
+        ELEVATOR_TOP(11),
+        GRIPPER_LASER(9);
 
         private DigitalInput di;
 
