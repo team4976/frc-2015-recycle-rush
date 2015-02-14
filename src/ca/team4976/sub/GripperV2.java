@@ -107,6 +107,10 @@ public class GripperV2 {
             }
         }
 
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        //Secondary controls
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
         if (leftTrigger > 0){
             secondaryControllerActive = true;
             gripperMotorSpeed = leftTrigger;
@@ -115,11 +119,11 @@ public class GripperV2 {
             secondaryControllerActive = true;
             gripperMotorSpeed = 1.0;
         }
-        else if (secondaryControllerActive) {
+        else if (secondaryControllerActive && rightTrigger != 0) {
             gripperMotorSpeed = 0.0;
         }
 
-        if (rightTrigger > 0){
+         if (rightTrigger > 0){
             secondaryControllerActive = true;
             gripperMotorSpeed = rightTrigger;
         }
@@ -127,7 +131,7 @@ public class GripperV2 {
             secondaryControllerActive = true;
             gripperMotorSpeed = 1.0;
         }
-        else if (secondaryControllerActive) {
+        else if (secondaryControllerActive && leftTrigger != 0) {
             gripperMotorSpeed = 0.0;
         }
 
@@ -154,7 +158,7 @@ public class GripperV2 {
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
                     System.out.println("Gripper (X): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (elevator.withinThreshold(0)) {
+                    if (!elevator.withinThreshold(0)) {
                         System.out.println("Kicker (X): " + kickerExtended);
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
                     }
@@ -166,7 +170,7 @@ public class GripperV2 {
                     Output.Motor.GRIPPER_RIGHT.set(-gripperMotorSpeed);
                     System.out.println("Gripper (A): " + gripperExtended);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (elevator.withinThreshold(0)) {
+                    if (!elevator.withinThreshold(0)) {
                         System.out.println("Kicker (A): " + kickerExtended);
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
                     }
@@ -177,7 +181,7 @@ public class GripperV2 {
                     Output.Motor.GRIPPER_LEFT.set(0);
                     Output.Motor.GRIPPER_RIGHT.set(0);
                     Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-                    if (elevator.withinThreshold(0))
+                    if (!elevator.withinThreshold(0))
                         Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
                     else {
                         //elevator.elevatorToLevel(1);
@@ -197,9 +201,6 @@ public class GripperV2 {
         }
     }
 
-
-
-
     /**
      * Resets the gripper
      */
@@ -208,5 +209,8 @@ public class GripperV2 {
         kickerExtended = false;
         secondaryControllerActive = false;
         containerIsReady = false;
+        aMode = false;
+        xMode = false;
+        gripperMotorSpeed = 0.0;
     }
 }
