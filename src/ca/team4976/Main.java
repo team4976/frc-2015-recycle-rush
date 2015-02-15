@@ -1,6 +1,6 @@
 package ca.team4976;
 
-import ca.team4976.io.Input;
+import ca.team4976.io.*;
 import ca.team4976.sub.*;
 import edu.wpi.first.wpilibj.*;
 
@@ -8,13 +8,13 @@ public class Main extends IterativeRobot {
 
     Rake rake;
     Elevator elevator;
-    GripperV2 gripper;
+    GripperV3 gripper;
     DriveTrain drive;
 
     public void robotInit() {
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new GripperV2();
+        gripper = new GripperV3();
         drive = new DriveTrain();
     }
 
@@ -31,6 +31,10 @@ public class Main extends IterativeRobot {
         elevator.update();
         gripper.update(elevator);
         drive.teleopArcadeDrive();
+        if(Controller.Primary.Button.START.isDownOnce()){
+            gripper.reset(elevator);
+            rake.reset();
+        }
         //System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
         //System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
     }

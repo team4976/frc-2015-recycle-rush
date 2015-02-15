@@ -23,15 +23,15 @@ public class Rake {
      */
     public void update() {
 
-        //If the Start button is down
-        if (Controller.Primary.Button.START.isDown())
-            isExtended = false;
-
-            //If the Right Stick button is down after it has been released (de-bouncing)
-        else if (Controller.Primary.Button.RIGHT_STICK.isDownOnce())
+        //If the Right Stick button is down after it has been released (de-bouncing)
+        if (Controller.Primary.Button.RIGHT_STICK.isDownOnce())
             isExtended = !isExtended;
 
         //Extend the solenoids based on stored variable
         Output.PneumaticSolenoid.RAKE.set(isExtended);
+    }
+    //reset function called in main when start button is pressed
+    public void reset(){
+        isExtended = false;
     }
 }
