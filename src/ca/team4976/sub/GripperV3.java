@@ -1,10 +1,8 @@
 package ca.team4976.sub;
 import ca.team4976.io.Controller;
+import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
-/**
- * Created by Ivan on 2015-02-14.
- */
 public class GripperV3 {
 
     boolean gripperState, kickerState;
@@ -118,11 +116,18 @@ public class GripperV3 {
             if (elevator.getCurrentLevel() >= 1) {
                 toggtleKicker(kickerState);
                 elevator.elevatorToLevel(0);
+                if(Input.Digital.GRIPPER_LASER.get()){
+                    gripperMotors(0.0,0.0);
+                }
             } else {
                 elevator.elevatorToLevel(1);
-                if (elevator.getCurrentLevel() == 1)
+                if (elevator.getCurrentLevel() == 1) {
                     toggtleKicker(kickerState);
-                elevator.elevatorToLevel(0);
+                    elevator.elevatorToLevel(0);
+                    if(Input.Digital.GRIPPER_LASER.get()){
+                        gripperMotors(0.0,0.0);
+                    }
+                }
             }
         } else {
             reset(elevator);
