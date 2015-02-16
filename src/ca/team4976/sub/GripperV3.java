@@ -4,11 +4,6 @@ import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 public class GripperV3 {
-
-    boolean gripperState, kickerState;
-
-    double rightMotorSpeed, leftMotorSpeed;
-
     boolean isSuckedIn;
 
     boolean xState, aState;
@@ -16,15 +11,16 @@ public class GripperV3 {
     boolean leftBumper, rightBumper;
     double  leftTrigger, rightTrigger;
 
-    public GripperV3(){
+    boolean gripperState, kickerState;
 
+    public GripperV3(){
         xState = false;
         aState = false;
 
-        isSuckedIn = false;
+        boolean gripperState = false;
+        boolean kickerState = false;
 
-        gripperState = false;
-        kickerState = false;
+        isSuckedIn = false;
 
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
@@ -34,11 +30,12 @@ public class GripperV3 {
 
     public void update(Elevator elevator){
         //Primary Controls
+
         if(Controller.Primary.Button.X.isDownOnce()){
             //pickup an upright container
             xState = !xState;
-            gripperState = true;
-            kickerState = false;
+            gripperState = !gripperState;
+            kickerState = !kickerState;
             pickupContainer(elevator, xState);
         }
         else if(Controller.Primary.Button.A.isDownOnce()){
@@ -74,13 +71,12 @@ public class GripperV3 {
         gripperMotors(0.0, 0.0);
         toggleGripper(false);
         if(elevator.getCurrentLevel() >= 1){
-            toggtleKicker(false);
-            elevator.elevatorToLevel(0);
+            toggleKicker(false);
         }
         else{
             elevator.elevatorToLevel(1);
             if(elevator.getCurrentLevel() == 1){
-                toggtleKicker(false);
+                toggleKicker(false);
                 elevator.elevatorToLevel(0);
             }
         }
@@ -89,9 +85,8 @@ public class GripperV3 {
     void toggleGripper(boolean state){
         Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(state);
     }
-
     //simplifies output to the kicker pneumatic
-    void toggtleKicker(boolean state){
+    void toggleKicker(boolean state){
         Output.PneumaticSolenoid.GRIPPER_KICKER.set(state);
     }
     //Simplifies output to the left Gripper Motor
@@ -109,20 +104,19 @@ public class GripperV3 {
     }
 
     //Picks up a container
-    void pickupContainer(Elevator elevator, boolean State) {
-        if (State) {
+    void pickupContainer(Elevator elevator, boolean state) {
+        if (state) {
             toggleGripper(gripperState);
             gripperMotors(1.0, -1.0);
             if (elevator.getCurrentLevel() >= 1) {
-                toggtleKicker(kickerState);
-                elevator.elevatorToLevel(0);
+                toggleKicker(kickerState);
                 if(Input.Digital.GRIPPER_LASER.get()){
                     gripperMotors(0.0,0.0);
                 }
             } else {
                 elevator.elevatorToLevel(1);
                 if (elevator.getCurrentLevel() == 1) {
-                    toggtleKicker(kickerState);
+                    toggleKicker(kickerState);
                     elevator.elevatorToLevel(0);
                     if(Input.Digital.GRIPPER_LASER.get()){
                         gripperMotors(0.0,0.0);
