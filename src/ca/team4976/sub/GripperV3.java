@@ -4,7 +4,6 @@ import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 public class GripperV3 {
-    boolean isSuckedIn;
 
     boolean xState, aState;
 
@@ -20,8 +19,6 @@ public class GripperV3 {
         boolean gripperState = false;
         boolean kickerState = false;
 
-        isSuckedIn = false;
-
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
@@ -30,7 +27,6 @@ public class GripperV3 {
 
     public void update(Elevator elevator){
         //Primary Controls
-
         if(Controller.Primary.Button.X.isDownOnce()){
             //pickup an upright container
             xState = !xState;
@@ -55,7 +51,6 @@ public class GripperV3 {
         else {
             gripperLeftMotors(0);
         }
-
         if(rightTrigger != 0){
             gripperRightMotors(rightTrigger);
         }
@@ -63,10 +58,10 @@ public class GripperV3 {
             gripperRightMotors(-1.0);
         }
         else{
-            gripperLeftMotors(0.0);
+            gripperRightMotors(0.0);
         }
     }
-    //reset function called in main when start button is pressed
+    //Reset function called in main when START button is pressed
     public void reset(Elevator elevator){
         gripperMotors(0.0, 0.0);
         toggleGripper(false);
@@ -81,11 +76,11 @@ public class GripperV3 {
             }
         }
     }
-    //simplifies output to the gripper pneumatic
+    //Simplifies output to the gripper pneumatic
     void toggleGripper(boolean state){
         Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(state);
     }
-    //simplifies output to the kicker pneumatic
+    //Simplifies output to the kicker pneumatic
     void toggleKicker(boolean state){
         Output.PneumaticSolenoid.GRIPPER_KICKER.set(state);
     }
@@ -102,7 +97,6 @@ public class GripperV3 {
         Output.Motor.GRIPPER_LEFT.set(speedLeft);
         Output.Motor.GRIPPER_RIGHT.set(speedRight);
     }
-
     //Picks up a container
     void pickupContainer(Elevator elevator, boolean state) {
         if (state) {
