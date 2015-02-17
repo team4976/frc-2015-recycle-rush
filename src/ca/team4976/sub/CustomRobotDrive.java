@@ -34,9 +34,9 @@ public class CustomRobotDrive {
 
         double rampedValue = speed * error / 45;
 
-        if (rampedValue > 0.1) rampedValue = 0.1;
+        if (rampedValue < 0.1) rampedValue = 0.1;
 
-        return speed * error / 45; // makes error a value from 0 - 1 then multiples the square root to speed.
+        return rampedValue; // makes error a value from 0 - 1 then multiples the square root to speed.
     }
 
 
