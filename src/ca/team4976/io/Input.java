@@ -3,6 +3,7 @@ package ca.team4976.io;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.PIDSource;
 
 public class Input {
 
@@ -53,9 +54,8 @@ public class Input {
 
     }
 
-    //TODO: Marc fix analogIn port
-    public enum AnalogGyro {
-        DRIVE(1);
+    public enum AnalogGyro implements PIDSource {
+        DRIVE(0);
 
         private Gyro gyro;
 
@@ -67,10 +67,16 @@ public class Input {
             return gyro.getAngle();
         }
 
+        public void gyroInit() { gyro.initGyro(); }
+
         public void reset() {
             gyro.reset();
         }
 
+        public double getRate() { return gyro.getRate(); }
+
+        @Override
+        public double pidGet() { return getAngle(); }
     }
 
 }

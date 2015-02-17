@@ -18,8 +18,8 @@ public class CustomRobotDrive {
 
         Output.Motor.DRIVE_LEFT_1.set(throttle + steering);
         Output.Motor.DRIVE_LEFT_2.set(throttle + steering);
-        Output.Motor.DRIVE_RIGHT_1.set(-throttle - steering);
-        Output.Motor.DRIVE_RIGHT_2.set(-throttle - steering);
+        Output.Motor.DRIVE_RIGHT_1.set(-throttle + steering);
+        Output.Motor.DRIVE_RIGHT_2.set(-throttle + steering);
     }
 
     /**
@@ -32,7 +32,11 @@ public class CustomRobotDrive {
 
         if (error > 45) return speed; // returns speed if error is greater then 45 cm/degrees.
 
-        else return speed * Math.sqrt(error / 45); // makes error a value from 0 - 1 then multiples the square root to speed.
+        double rampedValue = speed * error / 45;
+
+        if (rampedValue > 0.1) rampedValue = 0.1;
+
+        return speed * error / 45; // makes error a value from 0 - 1 then multiples the square root to speed.
     }
 
 
