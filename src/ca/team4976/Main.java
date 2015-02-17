@@ -20,6 +20,7 @@ public class Main extends IterativeRobot {
 
     public void autonomousInit() {
 
+        state = 0;
     }
 
     public void teleopInit() {
@@ -47,8 +48,33 @@ public class Main extends IterativeRobot {
         //System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
     }
 
+    int state = 0;
+
     public void autonomousPeriodic() {
 
+        System.out.println("Encoder: " + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
+
+        switch (state) {
+
+            case 0:
+
+                Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(DoubleSolenoid.Value.kForward);
+                if (drive.back(100, 0.15)) { Input.AnalogGyro.DRIVE.reset(); Input.DigitalEncoder.DRIVE_LEFT.reset(); state++; } break;
+
+            case 1:
+
+                Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(DoubleSolenoid.Value.kReverse);
+                if (drive.forward(300, 0.15)) { Input.AnalogGyro.DRIVE.reset(); Input.DigitalEncoder.DRIVE_LEFT.reset(); state++; } break;
+
+            default: drive.arcadeDrive(0, 0);
+        }
+    }
+
+    public void testPeriodic() {
+
+        if (Controller.Primary.Button.A.isDown()) Input.DigitalEncoder.DRIVE_LEFT.reset();
+
+        System.out.println("Encoder: " + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
     }
 
 }
