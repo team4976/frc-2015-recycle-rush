@@ -217,7 +217,7 @@ public class DriveTrain extends CustomRobotDrive {
 
             speed = ramp(speed, distance + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
 
-            arcadeDrive(0, speed);
+            arcadeDrive(0, -speed);
             return false;
         }
     }
