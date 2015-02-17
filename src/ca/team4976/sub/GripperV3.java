@@ -30,6 +30,7 @@ public class GripperV3 {
         if(Controller.Primary.Button.X.isDownOnce()){
             //pickup an upright container
             xState = !xState;
+            System.out.println("X state is " + xState);
             gripperState = !gripperState;
             kickerState = !kickerState;
             pickupContainer(elevator, xState);
@@ -77,30 +78,33 @@ public class GripperV3 {
         }
     }
     //Simplifies output to the gripper pneumatic
-    void toggleGripper(boolean state){
+    private void toggleGripper(boolean state){
         Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(state);
     }
     //Simplifies output to the kicker pneumatic
-    void toggleKicker(boolean state){
+    private void toggleKicker(boolean state){
         Output.PneumaticSolenoid.GRIPPER_KICKER.set(state);
     }
     //Simplifies output to the left Gripper Motor
-    void gripperLeftMotors(double speed){
+    private void gripperLeftMotors(double speed){
         Output.Motor.GRIPPER_LEFT.set(speed);
     }
     //Simplifies output to the Right Gripper motor
-    void gripperRightMotors(double speed){
+    private void gripperRightMotors(double speed){
         Output.Motor.GRIPPER_RIGHT.set(speed);
     }
     //Sets speed value to both motors simultaneously
-    void gripperMotors(double speedLeft,double speedRight){
+    private void gripperMotors(double speedLeft,double speedRight){
+        System.out.println("Running the gripper left motor at " + speedLeft + " Running the gripper right motor at " + speedRight);
         Output.Motor.GRIPPER_LEFT.set(speedLeft);
         Output.Motor.GRIPPER_RIGHT.set(speedRight);
     }
     //Picks up a container
-    void pickupContainer(Elevator elevator, boolean state) {
+    private void pickupContainer(Elevator elevator, boolean state) {
+        System.out.println("Picking up container");
         if (state) {
             toggleGripper(gripperState);
+            System.out.println("The gripper state" + gripperState);
             gripperMotors(1.0, -1.0);
             if (elevator.getCurrentLevel() >= 1) {
                 toggleKicker(kickerState);
