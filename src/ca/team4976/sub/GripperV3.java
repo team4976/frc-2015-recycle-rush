@@ -66,12 +66,12 @@ public class GripperV3 {
     public void reset(Elevator elevator){
         gripperMotors(0.0, 0.0);
         toggleGripper(false);
-        if(elevator.getCurrentLevel() >= 1){
+        if(elevator.withinThreshold(1)){
             toggleKicker(false);
         }
         else{
             elevator.elevatorToLevel(1);
-            if(elevator.getCurrentLevel() == 1){
+            if(elevator.withinThreshold(1)){
                 toggleKicker(false);
                 elevator.elevatorToLevel(0);
             }
@@ -106,7 +106,7 @@ public class GripperV3 {
             toggleGripper(gripperState);
             System.out.println("The gripper state" + gripperState);
             gripperMotors(1.0, -1.0);
-            if (elevator.getCurrentLevel() >= 1) {
+            if (elevator.withinThreshold(1)) {
                 toggleKicker(kickerState);
                 if(Input.Digital.GRIPPER_LASER.get()){
                     gripperMotors(0.0,0.0);
