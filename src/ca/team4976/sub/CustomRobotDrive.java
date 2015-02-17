@@ -47,7 +47,8 @@ public class CustomRobotDrive {
 
         LINEAR,
         CONCENTRIC,
-        CONCENTRIC_ADVANCED;
+        CONCENTRIC_ADVANCED,
+        EXPONETIAL;
 
         public static DeadBand TYPE = DeadBand.LINEAR;
         public static double deadBandZone = 0.2;
@@ -105,6 +106,10 @@ public class CustomRobotDrive {
                     if (y > -deadBandZone && y < deadBandZone) y = 0; // resets y to 0 if its inside the bounds.
 
                     return new double[]{x, y};
+
+                case EXPONETIAL:
+
+                    return new double[] {Math.pow(x, 3), y};
 
                 default:
                     return new double[]{0, 0};

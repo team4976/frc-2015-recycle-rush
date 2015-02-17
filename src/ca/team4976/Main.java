@@ -24,7 +24,7 @@ public class Main extends IterativeRobot {
     public void teleopInit() {
         Input.AnalogGyro.DRIVE.gyroInit();
         drive.useDeadBand = true;
-        CustomRobotDrive.DeadBand.setDeadBandType(CustomRobotDrive.DeadBand.LINEAR);
+        CustomRobotDrive.DeadBand.setDeadBandType(CustomRobotDrive.DeadBand.EXPONETIAL);
     }
 
     public void teleopPeriodic() {
