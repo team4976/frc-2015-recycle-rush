@@ -22,7 +22,7 @@ public class Rake {
         Output.PneumaticSolenoid.RAKE.set(isExtended);
     }
     //reset function called in main when start button is pressed
-    public void reset(){
+    public void reset() {
         isExtended = false;
     }
 }

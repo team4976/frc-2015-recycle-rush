@@ -19,11 +19,9 @@ public class Main extends IterativeRobot {
     }
 
     public void autonomousInit() {
-
     }
 
     public void teleopInit() {
-
         Input.AnalogGyro.DRIVE.gyroInit();
         drive.useDeadBand = true;
         CustomRobotDrive.DeadBand.setDeadBandType(CustomRobotDrive.DeadBand.LINEAR);
@@ -33,18 +31,17 @@ public class Main extends IterativeRobot {
         rake.update();
         elevator.update();
         gripper.update(elevator);
+
         drive.teleopArcadeDrive();
         drive.updateAutoTurn();
-        if(Controller.Primary.Button.START.isDownOnce()){
+
+        if (Controller.Primary.Button.START.isDownOnce()) {
             gripper.reset(elevator);
             rake.reset();
         }
 
-        System.out.print("Angle: " + Input.AnalogGyro.DRIVE.getAngle());
-        System.out.print(" Output: " + Output.Motor.DRIVE_LEFT_1.getSpeed());
-        System.out.println(" Rate: " + Input.AnalogGyro.DRIVE.getRate());
-        //System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
-        //System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
+        System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
+        System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
     }
 
     public void autonomousPeriodic() {

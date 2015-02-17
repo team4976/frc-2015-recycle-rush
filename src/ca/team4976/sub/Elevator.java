@@ -7,12 +7,13 @@ import ca.team4976.io.Output;
 public class Elevator {
 
     private double currentLevel;
-    private int desiredLevel;
+    private int desiredLevel, displayLevel;
     private double percentError;
 
     public Elevator() {
         currentLevel = 0;
         desiredLevel = 0;
+        displayLevel = 0;
         percentError = 0.1;
     }
 
@@ -27,7 +28,7 @@ public class Elevator {
             elevatorUp();
         else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0)
             elevatorDown();
-        else if (Controller.Primary.Button.START.isDownOnce())
+        else if (Controller.Primary.Button.BACK.isDownOnce())
             elevatorToLevel(0);
     }
 
@@ -43,41 +44,25 @@ public class Elevator {
     }
 
     private void goToDesiredLevel() {
-        currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
-
-        if (desiredLevel == 0 && !Input.Digital.ELEVATOR_GROUND.get()) {
-            Output.Motor.ELEVATOR.set(-1.0);
-            checkGround();
-        } else if (desiredLevel == 1 && !withinThreshold(1)) {
-            if (desiredLevel < currentLevel) {
+        if (!withinThreshold(desiredLevel)) {
+            if (desiredLevel == 0) {
                 Output.Motor.ELEVATOR.set(-1.0);
                 checkGround();
-            } else if (desiredLevel > currentLevel) {
+            } else if (desiredLevel == 4) {
                 Output.Motor.ELEVATOR.set(1.0);
                 checkTop();
+            } else {
+                currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
+                if (desiredLevel < currentLevel) {
+                    Output.Motor.ELEVATOR.set(-1.0);
+                    checkGround();
+                } else if (desiredLevel > currentLevel) {
+                    Output.Motor.ELEVATOR.set(1.0);
+                    checkTop();
+                }
             }
-        } else if (desiredLevel == 2 && !withinThreshold(2)) {
-            if (desiredLevel < currentLevel) {
-                Output.Motor.ELEVATOR.set(-1.0);
-                checkGround();
-            } else if (desiredLevel > currentLevel) {
-                Output.Motor.ELEVATOR.set(1.0);
-                checkTop();
-            }
-        } else if (desiredLevel == 3 && !withinThreshold(3)) {
-            if (desiredLevel < currentLevel) {
-                Output.Motor.ELEVATOR.set(-1.0);
-                checkGround();
-            } else if (desiredLevel > currentLevel) {
-                Output.Motor.ELEVATOR.set(1.0);
-                checkTop();
-            }
-        } else if (desiredLevel == 4 && !Input.Digital.ELEVATOR_TOP.get()) {
-            Output.Motor.ELEVATOR.set(1.0);
-            checkTop();
         } else {
-            Output.Motor.ELEVATOR.set(0.0);
-            checkGround();
+            Output.Motor.ELEVATOR.set(0);
         }
     }
 
