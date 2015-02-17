@@ -113,7 +113,7 @@ public class GripperV3 {
                 }
             } else {
                 elevator.elevatorToLevel(1);
-                if (elevator.getCurrentLevel() == 1) {
+                if (elevator.withinThreshold(1)) {
                     toggleKicker(kickerState);
                     elevator.elevatorToLevel(0);
                     if(Input.Digital.GRIPPER_LASER.get()){
