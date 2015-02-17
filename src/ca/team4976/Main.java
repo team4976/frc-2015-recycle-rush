@@ -6,15 +6,15 @@ import edu.wpi.first.wpilibj.*;
 
 public class Main extends IterativeRobot {
 
-    Rake rake;
-    Elevator elevator;
-    GripperVWolff gripper;
-    DriveTrain drive;
+    public Rake rake;
+    public Elevator elevator;
+    public Gripper gripper;
+    public DriveTrain drive;
 
     public void robotInit() {
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new GripperVWolff();
+        gripper = new Gripper();
         drive = new DriveTrain();
     }
 
@@ -28,6 +28,12 @@ public class Main extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
+
+        if (Controller.Primary.Button.START.isDownOnce() || Controller.Secondary.Button.START.isDownOnce()) {
+            rake.reset();
+            gripper.reset(elevator);
+        }
+
         rake.update();
         elevator.update();
         gripper.update(elevator);
@@ -42,4 +48,5 @@ public class Main extends IterativeRobot {
     public void autonomousPeriodic() {
 
     }
+
 }
