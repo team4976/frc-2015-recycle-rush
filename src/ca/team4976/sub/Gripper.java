@@ -1,184 +1,272 @@
 package ca.team4976.sub;
+
 import ca.team4976.io.Controller;
-import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 public class Gripper {
-    //Determines if the solenoids are extended
-    public boolean gripperExtended, kickerExtended;
 
-    //Determines if the container is ready for alignment(sucked in) and is aligned (fully rotated)
-    public boolean isSuckedIn;
+    // aMode and xMode keep track of what mode the gripper and kicker are in.
+    boolean aMode, xMode;
+    // wheelsRotOut and wheelsRotIn keep track of what direction the wheels on the gripper are rotating in.
+    boolean wheelsRotOut, wheelsRotIn;
+    // kickerExtended and gripperExtended keep track of the state of the pneumatics that control the gripper and kicker.
+    boolean kickerExtended, gripperExtended;
+    // transition just keeps track of when the gripper, kicker, and elevator are in mid-transition.
+    boolean transition;
+    // secondary keeps track of if the second controller is being used.
+    boolean secondary;
 
-    //Minimum delay before current is tested
-    public long startTime;
-
-    public double currentThreshold = 0.5;
-
+    // These keep track of the triggers and bumpers on the secondary controller.
     double leftTrigger, rightTrigger;
     boolean leftBumper, rightBumper;
-
-    boolean secondaryControllerActive,containerIsReady;
-
-
-    /**
-     * Initializes the gripper subsystem, called in robotInit();
-     */
+    
     public Gripper() {
-        gripperExtended = false;
+
+        // Set all the booleans above to false.
+        aMode = false;
+        xMode = false;
         kickerExtended = false;
-        isSuckedIn = false;
+        gripperExtended = false;
+        wheelsRotOut = false;
+        wheelsRotIn = false;
+        transition = false;
 
         leftTrigger = 0.0;
         rightTrigger = 0.0;
         leftBumper = false;
         rightBumper = false;
-        containerIsReady = false;
     }
+
     /**
-     * Called periodically during teleopPeriodic();
+     *  update method (recieves elevator object)
      */
-    public void update(int currentLevel, int desiredLevel) {
+    public void update(Elevator elevator) {
+
         //Update triggers and bumpers for the second controller
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
-
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // Primary Controls
-        ////////////////////////////////////////////////////////////////////////////////
-
-
-        //If the Start button is down on either remote, reset the gripper
-        if (Controller.Primary.Button.START.isDownOnce() || Controller.Secondary.Button.START.isDownOnce()) {
-            resetGripper();
+        
+        // Primary
+        
+        if (Controller.Primary.Button.X.isDownOnce()) {
+            secondary = false;
+            // Set the transition to true only if the elevator is at level 0.
+            if (elevator.withinThreshold(0)) {
+                transition = true;
+            }
+            // Set aMode to false.
+            aMode = false;
+            // If xMode was true before, set it to false and stop the wheels from rotating.
+            if (xMode) {
+                wheelsRotOut = false;
+                wheelsRotIn = false;
+                xMode = false;
+            }
+            // if xMode was false before, set it to true and rotate the wheels in to the robot.
+            else {
+                wheelsRotOut = false;
+                wheelsRotIn = true;
+                xMode = true;
+            }
         }
-        //If the X button is down on remote one, change gripper state
-        else if (Controller.Primary.Button.X.isDownOnce() && !containerIsReady) {
-            secondaryControllerActive = false;
-            gripperExtended = !gripperExtended;
-            if (gripperExtended)
-                startTime = System.currentTimeMillis();
-
-        }//If the A button is pressed on remote one, change the kicker state
-        else if (Controller.Primary.Button.A.isDownOnce()  && !containerIsReady) {
-            secondaryControllerActive = false;
-            // Only toggle if the gripper is down and the elevator is not at level 0
-            if(gripperExtended && currentLevel != 0)
-                kickerExtended = !kickerExtended;
+        else if (Controller.Primary.Button.A.isDownOnce()) {
+            secondary = false;
+            // Set the transition to true only if the elevator is at level 0.
+            if (elevator.withinThreshold(0)) {
+                transition = true;
+            }
+            // Set xMode to false.
+            xMode = false;
+            // If AMode was true before, set it to false and stop the wheels from rotating.
+            if (aMode) {
+                wheelsRotOut = false;
+                wheelsRotIn = false;
+                aMode = false;
+            }
+            // if aMode was false before, set it to true and rotate the wheels in to the robot.
+            else {
+                wheelsRotOut = false;
+                wheelsRotIn = true;
+                aMode = true;
+            }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // Secondary Controls
-        ////////////////////////////////////////////////////////////////////////////////
+        if (Controller.Primary.Button.Y.isDownOnce()) {
+            secondary = false;
+            // Stop the wheels from rotating in.
+            wheelsRotIn = false;
+            // If the wheels were rotating out before, stop them.
+            if (wheelsRotOut) {
+                wheelsRotOut = false;
+            }
+            // If the wheels were not rotating out before, rotate them out.
+            else {
+                wheelsRotOut = true;
+            }
+        }
+        else if (Controller.Primary.Button.B.isDownOnce()) {
+            secondary = false;
+            // Stop the wheels from rotating out.
+            wheelsRotOut = false;
+            // If the wheels were rotating in before, stop them.
+            if (wheelsRotIn) {
+                wheelsRotIn = false;
+            }
+            // If the wheels were not rotating in before, rotate them in.
+            else {
+                wheelsRotIn = true;
+            }
+        }
+        
+        // Secondary
 
         if (leftTrigger > 0){
-            secondaryControllerActive = true;
+            secondary = true;
             Output.Motor.GRIPPER_LEFT.set(leftTrigger * -1);
         }
         else if (leftBumper) {
-            secondaryControllerActive = true;
+            secondary = true;
             Output.Motor.GRIPPER_LEFT.set(1.0);
         }
-        else if (secondaryControllerActive) {
+        else if (secondary) {
             Output.Motor.GRIPPER_LEFT.set(0);
         }
 
         if (rightTrigger > 0){
-            secondaryControllerActive = true;
+            secondary = true;
             Output.Motor.GRIPPER_RIGHT.set(rightTrigger);
         }
         else if (rightBumper) {
-            secondaryControllerActive = true;
+            secondary = true;
             Output.Motor.GRIPPER_RIGHT.set(-1.0);
         }
-        else if (secondaryControllerActive) {
+        else if (secondary) {
             Output.Motor.GRIPPER_RIGHT.set(0);
         }
 
         if (Controller.Secondary.Button.X.isDownOnce()) {
-            secondaryControllerActive = true;
+            secondary = true;
             gripperExtended = !gripperExtended;
         }
         else if (Controller.Secondary.Button.A.isDownOnce()) {
-            secondaryControllerActive = true;
+            secondary = true;
             kickerExtended = !kickerExtended;
         }
+        
+        // Processing
+        
+        if (!secondary) {
 
-        ////////////////////////////////////////////////////////////////////////////////
-        // Processing inputs
-        ////////////////////////////////////////////////////////////////////////////////
-
-        // If the secondary controller is not active (primary is active)
-        if (!secondaryControllerActive) {
-            //If the gripper is extended
-            if (gripperExtended) {
-                //And the container is not fully sucked in
-
-                if (!isSuckedIn) {
-                    // Only extend the kicker based on user input if the gripper is extended and their is no container.
-                    Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
-
-                    //Spin motors in opposite directions to suck in container
-                    Output.Motor.GRIPPER_LEFT.set(-1.0);
-                    Output.Motor.GRIPPER_RIGHT.set(1.0);
-
-                    if (motorsStressed()) {
-                        isSuckedIn = true;
-                        startTime = System.currentTimeMillis();
+            // If xMode is true
+            if (xMode) {
+                // Set the gripper to be extended since it is independent from the elevator.
+                gripperExtended = true;
+                // If the kicker is extended OR there is a transition
+                if (kickerExtended || transition) {
+                    // If the kicker is extended AND the elevator is at position 100 or higher, set the kicker to not be extended.
+                    if (kickerExtended && elevator.pastThreshold(1)) {
+                        kickerExtended = false;
                     }
-                } else {
-                    //Stop motors
-                    Output.Motor.GRIPPER_LEFT.set(0);
-                    Output.Motor.GRIPPER_RIGHT.set(0);
-
-                    containerIsReady = true;
-
-                    // If the elevator is in the process of lifting the container
-                    // out of the gripper, reset the gripper
-                    if (currentLevel >= 1 && desiredLevel >= 1)
-                        resetGripper();
+                    // If the kicker is extended and the elevator's level is 0, request the elevator to move to level 1.
+                    else if (kickerExtended && elevator.withinThreshold(0)) {
+                        elevator.elevatorToLevel(1);
+                    }
+                    // If the kicker is not extended AND the elevator is at position 100 or higher, AND there is a transition, 
+                    // request the elevator to move back down to level 0, and end the transition.
+                    else if (!kickerExtended && elevator.pastThreshold(1) && transition) {
+                        elevator.elevatorToLevel(0);
+                        transition = false;
+                    }
                 }
-                //If the gripper is not down, reset the state and stop motors
-            } else {
-                // Pull the kicker in if the gripper is up.
-                isSuckedIn = false;
-
-                if (currentLevel != 0)
-                    Output.PneumaticSolenoid.GRIPPER_KICKER.set(false);
-                
-                Output.Motor.GRIPPER_LEFT.set(0);
-                Output.Motor.GRIPPER_RIGHT.set(0);
             }
+            // If aMode is true
+            else if (aMode) {
+                // Set the gripper to be extended since it is independent from the elevator.
+                gripperExtended = true;
+                // If the kicker is not extended OR there is a transition
+                if (!kickerExtended || transition) {
+                    // If the kicker is not extended and the elevator is at position 100 or higher, extend the kicker.
+                    if (!kickerExtended && elevator.pastThreshold(1)) {
+                        kickerExtended = true;
+                    }
+                    // If the kicker is not extended and the elevator is at level 0, request the elevator to move to level 1.
+                    else if (!kickerExtended && elevator.withinThreshold(0)) {
+                        elevator.elevatorToLevel(1);
+                    }
+                    // If the kicker is extended and the elevator is at position 100 or higher, AND there is a transition,
+                    // request the elevator to move back down to level 0, and end the transition.  
+                    else if (kickerExtended && elevator.pastThreshold(1) && transition) {
+                        elevator.elevatorToLevel(0);
+                        transition = false;
+                    }
+                }
+            }
+            // If neither xMode or aMode are true
+            else {
+                // Set the gripper to not be extended since it is independent from the elevator.
+                gripperExtended = false;
+                // Stop the wheels from rotating since the gripper will not be extended.
+                wheelsRotOut = false;
+                wheelsRotIn = false;
+                // If the kicker is extended OR there is a transition
+                if (kickerExtended || transition) {
+                    // If the kicker is extended AND the elevator is at position 100 or higher, set the kicker to not be extended.
+                    if (kickerExtended && elevator.pastThreshold(1)) {
+                        kickerExtended = false;
+                    }
+                    // If the kicker is extended and the elevator's level is 0, request the elevator to move to level 1.
+                    else if (kickerExtended && elevator.withinThreshold(0)) {
+                        elevator.elevatorToLevel(1);
+                    }
+                    // If the kicker is not extended AND the elevator is at position 100 or higher, AND there is a transition, 
+                    // request the elevator to move back down to level 0, and end the transition.
+                    else if (!kickerExtended && elevator.pastThreshold(1) && transition) {
+                        elevator.elevatorToLevel(0);
+                        transition = false;
+                    }
+                }
+            }
+            Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
-            //Override the kicker solenoid with the kickerExtended variable if the second controller was used.
-        } else {
+            if (wheelsRotIn) {
+                Output.Motor.GRIPPER_LEFT.set(1.0);
+                Output.Motor.GRIPPER_RIGHT.set(-1.0);
+            }
+            else if (wheelsRotOut) {
+                Output.Motor.GRIPPER_LEFT.set(-1.0);
+                Output.Motor.GRIPPER_RIGHT.set(1.0);
+            }
+            else {
+                Output.Motor.GRIPPER_LEFT.set(0.0);
+                Output.Motor.GRIPPER_RIGHT.set(0.0);
+            }
+        }
+        else {
+            Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
             Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
         }
+
+    }
+    
+    /**
+     *  
+     * @param elevator  The Elevator object
+     * @return          Is the gripper and elevator done resetting
+     */
+    public boolean reset(Elevator elevator) {
+        // Set the transition to true only if the elevator is at level 0.
+        if (elevator.withinThreshold(0)) {
+            transition = true;
+        }
+        // Set the wheels and modes to false.
+        wheelsRotOut = false;
+        wheelsRotIn = false;
+        aMode = false;
+        xMode = false;
         
-        //Extend the solenoids based on stored variable
-        Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+        return false;
     }
-
-    /**
-     * Determines if the container is oriented
-     *
-     * @return if the container is oriented
-     */
-    public boolean motorsStressed() {
-        return (Output.Motor.GRIPPER_LEFT.getCurrent() > currentThreshold && Output.Motor.GRIPPER_RIGHT.getCurrent() > currentThreshold) && (System.currentTimeMillis() - startTime > 1000);
-    }
-
-    /**
-     * Resets the gripper
-     */
-    public void resetGripper() {
-        gripperExtended = false;
-        kickerExtended = false;
-        secondaryControllerActive = false;
-        containerIsReady = false;
-    }
-
+    
 }
