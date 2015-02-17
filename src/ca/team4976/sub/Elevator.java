@@ -35,9 +35,13 @@ public class Elevator {
     private boolean checkSecondaryController() {
         if (!Input.Digital.ELEVATOR_TOP.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) < 0) {
             Output.Motor.ELEVATOR.set(0.5);
+            currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
+            checkTop();
             return false;
         } else if (!Input.Digital.ELEVATOR_GROUND.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) > 0) {
             Output.Motor.ELEVATOR.set(-0.5);
+            currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
+            checkGround();
             return false;
         }
         return true;
@@ -103,6 +107,10 @@ public class Elevator {
         return desiredLevel;
     }
 
+    public boolean pastThreshold(int desiredLevel) {
+        return (currentLevel + percentError) >= desiredLevel;
+    }
+    
     public boolean withinThreshold(int desiredLevel) {
         return (currentLevel >= desiredLevel - percentError && currentLevel <= desiredLevel + percentError);
     }

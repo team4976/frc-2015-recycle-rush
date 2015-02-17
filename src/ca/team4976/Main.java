@@ -8,13 +8,13 @@ public class Main extends IterativeRobot {
 
     Rake rake;
     Elevator elevator;
-    GripperV3 gripper;
+    GripperVWolff gripper;
     DriveTrain drive;
 
     public void robotInit() {
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new GripperV3();
+        gripper = new GripperVWolff();
         drive = new DriveTrain();
     }
 
@@ -34,11 +34,6 @@ public class Main extends IterativeRobot {
 
         drive.teleopArcadeDrive();
         drive.updateAutoTurn();
-
-        if (Controller.Primary.Button.START.isDownOnce()) {
-            gripper.reset(elevator);
-            rake.reset();
-        }
 
         System.out.println("ground: " + Input.Digital.ELEVATOR_GROUND.get() + " | top: " + Input.Digital.ELEVATOR_TOP.get());
         System.out.println("current level: " + elevator.getCurrentLevel() + " | desired level: " + elevator.getDesiredLevel());
