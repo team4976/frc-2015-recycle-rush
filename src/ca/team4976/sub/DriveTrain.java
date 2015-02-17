@@ -2,6 +2,7 @@ package ca.team4976.sub;
 
 import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
+import edu.wpi.first.wpilibj.Gyro;
 
 /**
 * @author Marc Levesque
@@ -79,14 +80,14 @@ public class DriveTrain extends CustomRobotDrive {
 
         if (autoTurnFlag < 0) {
 
-            if (turnLeft(90, 0.3)) {
+            if (turnLeft(90, 0.15)) {
                 Input.AnalogGyro.DRIVE.reset();
                 autoTurnFlag++;
             }
 
         } else if (autoTurnFlag > 0) {
 
-            if (turnRight(90, 0.3)) {
+            if (turnRight(90, 0.15)) {
                 Input.AnalogGyro.DRIVE.reset();
                 autoTurnFlag--;
             }
@@ -101,18 +102,36 @@ public class DriveTrain extends CustomRobotDrive {
      */
     public boolean turnRight(double angle, double speed) {
 
-        if (Input.AnalogGyro.DRIVE.getAngle() > angle) {
+        if (isGyroReset == false) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
 
-            return true;
+        switch (turnState) {
 
-        } else {
+            case 0:
 
-            speed = ramp(speed, angle - Input.AnalogGyro.DRIVE.getAngle());
+                arcadeDrive(speed, 0);
 
-            arcadeDrive(speed, 0);
+                if (Input.AnalogGyro.DRIVE.getAngle() >= angle - 15) {
 
-            return false;
+                    turnState++;
+
+                } break;
+
+            case 1:
+
+                arcadeDrive(-0.2, 0);
+
+                if (Input.AnalogGyro.DRIVE.getRate() < -0.1) {
+
+                    turnState++;
+
+                } break;
+
+            case 2: arcadeDrive( 0, 0); turnState = 0; isGyroReset = false; return true;
+
+            default: return true;
         }
+
+        return false;
     }
 
     /**
@@ -121,21 +140,42 @@ public class DriveTrain extends CustomRobotDrive {
      *
      * @return a value from true or false to determine if we have completed the turn.
      */
+
+    int turnState = 0;
+    boolean isGyroReset = false;
+
     public boolean turnLeft(double angle, double speed) {
 
-        if (Input.AnalogGyro.DRIVE.getAngle() < -angle) {
+        if (isGyroReset == false) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
 
-            arcadeDrive(0, 0);
-            return true;
+        switch (turnState) {
 
-        } else {
+            case 0:
 
-            speed = ramp(speed, angle + Input.AnalogGyro.DRIVE.getAngle());
+                arcadeDrive(-speed, 0);
 
-            arcadeDrive(-speed, 0);
+                if (Input.AnalogGyro.DRIVE.getAngle() < angle  + 15) {
 
-            return false;
+                    turnState++;
+
+                } break;
+
+            case 1:
+
+                arcadeDrive(0.2, 0);
+
+                if (Input.AnalogGyro.DRIVE.getRate() > -0.01) {
+
+                    turnState++;
+
+                } break;
+
+            case 2: arcadeDrive(0, 0); turnState = 0; isGyroReset = false; return true;
+
+            default: return true;
         }
+
+        return false;
     }
 
     /**

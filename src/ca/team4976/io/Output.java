@@ -39,6 +39,15 @@ public class Output {
             return 0;
         }
 
+        public double getSpeed() {
+
+            if (motor instanceof Talon)
+                return ((Talon) motor).getSpeed();
+            else if (motor instanceof CANTalon)
+                return ((CANTalon) motor).getSpeed();
+            return 0;
+        }
+
     }
 
     public static enum PneumaticSolenoid {
