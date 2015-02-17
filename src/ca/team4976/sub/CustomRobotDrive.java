@@ -1,5 +1,6 @@
 package ca.team4976.sub;
 
+import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
 /**
@@ -37,6 +38,11 @@ public class CustomRobotDrive {
         if (rampedValue < 0.1) rampedValue = 0.1;
 
         return rampedValue; // makes error a value from 0 - 1 then multiples the square root to speed.
+    }
+
+    public double frictionRamp() {
+
+        return 5 + 10 * Input.AnalogGyro.DRIVE.getRate() / 130;
     }
 
 
