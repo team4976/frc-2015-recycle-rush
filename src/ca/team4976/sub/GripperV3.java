@@ -16,22 +16,23 @@ public class GripperV3 {
         xState = false;
         aState = false;
 
-        boolean gripperState = false;
-        boolean kickerState = false;
+        gripperState = false;
+        kickerState = false;
 
+
+    }
+
+    public void update(Elevator elevator){
         leftBumper = Controller.Secondary.Button.LEFT_BUMPER.isDown();
         rightBumper = Controller.Secondary.Button.RIGHT_BUMPER.isDown();
         leftTrigger = Controller.Secondary.Trigger.LEFT.value();
         rightTrigger = Controller.Secondary.Trigger.RIGHT.value();
-    }
-
-    public void update(Elevator elevator){
         //Primary Controls
         if(Controller.Primary.Button.X.isDownOnce()){
             //pickup an upright container
             xState = !xState;
             System.out.println("X state is " + xState);
-            gripperState = !gripperState;
+            gripperState = false;
             kickerState = !kickerState;
             pickupContainer(elevator, xState);
         }
