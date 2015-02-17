@@ -32,16 +32,16 @@ public class GripperV3 {
             //pickup an upright container
             xState = !xState;
             System.out.println("X state is " + xState);
-            gripperState = false;
-            kickerState = !kickerState;
-            pickupContainer(elevator, xState);
+            gripperState = !gripperState;
+            kickerState = false;
+            pickupContainer(elevator, xState, gripperState, kickerState);
         }
         else if(Controller.Primary.Button.A.isDownOnce()){
             //pick up a fallen over container
             aState = !aState;
             gripperState = !gripperState;
             kickerState = !kickerState;
-            pickupContainer(elevator, aState);
+            pickupContainer(elevator, aState, kickerState, gripperState);
         }
         //Secondary Controls
         if(leftTrigger != 0){
@@ -101,21 +101,26 @@ public class GripperV3 {
         Output.Motor.GRIPPER_RIGHT.set(speedRight);
     }
     //Picks up a container
-    private void pickupContainer(Elevator elevator, boolean state) {
+    private void pickupContainer(Elevator elevator, boolean state, boolean iKickerState, boolean iGripperState) {
         System.out.println("Picking up container");
+        System.out.println("The state is " + state);
+        System.out.println("The gripper state is " + iGripperState);
+        System.out.println("The kicker state is " + iKickerState);
         if (state) {
-            toggleGripper(gripperState);
-            System.out.println("The gripper state" + gripperState);
+            toggleGripper(iGripperState);
             gripperMotors(1.0, -1.0);
             if (elevator.withinThreshold(1)) {
-                toggleKicker(kickerState);
+
+                System.out.println(kickerState);
+                toggleKicker(iKickerState);
                 if(Input.Digital.GRIPPER_LASER.get()){
                     gripperMotors(0.0,0.0);
                 }
             } else {
                 elevator.elevatorToLevel(1);
                 if (elevator.withinThreshold(1)) {
-                    toggleKicker(kickerState);
+
+                    toggleKicker(iKickerState);
                     elevator.elevatorToLevel(0);
                     if(Input.Digital.GRIPPER_LASER.get()){
                         gripperMotors(0.0,0.0);
@@ -123,6 +128,7 @@ public class GripperV3 {
                 }
             }
         } else {
+            System.out.println("resetting gripper");
             reset(elevator);
         }
     }
