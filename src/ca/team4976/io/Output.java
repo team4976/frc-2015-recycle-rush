@@ -12,8 +12,8 @@ public class Output {
         DRIVE_RIGHT_1(2, 1.0, new Talon(2)),
         DRIVE_RIGHT_2(3, 1.0, new Talon(3)),
         ELEVATOR(11, 0.5, new CANTalon(11)),
-        GRIPPER_LEFT(12, 0.5, new CANTalon(12)),
-        GRIPPER_RIGHT(13, 0.5,new CANTalon(13));
+        GRIPPER_LEFT(12, 1, new CANTalon(12)),
+        GRIPPER_RIGHT(13, 1,new CANTalon(13));
 
         public int id;
         public Object motor;
@@ -27,6 +27,7 @@ public class Output {
         }
 
         public void set(double speed) {
+
             if (motor instanceof Talon)
                 ((Talon) motor).set(speed * modifier);
             else if (motor instanceof CANTalon)
@@ -51,7 +52,7 @@ public class Output {
     }
 
     public static enum PneumaticSolenoid {
-        RAKE(0, 1),
+        RAKE(6, 7),
         GRIPPER_PNEUMATIC(2, 3),
         GRIPPER_KICKER(4, 5);
 
