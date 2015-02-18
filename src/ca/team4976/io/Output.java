@@ -49,6 +49,13 @@ public class Output {
             return 0;
         }
 
+        public void enableBrake(boolean isEnabled) {
+
+            if (motor instanceof CANTalon)
+                ((CANTalon) motor).enableBrakeMode(isEnabled);
+        }
+
+
     }
 
     public static enum PneumaticSolenoid {

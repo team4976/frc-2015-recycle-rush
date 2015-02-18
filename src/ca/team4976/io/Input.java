@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.PIDSource;
 public class Input {
 
     public enum Digital {
-        ELEVATOR_GROUND(10),
-        ELEVATOR_TOP(11),
+        ELEVATOR_GROUND(3),
+        ELEVATOR_TOP(4),
         GRIPPER_LASER(12);
 
         private DigitalInput di;
@@ -25,8 +25,8 @@ public class Input {
 
     public enum DigitalEncoder {
         DRIVE_LEFT(0, 1, 2, -5.32),
-        DRIVE_RIGHT(3, 4, 5, 0.025),
-        ELEVATOR(6, 7, 8, 2.3E-1);
+        //DRIVE_RIGHT(3, 4, 5, 0.025),
+        ELEVATOR(6, 7, 8,  2E-1);
 
         private Encoder encoder;
         private double distance;
