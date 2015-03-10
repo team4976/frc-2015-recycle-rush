@@ -8,7 +8,7 @@ public class Main extends IterativeRobot {
 
     public Rake rake;
     public Elevator elevator;
-    public Gripper gripper;
+    public GripperV5 gripper;
     public DriveTrain drive;
 
     public void robotInit() {
@@ -18,7 +18,7 @@ public class Main extends IterativeRobot {
         Output.Motor.ELEVATOR.enableBrake(true);
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new Gripper();
+        gripper = new GripperV5();
         drive = new DriveTrain();
     }
 
@@ -43,12 +43,12 @@ public class Main extends IterativeRobot {
 
         if (Controller.Primary.Button.START.isDownOnce() || Controller.Secondary.Button.START.isDownOnce()) {
             rake.reset();
-            gripper.reset(elevator);
+            gripper.reset();
         }
 
         rake.update();
         elevator.update();
-        gripper.update(elevator);
+        gripper.update();
 
         drive.teleopArcadeDrive();
         drive.updateAutoTurn();
