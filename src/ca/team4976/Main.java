@@ -12,7 +12,6 @@ public class Main extends IterativeRobot {
     public DriveTrain drive;
 
     public void robotInit() {
-
         Input.AnalogGyro.DRIVE.gyroInit();
         System.out.println("Gyro has been Initialized");
         Output.Motor.ELEVATOR.enableBrake(true);

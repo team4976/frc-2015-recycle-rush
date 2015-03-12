@@ -227,8 +227,8 @@ public class Gripper {
                     }
                 }
             }
-            Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+            //Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+            //Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
 
             if (wheelsRotIn) {
                 Output.Motor.GRIPPER_LEFT.set(1.0);
@@ -244,8 +244,8 @@ public class Gripper {
             }
         }
         else {
-            Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
-            Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
+            //Output.PneumaticSolenoid.GRIPPER_PNEUMATIC.set(gripperExtended);
+            //Output.PneumaticSolenoid.GRIPPER_KICKER.set(kickerExtended);
         }
 
     }
