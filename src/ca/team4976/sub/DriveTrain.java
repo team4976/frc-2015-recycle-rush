@@ -14,8 +14,8 @@ public class DriveTrain extends CustomRobotDrive {
     Controller.Primary.Trigger leftTrigger = Controller.Primary.Trigger.LEFT; // makes things smaller later.
     Controller.Primary.Trigger RightTrigger = Controller.Primary.Trigger.RIGHT; // makes things smaller later.
 
-    private double throttle = 0.5; // is used to limit the final output to the drive.
-    private int gear = 2; // is used to determine the limit to the final drive.
+    private double throttle = 0.3; // is used to limit the final output to the drive.
+    private int gear = 1; // is used to determine the limit to the final drive.
     private int autoTurnFlag = 0; // is use to determine how many auto turns should be preformed.
 
     /**
@@ -65,7 +65,7 @@ public class DriveTrain extends CustomRobotDrive {
             case 2: throttle = 0.7;
             case 3: throttle = 1.0;
 
-            default: throttle = 0;
+            default: throttle = 0.3;
         }
     }
 

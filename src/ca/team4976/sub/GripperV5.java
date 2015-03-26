@@ -4,7 +4,7 @@ import ca.team4976.io.Controller;
 import ca.team4976.io.Output;
 
 /**
- * Created by Ivan on 2015-03-1Radeon HD 7870 XT0.
+ * Created by Ivan on 2015-03-1.
  */
 public class GripperV5 {
 
