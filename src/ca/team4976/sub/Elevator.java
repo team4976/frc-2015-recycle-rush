@@ -7,8 +7,9 @@ import ca.team4976.io.Output;
 public class Elevator {
 
     private double currentLevel;
-    private int desiredLevel, displayLevel;
+    private double desiredLevel, displayLevel;
     private double percentError;
+    boolean isManual = false;
 
     public Elevator() {
         currentLevel = 0;
@@ -24,23 +25,25 @@ public class Elevator {
     }
 
     private void checkPrimaryController() {
-        if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce() && desiredLevel < 4)
-            elevatorUp();
-        else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0)
-            elevatorDown();
-        else if (Controller.Primary.Button.BACK.isDownOnce())
-            elevatorToLevel(0);
+        ///if (Controller.Primary.Button.RIGHT_BUMPER.isDownOnce() && desiredLevel < 4)
+        ///    elevatorUp();
+        ///else if (Controller.Primary.Button.LEFT_BUMPER.isDownOnce() && desiredLevel > 0)
+        ///    elevatorDown();
+        ///else if (Controller.Primary.Button.BACK.isDownOnce())
+        ///    elevatorToLevel(0);
     }
 
     private boolean checkSecondaryController() {
-        if (!Input.Digital.ELEVATOR_TOP.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) < 0) {
-            Output.Motor.ELEVATOR.set(0.5);
+        if (!Input.DigitalInput.ELEVATOR_GROUND.get() && Controller.Primary.Stick.RIGHT.vertical() > 0.1) {
+            Output.Motor.ELEVATOR.set(-Controller.Primary.Stick.RIGHT.vertical());
             currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
+            desiredLevel = currentLevel;
             checkTop();
             return false;
-        } else if (!Input.Digital.ELEVATOR_GROUND.get() && Controller.Secondary.Stick.RIGHT.vertical(-0.2, 0.2) > 0) {
-            Output.Motor.ELEVATOR.set(-0.5);
+        } else if (!Input.DigitalInput.ELEVATOR_TOP.get() && Controller.Primary.Stick.RIGHT.vertical() < -0.1) {
+            Output.Motor.ELEVATOR.set(-Controller.Primary.Stick.RIGHT.vertical());
             currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
+            desiredLevel = currentLevel;
             checkGround();
             return false;
         }
@@ -66,12 +69,12 @@ public class Elevator {
                 }
             }
         } else {
-            Output.Motor.ELEVATOR.set(0);
+            Output.Motor.ELEVATOR.set(0.1);
         }
     }
 
     private void checkGround() {
-        if (Input.Digital.ELEVATOR_GROUND.get() && (desiredLevel == 0 || desiredLevel < currentLevel)) {
+        if (Input.DigitalInput.ELEVATOR_GROUND.get() && (desiredLevel == 0 || desiredLevel < currentLevel)) {
             desiredLevel = 0;
             currentLevel = 0;
             Input.DigitalEncoder.ELEVATOR.reset();
@@ -79,7 +82,7 @@ public class Elevator {
     }
 
     private void checkTop() {
-        if (Input.Digital.ELEVATOR_TOP.get() && (desiredLevel == 4 || desiredLevel > currentLevel)) {
+        if (Input.DigitalInput.ELEVATOR_TOP.get() && (desiredLevel == 4 || desiredLevel > currentLevel)) {
             desiredLevel = 4;
             currentLevel = 4;
             Input.DigitalEncoder.ELEVATOR.set(4);
@@ -87,11 +90,13 @@ public class Elevator {
     }
 
     public void elevatorUp() {
-        desiredLevel++;
+
+        if (Math.round(desiredLevel) < 4) desiredLevel += 1;
     }
 
     public void elevatorDown() {
-        desiredLevel--;
+
+        if (Math.round(desiredLevel) > 0) desiredLevel -= 1;
     }
 
     public void elevatorToLevel(int level) {
@@ -103,7 +108,7 @@ public class Elevator {
         return currentLevel;
     }
 
-    public int getDesiredLevel() {
+    public double getDesiredLevel() {
         return desiredLevel;
     }
 
@@ -111,7 +116,7 @@ public class Elevator {
         return (currentLevel + percentError) >= desiredLevel;
     }
     
-    public boolean withinThreshold(int desiredLevel) {
+    public boolean withinThreshold(double desiredLevel) {
         return (currentLevel >= desiredLevel - percentError && currentLevel <= desiredLevel + percentError);
     }
 

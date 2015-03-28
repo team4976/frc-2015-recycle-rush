@@ -115,7 +115,7 @@ public class CustomRobotDrive {
 
                 case EXPONETIAL:
 
-                    return new double[] {Math.pow(x, 2), y};
+                    return x > 0 ? new double[] {Math.pow(x, 2), y} : new double[] {-Math.pow(x, 2), y};
 
                 default:
                     return new double[]{0, 0};

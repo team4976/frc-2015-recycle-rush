@@ -1,21 +1,20 @@
 package ca.team4976.io;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.PIDSource;
 
 public class Input {
 
-    public enum Digital {
+    public enum DigitalInput {
         ELEVATOR_GROUND(3),
         ELEVATOR_TOP(4),
         GRIPPER_LASER(12);
 
-        private DigitalInput di;
+        private edu.wpi.first.wpilibj.DigitalInput di;
 
-        private Digital(int id) {
-            di = new DigitalInput(id);
+        private DigitalInput(int id) {
+            di = new edu.wpi.first.wpilibj.DigitalInput(id);
         }
 
         public boolean get() {
@@ -23,8 +22,21 @@ public class Input {
         }
     }
 
+    public enum DigitalOutput {
+
+        LED(5);
+
+        private edu.wpi.first.wpilibj.DigitalOutput di;
+
+        private DigitalOutput(int id) {
+            di = new edu.wpi.first.wpilibj.DigitalOutput(id);
+        }
+
+        public void set(boolean value) { di.set(value); }
+    }
+
     public enum DigitalEncoder {
-        DRIVE_LEFT(0, 1, 2, -5.32),
+        DRIVE_LEFT(0, 1, 2, 0.025),
         //DRIVE_RIGHT(3, 4, 5, 0.025),
         ELEVATOR(6, 7, 8,  2E-1);
 
