@@ -9,10 +9,13 @@ public class Main extends IterativeRobot {
 
     public Rake rake;
     public Elevator elevator;
-    public GripperV5 gripper;
+    public Claw claw;
     public DriveTrain drive;
 
     private boolean fireRakeOnStart;
+    private int state = 0;
+    private long timeFlag = 0;
+    private int maxState = 3;
 
     private double  stageOneDriveSpeed,         stageOneDriveDistance;
     private int     stageTwoDelay;
@@ -30,12 +33,14 @@ public class Main extends IterativeRobot {
     public void robotInit() {
 
         Output.Motor.ELEVATOR.enableBrake(true);
+        Output.Digital.LED.set(true);
+
         Input.AnalogGyro.DRIVE.gyroInit();
         System.out.println("Gyro has been Initialized");
         Output.Motor.ELEVATOR.enableBrake(true);
         rake = new Rake();
         elevator = new Elevator();
-        gripper = new GripperV5();
+        claw = new Claw();
         drive = new DriveTrain();
 
         table = NetworkTable.getTable("auto");
@@ -106,20 +111,17 @@ public class Main extends IterativeRobot {
         if (Controller.getResetOnce()) {
 
             rake.reset();
-            gripper.reset();
+            claw.reset();
         }
 
         rake.update();
         elevator.update();
-        gripper.update();
+        claw.update();
 
         drive.teleopArcadeDrive();
         drive.updateAutoTurn();
     }
 
-    int state = 0;
-    long timeFlag = 0;
-    int maxState = 3;
 
     private void stage() {
 

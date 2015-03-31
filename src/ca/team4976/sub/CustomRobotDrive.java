@@ -49,7 +49,7 @@ public class CustomRobotDrive {
     /**
      * DeadBand enum contains methods for evaulating deadband and setting the deadband type.
      */
-    public static enum DeadBand {
+    public enum DeadBand {
 
         LINEAR,
         CONCENTRIC,

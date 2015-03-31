@@ -18,7 +18,8 @@ public class Controller {
 
     public static class Primary {
 
-        public static enum Button {
+        public enum Button {
+
             A(1),
             B(2),
             X(3),
@@ -33,7 +34,7 @@ public class Controller {
             private int port;
             private boolean wasReleased;
 
-            private Button(int port) {
+            Button(int port) {
                 this.port = port;
                 wasReleased = true;
             }
@@ -53,13 +54,13 @@ public class Controller {
             }
         }
 
-        public static enum Trigger {
+        public enum Trigger {
             LEFT(2),
             RIGHT(3);
 
             public int axis;
 
-            private Trigger(int axis) {
+            Trigger(int axis) {
                 this.axis = axis;
             }
 
@@ -86,13 +87,13 @@ public class Controller {
             }
         }
 
-        public static enum Stick {
+        public enum Stick {
             LEFT(0, 1),
             RIGHT(4, 5);
 
             public int hAxis, vAxis;
 
-            private Stick(int hAxis, int vAxis) {
+            Stick(int hAxis, int vAxis) {
                 this.hAxis = hAxis;
                 this.vAxis = vAxis;
             }
@@ -121,7 +122,7 @@ public class Controller {
 
         }
 
-        public static enum DPad {
+        public enum DPad {
             NOT(-1),
             NORTH(0),
             NORTH_EAST(45),
@@ -135,7 +136,7 @@ public class Controller {
             public int angle;
             public boolean wasReleased;
 
-            private DPad(int angle) {
+            DPad(int angle) {
                 this.angle = angle;
                 wasReleased = true;
             }
@@ -166,7 +167,7 @@ public class Controller {
 
     public static class Secondary {
 
-        public static enum Button {
+        public enum Button {
             A(1),
             B(2),
             X(3),
@@ -181,7 +182,7 @@ public class Controller {
             private int port;
             private boolean wasReleased;
 
-            private Button(int port) {
+            Button(int port) {
                 this.port = port;
                 wasReleased = true;
             }
@@ -201,13 +202,13 @@ public class Controller {
             }
         }
 
-        public static enum Trigger {
+        public enum Trigger {
             LEFT(2),
             RIGHT(3);
 
             public int axis;
 
-            private Trigger(int axis) {
+            Trigger(int axis) {
                 this.axis = axis;
             }
 
@@ -234,13 +235,13 @@ public class Controller {
             }
         }
 
-        public static enum Stick {
+        public enum Stick {
             LEFT(0, 1),
             RIGHT(4, 5);
 
             public int hAxis, vAxis;
 
-            private Stick(int hAxis, int vAxis) {
+            Stick(int hAxis, int vAxis) {
                 this.hAxis = hAxis;
                 this.vAxis = vAxis;
             }
@@ -269,7 +270,7 @@ public class Controller {
 
         }
 
-        public static enum DPad {
+        public enum DPad {
             NOT(-1),
             NORTH(0),
             NORTH_EAST(45),
@@ -283,7 +284,7 @@ public class Controller {
             public int angle;
             public boolean wasReleased;
 
-            private DPad(int angle) {
+            DPad(int angle) {
                 this.angle = angle;
                 wasReleased = true;
             }

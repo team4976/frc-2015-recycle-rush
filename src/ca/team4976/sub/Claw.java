@@ -5,12 +5,13 @@ import ca.team4976.io.Output;
 
 /**
  * Created by Ivan on 2015-03-1.
+ * @version 1.0
  */
-public class GripperV5 {
+public class Claw {
 
     boolean openState, upState;
 
-    public GripperV5()
+    public Claw()
     {
         openState = false;
         upState = false;

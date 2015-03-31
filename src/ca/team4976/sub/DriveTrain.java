@@ -2,7 +2,6 @@ package ca.team4976.sub;
 
 import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
-import edu.wpi.first.wpilibj.Gyro;
 
 /**
 * @author Marc Levesque
@@ -17,6 +16,10 @@ public class DriveTrain extends CustomRobotDrive {
     private double throttle = 0.3; // is used to limit the final output to the drive.
     private int gear = 1; // is used to determine the limit to the final drive.
     private int autoTurnFlag = 0; // is use to determine how many auto turns should be preformed.
+
+    int turnState = 0;
+    boolean isGyroReset = false;
+
 
     /**
      * Initializer use to set the dead band settings
@@ -102,7 +105,7 @@ public class DriveTrain extends CustomRobotDrive {
      */
     public boolean turnRight(double angle, double speed) {
 
-        if (isGyroReset == false) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
+        if (!isGyroReset) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
 
         switch (turnState) {
 
@@ -140,13 +143,9 @@ public class DriveTrain extends CustomRobotDrive {
      *
      * @return a value from true or false to determine if we have completed the turn.
      */
-
-    int turnState = 0;
-    boolean isGyroReset = false;
-
     public boolean turnLeft(double angle, double speed) {
 
-        if (isGyroReset == false) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
+        if (!isGyroReset) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
 
         switch (turnState) {
 

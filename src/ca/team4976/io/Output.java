@@ -20,7 +20,7 @@ public class Output {
         public void set(boolean value) { di.set(value); }
     }
 
-    public static enum Motor {
+    public enum Motor {
         DRIVE_LEFT_1(0, 1.0, new Talon(0)),
         DRIVE_LEFT_2(1, 1.0, new Talon(1)),
         DRIVE_RIGHT_1(2, 1.0, new Talon(2)),
@@ -34,7 +34,7 @@ public class Output {
 
         public double modifier;
 
-        private Motor(int id, double modifier, Object motor) {
+        Motor(int id, double modifier, Object motor) {
             this.id = id;
             this.motor = motor;
             this.modifier = modifier;
@@ -72,17 +72,15 @@ public class Output {
 
     }
 
-    public static enum PneumaticSolenoid {
+    public enum PneumaticSolenoid {
         RAKE(6, 7),
-        //GRIPPER_PNEUMATIC(2, 3),
-        //GRIPPER_KICKER(4, 5);
         CLAW_OPEN(2,3),
         CLAW_UP(4,5);
 
         public int port1, port2;
         public DoubleSolenoid solenoid;
 
-        private PneumaticSolenoid(int port1, int port2) {
+        PneumaticSolenoid(int port1, int port2) {
             this.port1 = port1;
             this.port2 = port2;
             solenoid = new DoubleSolenoid(20, this.port1, this.port2);

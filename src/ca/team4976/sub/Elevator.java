@@ -7,14 +7,12 @@ import ca.team4976.io.Output;
 public class Elevator {
 
     private double currentLevel;
-    private double desiredLevel, displayLevel;
+    private double desiredLevel;
     private double percentError;
-    boolean isManual = false;
 
     public Elevator() {
         currentLevel = 0;
         desiredLevel = 0;
-        displayLevel = 0;
         percentError = 0.1;
     }
 

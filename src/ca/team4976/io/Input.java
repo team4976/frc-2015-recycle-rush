@@ -3,7 +3,6 @@ package ca.team4976.io;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
-import edu.wpi.first.wpilibj.PIDSource;
 
 public class Input {
 
@@ -51,7 +50,8 @@ public class Input {
 
     }
 
-    public enum AnalogGyro implements PIDSource {
+    public enum AnalogGyro {
+
         DRIVE(0);
 
         private Gyro gyro;
@@ -71,9 +71,5 @@ public class Input {
         }
 
         public double getRate() { return gyro.getRate(); }
-
-        @Override
-        public double pidGet() { return getAngle(); }
     }
-
 }
