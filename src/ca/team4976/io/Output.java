@@ -1,10 +1,24 @@
 package ca.team4976.io;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Output {
+
+    public enum Digital {
+
+        LED(5);
+
+        private DigitalOutput di;
+
+        Digital(int id) {
+            di = new DigitalOutput(id);
+        }
+
+        public void set(boolean value) { di.set(value); }
+    }
 
     public static enum Motor {
         DRIVE_LEFT_1(0, 1.0, new Talon(0)),

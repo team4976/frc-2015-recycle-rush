@@ -1,38 +1,23 @@
 package ca.team4976.io;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.PIDSource;
 
 public class Input {
 
-    public enum DigitalInput {
+    public enum Digital {
         ELEVATOR_GROUND(3),
-        ELEVATOR_TOP(4),
-        GRIPPER_LASER(12);
+        ELEVATOR_TOP(4);
 
-        private edu.wpi.first.wpilibj.DigitalInput di;
+        private DigitalInput di;
 
-        private DigitalInput(int id) {
-            di = new edu.wpi.first.wpilibj.DigitalInput(id);
-        }
+        Digital(int id) { di = new DigitalInput(id); }
 
         public boolean get() {
             return di.get();
         }
-    }
-
-    public enum DigitalOutput {
-
-        LED(5);
-
-        private edu.wpi.first.wpilibj.DigitalOutput di;
-
-        private DigitalOutput(int id) {
-            di = new edu.wpi.first.wpilibj.DigitalOutput(id);
-        }
-
-        public void set(boolean value) { di.set(value); }
     }
 
     public enum DigitalEncoder {
@@ -43,7 +28,7 @@ public class Input {
         private Encoder encoder;
         private double distance;
 
-        private DigitalEncoder(int dio1, int dio2, int dio3, double dpp) {
+        DigitalEncoder(int dio1, int dio2, int dio3, double dpp) {
             encoder = new Encoder(dio1, dio2, dio3);
             encoder.setDistancePerPulse(dpp);
         }
@@ -71,7 +56,7 @@ public class Input {
 
         private Gyro gyro;
 
-        private AnalogGyro(int analogIn) {
+        AnalogGyro(int analogIn) {
             gyro = new Gyro(analogIn);
         }
 

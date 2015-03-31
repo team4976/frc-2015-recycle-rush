@@ -34,13 +34,13 @@ public class Elevator {
     }
 
     private boolean checkSecondaryController() {
-        if (!Input.DigitalInput.ELEVATOR_GROUND.get() && Controller.Primary.Stick.RIGHT.vertical() > 0.1) {
+        if (!Input.Digital.ELEVATOR_GROUND.get() && Controller.Primary.Stick.RIGHT.vertical() > 0.1) {
             Output.Motor.ELEVATOR.set(-Controller.Primary.Stick.RIGHT.vertical());
             currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
             desiredLevel = currentLevel;
             checkTop();
             return false;
-        } else if (!Input.DigitalInput.ELEVATOR_TOP.get() && Controller.Primary.Stick.RIGHT.vertical() < -0.1) {
+        } else if (!Input.Digital.ELEVATOR_TOP.get() && Controller.Primary.Stick.RIGHT.vertical() < -0.1) {
             Output.Motor.ELEVATOR.set(-Controller.Primary.Stick.RIGHT.vertical());
             currentLevel = Input.DigitalEncoder.ELEVATOR.getDistance();
             desiredLevel = currentLevel;
@@ -74,7 +74,7 @@ public class Elevator {
     }
 
     private void checkGround() {
-        if (Input.DigitalInput.ELEVATOR_GROUND.get() && (desiredLevel == 0 || desiredLevel < currentLevel)) {
+        if (Input.Digital.ELEVATOR_GROUND.get() && (desiredLevel == 0 || desiredLevel < currentLevel)) {
             desiredLevel = 0;
             currentLevel = 0;
             Input.DigitalEncoder.ELEVATOR.reset();
@@ -82,7 +82,7 @@ public class Elevator {
     }
 
     private void checkTop() {
-        if (Input.DigitalInput.ELEVATOR_TOP.get() && (desiredLevel == 4 || desiredLevel > currentLevel)) {
+        if (Input.Digital.ELEVATOR_TOP.get() && (desiredLevel == 4 || desiredLevel > currentLevel)) {
             desiredLevel = 4;
             currentLevel = 4;
             Input.DigitalEncoder.ELEVATOR.set(4);

@@ -6,6 +6,16 @@ public class Controller {
 
     public static Joystick[] joystick = {new Joystick(0), new Joystick(1)};
 
+    public static boolean getResetOnce() {
+
+        return Primary.Button.START.isDownOnce() || Secondary.Button.START.isDownOnce();
+    }
+
+    public static boolean getReset() {
+
+        return Primary.Button.START.isDown() || Secondary.Button.START.isDown();
+    }
+
     public static class Primary {
 
         public static enum Button {
