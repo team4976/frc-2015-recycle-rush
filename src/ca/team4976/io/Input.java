@@ -73,3 +73,4 @@ public class Input {
         public double getRate() { return gyro.getRate(); }
     }
 }
+

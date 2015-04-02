@@ -153,7 +153,7 @@ public class DriveTrain extends CustomRobotDrive {
 
                 arcadeDrive(-speed, 0);
 
-                if (Input.AnalogGyro.DRIVE.getAngle() <= -angle + frictionRamp() + 4) {
+                if (Input.AnalogGyro.DRIVE.getAngle() <= -angle + frictionRamp()) {
 
                     turnState++;
 
@@ -163,7 +163,7 @@ public class DriveTrain extends CustomRobotDrive {
 
                 arcadeDrive(0.2, 0);
 
-                if (Input.AnalogGyro.DRIVE.getRate() > 0.01) {
+                if (Input.AnalogGyro.DRIVE.getRate() > 0.1) {
 
                     turnState++;
 

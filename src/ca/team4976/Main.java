@@ -17,9 +17,10 @@ public class Main extends IterativeRobot {
     private long timeFlag = 0;
     private int maxState = 3;
 
-    private double  stageOneDriveSpeed,         stageOneDriveDistance;
+    private double  stageOneDriveSpeed,         stageOneDriveDistance,  stageOneDriveTimeout;
     private int     stageTwoDelay;
-    private double  stageThreeDriveSpeed,       stageThreeDriveDistance;
+    private double  stageThreeDriveSpeedA,       stageThreeDriveDistanceA;
+    private double  stageThreeDriveSpeedB,       stageThreeDriveDistanceB;
     private int     stageFourRakeReturnDelay;
     private double  stageFiveTurnRightSpeed,    stageFiveTurnRightAngle;
     private double  stageSixDriveSpeed,         stageSixDriveDistance;
@@ -45,24 +46,27 @@ public class Main extends IterativeRobot {
 
         table = NetworkTable.getTable("auto");
 
-        table.putNumber("maxState", 4);
-        table.putBoolean("fireRakeOnStart", false);
+        table.putNumber("maxState", 7);
+        table.putBoolean("fireRakeOnStart", true);
 
-        table.putNumber("stageOneDriveSpeed", 0.15);
+        table.putNumber("stageOneDriveSpeed", 0.25);
         table.putNumber("stageOneDriveDistance", 120);
-        table.putNumber("stageTwoDelay", 5000);
-        table.putNumber("stageThreeDriveSpeed", 0.25);
-        table.putNumber("stageThreeDriveDistance", 120);
+        table.putNumber("stageOneDriveTimeout", 1000);
+        table.putNumber("stageTwoDelay", 1000);
+        table.putNumber("stageThreeDriveSpeedA", 0.1);
+        table.putNumber("stageThreeDriveSpeedB", 0.5);
+        table.putNumber("stageThreeDriveDistanceA", 10);
+        table.putNumber("stageThreeDriveDistanceB", 130);
         table.putNumber("stageFourRakeReturnDelay", 2000);
-        table.putNumber("stageFiveTurnRightSpeed", 0.2);
+        table.putNumber("stageFiveTurnRightSpeed", 0.4);
         table.putNumber("stageFiveTurnRightAngle", 90);
-        table.putNumber("stageSixDriveSpeed", 0.2);
-        table.putNumber("stageSixDriveDistance", 240);
-        table.putNumber("stageSevenTurnLeftSpeed", 0.2);
+        table.putNumber("stageSixDriveSpeed", 0.5);
+        table.putNumber("stageSixDriveDistance", 330);
+        table.putNumber("stageSevenTurnLeftSpeed", 0.4);
         table.putNumber("stageSevenTurnLeftAngle", 90);
         table.putNumber("stageEightDriveSpeed", 0.15);
         table.putNumber("stageEightDriveDistance", 120);
-        table.putNumber("stageNineDelay", 5000);
+        table.putNumber("stageNineDelay", 1000);
         table.putNumber("stageTenDriveSpeed", 0.25);
         table.putNumber("stageTenDriveDistance", 120);
 
@@ -77,23 +81,26 @@ public class Main extends IterativeRobot {
         state = 0;
 
         maxState = (int) table.getNumber("maxState", 4);
-        fireRakeOnStart = table.getBoolean("fireRakeOnStart", false);
+        fireRakeOnStart = table.getBoolean("fireRakeOnStart", true);
 
-        stageOneDriveSpeed = table.getNumber("stageOneDriveSpeed", 0.15);
+        stageOneDriveSpeed = table.getNumber("stageOneDriveSpeed", 0.25);
         stageOneDriveDistance = table.getNumber("stageOneDriveDistance", 120);
-        stageTwoDelay = (int) table.getNumber("stageTwoDelay", 5000);
-        stageThreeDriveSpeed = table.getNumber("stageThreeDriveSpeed", 0.25);
-        stageThreeDriveDistance = table.getNumber("stageThreeDriveDistance", 120);
+        stageOneDriveTimeout = table.getNumber("stageOneDriveTimeout", 1000);
+        stageTwoDelay = (int) table.getNumber("stageTwoDelay", 1000);
+        stageThreeDriveSpeedA = table.getNumber("stageThreeDriveSpeedA", 0.5);
+        stageThreeDriveSpeedB = table.getNumber("stageThreeDriveSpeedB", 0.5);
+        stageThreeDriveDistanceA = table.getNumber("stageThreeDriveDistanceA", 180);
+        stageThreeDriveDistanceB = table.getNumber("stageThreeDriveDistanceB", 180);
         stageFourRakeReturnDelay = (int) table.getNumber("stageFourRakeReturnDelay", 2000);
-        stageFiveTurnRightSpeed = table.getNumber("stageFiveTurnRightSpeed", 0.2);
+        stageFiveTurnRightSpeed = table.getNumber("stageFiveTurnRightSpeed", 0.4);
         stageFiveTurnRightAngle = table.getNumber("stageFiveTurnRightAngle", 90);
-        stageSixDriveSpeed = table.getNumber("stageSixDriveSpeed", 0.2);
-        stageSixDriveDistance = table.getNumber("stageSixDriveDistance", 240);
-        stageSevenTurnLeftSpeed = table.getNumber("stageSevenTurnLeftSpeed", 0.2);
+        stageSixDriveSpeed = table.getNumber("stageSixDriveSpeed", 0.5);
+        stageSixDriveDistance = table.getNumber("stageSixDriveDistance", 330);
+        stageSevenTurnLeftSpeed = table.getNumber("stageSevenTurnLeftSpeed", 0.4);
         stageSevenTurnLeftAngle = table.getNumber("stageSevenTurnLeftAngle", 90);
         stageEightDriveSpeed = table.getNumber("stageEightDriveSpeed", 0.15);
         stageEightDriveDistance = table.getNumber("stageEightDriveDistance", 120);
-        stageNineDelay = (int) table.getNumber("stageNineDelay", 5000);
+        stageNineDelay = (int) table.getNumber("stageNineDelay", 1000);
         stageTenDriveSpeed = table.getNumber("stageTenDriveSpeed", 0.25);
         stageTenDriveDistance = table.getNumber("stageTenDriveDistance", 120);
     }
@@ -108,11 +115,11 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
 
-        if (Controller.getResetOnce()) {
-
-            rake.reset();
-            claw.reset();
-        }
+//        if (Controller.getResetOnce()) {
+//
+//            rake.reset();
+//            claw.reset();
+//        }
 
         rake.update();
         elevator.update();
@@ -140,42 +147,47 @@ public class Main extends IterativeRobot {
 
             case 1:
 
-                    if (drive.back(stageOneDriveDistance, stageOneDriveSpeed) || System.currentTimeMillis() - timeFlag > 2000) {
+                    if (drive.back(stageOneDriveDistance, stageOneDriveSpeed) || System.currentTimeMillis() - timeFlag > stageOneDriveTimeout) {
                         Input.DigitalEncoder.DRIVE_LEFT.reset(); stage(); timeFlag = System.currentTimeMillis();
                         Output.PneumaticSolenoid.RAKE.set(true);} break;
 
             case 2: if (System.currentTimeMillis() - timeFlag > stageTwoDelay) { stage(); } break;
 
-            case 3: if (drive.forward(stageThreeDriveDistance, stageThreeDriveSpeed)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
+            case 3: if (drive.forward(stageThreeDriveDistanceA, stageThreeDriveSpeedA)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
 
-            case 4: Output.PneumaticSolenoid.RAKE.set(false); timeFlag = System.currentTimeMillis(); stage(); break;
+            case 4: if (drive.forward(stageThreeDriveDistanceB, stageThreeDriveSpeedB)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
 
-            case 5: if (System.currentTimeMillis() - timeFlag > stageFourRakeReturnDelay) { stage(); timeFlag = System.currentTimeMillis(); } break;
+            case 5: Output.PneumaticSolenoid.RAKE.set(false); timeFlag = System.currentTimeMillis(); stage(); break;
 
-            case 6: if (drive.turnRight(stageFiveTurnRightAngle, stageFiveTurnRightSpeed) || System.currentTimeMillis() - timeFlag > 2000) { Input.DigitalEncoder.DRIVE_LEFT.reset(); state++; } break;
+            case 6: if (System.currentTimeMillis() - timeFlag > stageFourRakeReturnDelay) { stage(); timeFlag = System.currentTimeMillis(); } break;
 
-            case 7: if (drive.forward(stageSixDriveDistance, stageSixDriveSpeed)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
+            case 7: if (drive.turnRight(stageFiveTurnRightAngle, stageFiveTurnRightSpeed)) { Input.DigitalEncoder.DRIVE_LEFT.reset(); stage(); } break;
 
             case 8:
+                if (drive.forward(stageSixDriveDistance, stageSixDriveSpeed)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
+
+            case 9:
 
                 if (drive.turnLeft(stageSevenTurnLeftAngle, stageSevenTurnLeftSpeed)) { Input.DigitalEncoder.DRIVE_LEFT.reset(); stage();
                 timeFlag = System.currentTimeMillis(); } break;
 
-            case 9: Output.PneumaticSolenoid.RAKE.set(fireRakeOnStart); stage(); break;
-
             case 10:
+                if (drive.back(stageEightDriveDistance, stageEightDriveSpeed) || System.currentTimeMillis() - timeFlag > 4000) {
+                    Input.DigitalEncoder.DRIVE_LEFT.reset(); stage(); timeFlag = System.currentTimeMillis();}
 
-                if (drive.back(stageEightDriveDistance, stageEightDriveSpeed) || System.currentTimeMillis() - timeFlag > 2000) {
-                    Input.DigitalEncoder.DRIVE_LEFT.reset(); stage(); timeFlag = System.currentTimeMillis();
-                    Output.PneumaticSolenoid.RAKE.set(true);} break;
+            case 11:
 
-            case 11: if (System.currentTimeMillis() - timeFlag > stageNineDelay) { stage(); } break;
+                Output.PneumaticSolenoid.RAKE.set(true); stage(); break;
 
-            case 12: if (drive.forward(stageTenDriveDistance, stageTenDriveSpeed)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
+            case 12: if (System.currentTimeMillis() - timeFlag > stageNineDelay) { stage(); } break;
 
-            case 13: Output.PneumaticSolenoid.RAKE.set(false); stage(); break;
+            case 13: if (drive.forward(stageTenDriveDistance, stageTenDriveSpeed)) { Input.AnalogGyro.DRIVE.reset(); stage(); } break;
+
+            case 14: Output.PneumaticSolenoid.RAKE.set(false); stage(); break;
 
             default: drive.arcadeDrive(0, 0);
         }
+
+        System.out.println(state);
     }
 }
