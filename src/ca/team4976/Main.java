@@ -60,8 +60,8 @@ public class Main extends IterativeRobot {
         table.putNumber("stageFourRakeReturnDelay", 2000);
         table.putNumber("stageFiveTurnRightSpeed", 0.4);
         table.putNumber("stageFiveTurnRightAngle", 90);
-        table.putNumber("stageSixDriveSpeed", 0.5);
-        table.putNumber("stageSixDriveDistance", 330);
+        table.putNumber("stageSixDriveSpeed", 0.2);
+        table.putNumber("stageSixDriveDistance", 300);
         table.putNumber("stageSevenTurnLeftSpeed", 0.4);
         table.putNumber("stageSevenTurnLeftAngle", 90);
         table.putNumber("stageEightDriveSpeed", 0.15);
@@ -94,8 +94,8 @@ public class Main extends IterativeRobot {
         stageFourRakeReturnDelay = (int) table.getNumber("stageFourRakeReturnDelay", 2000);
         stageFiveTurnRightSpeed = table.getNumber("stageFiveTurnRightSpeed", 0.4);
         stageFiveTurnRightAngle = table.getNumber("stageFiveTurnRightAngle", 90);
-        stageSixDriveSpeed = table.getNumber("stageSixDriveSpeed", 0.5);
-        stageSixDriveDistance = table.getNumber("stageSixDriveDistance", 330);
+        stageSixDriveSpeed = table.getNumber("stageSixDriveSpeed", 0.2);
+        stageSixDriveDistance = table.getNumber("stageSixDriveDistance", 300);
         stageSevenTurnLeftSpeed = table.getNumber("stageSevenTurnLeftSpeed", 0.4);
         stageSevenTurnLeftAngle = table.getNumber("stageSevenTurnLeftAngle", 90);
         stageEightDriveSpeed = table.getNumber("stageEightDriveSpeed", 0.15);
@@ -127,6 +127,12 @@ public class Main extends IterativeRobot {
 
         drive.teleopArcadeDrive();
         drive.updateAutoTurn();
+        
+        System.out.println("Gyro: " + Input.AnalogGyro.DRIVE.getAngle());
+        System.out.println("Encoder E: " + Input.DigitalEncoder.ELEVATOR.getDistance());
+        System.out.println("Encoder D: " + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
+        System.out.println("Ground: " + Input.Digital.ELEVATOR_GROUND);
+        System.out.println("Top: " + Input.Digital.ELEVATOR_TOP);
     }
 
 
@@ -140,8 +146,9 @@ public class Main extends IterativeRobot {
 
         System.out.println("Encoder D: " + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
         System.out.println("Gyro: " + Input.AnalogGyro.DRIVE.getAngle());
+        table.putNumber("state", state);
 
-        switch (state) {
+        switch (state) {                                                                                                                                                                                
 
             case 0: Output.PneumaticSolenoid.RAKE.set(fireRakeOnStart); stage(); break;
 
@@ -177,7 +184,7 @@ public class Main extends IterativeRobot {
 
             case 11:
 
-                Output.PneumaticSolenoid.RAKE.set(true); stage(); break;
+                Output.PneumaticSolenoid.RAKE.set(false); stage(); break;
 
             case 12: if (System.currentTimeMillis() - timeFlag > stageNineDelay) { stage(); } break;
 
