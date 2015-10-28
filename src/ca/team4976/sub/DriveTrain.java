@@ -3,221 +3,121 @@ package ca.team4976.sub;
 import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
 
-/**
-* @author Marc Levesque
-* @version 1.1.1
-*/
-public class DriveTrain extends CustomRobotDrive {
+public class DriveTrain extends CustomRobotDrive implements Runnable {
 
-    Controller.Primary.Stick steeringAxis = Controller.Primary.Stick.LEFT; // makes things smaller later.
-    Controller.Primary.Trigger leftTrigger = Controller.Primary.Trigger.LEFT; // makes things smaller later.
-    Controller.Primary.Trigger RightTrigger = Controller.Primary.Trigger.RIGHT; // makes things smaller later.
+    Thread thread = new Thread(this);
 
-    private double throttle = 0.3; // is used to limit the final output to the drive.
-    private int gear = 1; // is used to determine the limit to the final drive.
-    private int autoTurnFlag = 0; // is use to determine how many auto turns should be preformed.
+    private boolean shouldHault = false;
+    private boolean teleopEnabled = false;
+    private boolean isEnabled = false;
+    private int defaultTickTiming = 1000 / 50;
+    private int currentTickTiming = 0;
+    private long waitTime = 100;
 
-    int turnState = 0;
-    boolean isGyroReset = false;
+    private int turnCount = 0;
+
+    public DriveTrain() { thread.start(); }
+
+    public void teleopInit() { teleopEnabled = true; isEnabled = true; }
+
+    public void disable() { teleopEnabled = false; isEnabled = false; }
+
+    public void keepRunning(boolean shouldStop) { shouldHault = shouldStop; }
+
+    @Override
+    public void run() {
+
+        long lastTick = System.currentTimeMillis();
+
+        while (!shouldHault) {
+
+            if (lastTick - System.currentTimeMillis() >= currentTickTiming) {
+
+                if (teleopEnabled) {
 
 
-    /**
-     * Initializer use to set the dead band settings
-     */
-    public DriveTrain() {
+                } else if (isEnabled) {
 
-        useDeadBand = true;
-        DeadBand.setDeadBandType(DeadBand.LINEAR);
-        DeadBand.setDeadBandZone(0.15);
-    }
 
-    /**
-     * called periodically in teleop to determine the output to the drive train based on the controller input.
-     */
-    public void teleopArcadeDrive() {
-
-        if (useDeadBand) {
-
-            double[] drive = DeadBand.evaluateDeadBand(steeringAxis.horizontal(), Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger));
-
-            arcadeDrive(drive[0] * throttle, drive[1] * throttle);
-
-        } else
-            arcadeDrive(steeringAxis.horizontal() * throttle, Controller.Primary.Trigger.totalValue(RightTrigger, leftTrigger) * throttle);
-    }
-
-    /**
-     * called periodically in teleop to determine the gear based on the controller input.
-     */
-    public void updateGear() {
-
-        if (Controller.Primary.DPad.NORTH.isDownOnce() && gear < 3) gear++;
-        if (Controller.Primary.DPad.SOUTH.isDownOnce() && gear > 1) gear--;
-
-        updateThrottle();
-    }
-
-    /**
-     * called but updateGear to change the throttle limit based on the gear.
-     */
-    private void updateThrottle() {
-
-        switch (gear) {
-
-            case 1: throttle = 0.4;
-            case 2: throttle = 0.7;
-            case 3: throttle = 1.0;
-
-            default: throttle = 0.3;
-        }
-    }
-
-    /**
-     * called periodically in teleop to determine the autoRotation of the robot in teleop.
-     * requires controller input to determine how many times to turn.
-     */
-    public void updateAutoTurn() {
-
-        if (Controller.Primary.DPad.EAST.isDownOnce() && gear < 3) autoTurnFlag++;
-        if (Controller.Primary.DPad.WEST.isDownOnce() && gear > 1) autoTurnFlag--;
-
-        if (autoTurnFlag < 0) {
-
-            if (turnLeft(90, 0.15)) {
-                Input.AnalogGyro.DRIVE.reset();
-                autoTurnFlag++;
-            }
-
-        } else if (autoTurnFlag > 0) {
-
-            if (turnRight(90, 0.15)) {
-                Input.AnalogGyro.DRIVE.reset();
-                autoTurnFlag--;
+                }
             }
         }
     }
 
-    /**
-     * @param angle is the angles want the robot to turn to.
-     * @param speed is the speed at which we want the robot to turn at.
-     *
-     * @return a value from true or false to determine if we have completed the turn.
-     */
-    public boolean turnRight(double angle, double speed) {
+    private void userControl() {
 
-        if (!isGyroReset) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
+        Controller.Primary.Stick stick = Controller.Primary.Stick.LEFT;
+        Controller.Primary.Trigger left = Controller.Primary.Trigger.LEFT;
+        Controller.Primary.Trigger right = Controller.Primary.Trigger.RIGHT;
 
-        switch (turnState) {
+        if (Controller.Primary.DPad.WEST.isDownOnce()) addTurn(-90);
 
-            case 0:
+        if (Controller.Primary.DPad.EAST.isDownOnce()) addTurn(90);
 
-                arcadeDrive(speed, 0);
-
-                if (Input.AnalogGyro.DRIVE.getAngle() >= angle - frictionRamp()) {
-
-                    turnState++;
-
-                } break;
-
-            case 1:
-
-                arcadeDrive(-0.2, 0);
-
-                if (Input.AnalogGyro.DRIVE.getRate() < -0.1) {
-
-                    turnState++;
-
-                } break;
-
-            case 2: arcadeDrive( 0, 0); turnState = 0; isGyroReset = false; return true;
-
-            default: return true;
-        }
-
-        return false;
+        arcadeDrive(stick.horizontal(), right.value() - left.value());
     }
 
-    /**
-     * @param angle is the angles want the robot to turn to.
-     * @param speed is the speed at which we want the robot to turn at.
-     *
-     * @return a value from true or false to determine if we have completed the turn.
-     */
-    public boolean turnLeft(double angle, double speed) {
+    private void checkTurn(boolean shouldForce) {
 
-        if (!isGyroReset) { Input.AnalogGyro.DRIVE.reset(); isGyroReset = true; }
+        if (turnCount < 0) {
 
-        switch (turnState) {
+            if (turnLeft(-turnCount)) turnCount = 0;
 
-            case 0:
+        } else if (turnCount > 0) {
 
-                arcadeDrive(-speed, 0);
-
-                if (Input.AnalogGyro.DRIVE.getAngle() <= -angle + frictionRamp()) {
-
-                    turnState++;
-
-                } break;
-
-            case 1:
-
-                arcadeDrive(0.2, 0);
-
-                if (Input.AnalogGyro.DRIVE.getRate() > 0.1) {
-
-                    turnState++;
-
-                } break;
-
-            case 2: arcadeDrive(0, 0); turnState = 0; isGyroReset = false; return true;
-
-            default: return true;
+            if (turnRight(turnCount)) turnCount = 0;
         }
-
-        return false;
     }
 
-    /**
-     * @param distance is the distance we want the robot to drive to.
-     * @param speed is the speed at which we want the robot to turn at.
-     *
-     * @return a value from true or false to determine if we have completed the turn.
-     */
-    public boolean forward(double distance, double speed) {
+    private boolean turnLeft(int angle) {
 
-        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() > distance) {
+        currentTickTiming = 1000 / 200;
 
-            arcadeDrive(0, 0);
-            return true;
+        if (Input.AnalogGyro.DRIVE.getAngle() <= -angle) {
+
+            directDrive(0.2, -0.2);
+            waitTime--;
 
         } else {
 
-            speed = ramp(speed, distance - Input.DigitalEncoder.DRIVE_LEFT.getDistance());
-
-            arcadeDrive(0, speed);
-            return false;
+            directDrive(-1, 1);
+            waitTime = 100;
         }
+
+        if (waitTime == 0) {
+
+            directDrive(0, 0);
+            currentTickTiming = defaultTickTiming;
+            return true;
+        }
+
+        return true;
     }
 
-    /**
-     * @param distance is the distance we want the robot to drive to.
-     * @param speed is the speed at which we want the robot to turn at.
-     *
-     * @return a value from true or false to determine if we have completed the turn.
-     */
-    public boolean back(double distance, double speed) {
+    private boolean turnRight(int angle) {
 
-        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() < -distance) {
+        currentTickTiming = 1000 / 200;
 
-            arcadeDrive(0, 0);
-            return true;
+        if (Input.AnalogGyro.DRIVE.getAngle() >= angle) {
+
+            directDrive(0.2, -0.2);
+            waitTime--;
 
         } else {
 
-            speed = ramp(speed, distance + Input.DigitalEncoder.DRIVE_LEFT.getDistance());
-
-            arcadeDrive(0, -speed);
-            return false;
+            directDrive(-1, 1);
+            waitTime = 100;
         }
+
+        if (waitTime == 0) {
+
+            directDrive(0, 0);
+            currentTickTiming = defaultTickTiming;
+            return true;
+        }
+
+        return true;
     }
+
+    public void addTurn(int count) { turnCount += count; }
 }
