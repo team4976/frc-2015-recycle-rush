@@ -55,6 +55,7 @@ public class Input {
         DRIVE(0);
 
         private Gyro gyro;
+        private boolean initalized = false;
 
         AnalogGyro(int analogIn) {
             gyro = new Gyro(analogIn);
@@ -64,7 +65,9 @@ public class Input {
             return gyro.getAngle();
         }
 
-        public void gyroInit() { gyro.initGyro(); }
+        public void gyroInit() { gyro.initGyro(); initalized = true; }
+
+        public boolean isInitalized() { return initalized; }
 
         public void reset() {
             gyro.reset();
