@@ -1,4 +1,4 @@
-<div align="center"><h1>RecycleRush-MAIN</h1></div>
+<div align="center"><h1>RecycleRush-MAIN STEMly Competition</h1></div>
 <hr/>
 
 <h3>Steps for Integration:</h3>
