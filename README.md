@@ -1,10 +1,9 @@
 <div align="center"><h1>RecycleRush STEMly Competition</h1></div>
 ![FRC Image](http://team4619.com/wp-content/uploads/2015/06/936381_orig.png)
 <h3>Steps for Integration:<h3>
-==
-___
-<h4>Requirements:
-<h5>(see FRC Requirments for version details)</h5>
+<h4>Requirements:</h4>
+***
+(see FRC requirments for version details)
 * Eclipse
 * Windows Mac or Linux 
 * Intellij Idea
