@@ -3,30 +3,17 @@ package ca.team4976.io;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import static ca.team4976.io.NetworkVariables.Autonomous.*;
 
 public class NetworkVariables implements Runnable {
 
-    public static void robotInit() {
+    private static NetworkTable table = NetworkTable.getTable("Autonomous");
 
-        NetworkTable table = NetworkTable.getTable("Autonomous");
+    public static void robotInit() { read("autonomous.conf"); }
 
-        for (int i = 0; i < finalStage; i++) {
-
-            try {
-
-                BufferedReader reader = new BufferedReader(new FileReader(new File("/Autonomous.txt")));
-
-                String line = reader.readLine();
-
-                stageCount[i] = Double.parseDouble(line.substring(0, line.indexOf(" ")));
-                stageSpeed[i] = Double.parseDouble(line.substring(line.indexOf(" ") + 1, line.lastIndexOf(" ")));
-                stageTimeout[i] = Double.parseDouble(line.substring(line.lastIndexOf(" ") + 1));
-
-            } catch (IOException e) { e.printStackTrace(); }
-        }
-    }
+    public static void autonomousInit() { write("autonomous_auto_save.conf"); }
 
     @Override
     public void run() {
@@ -35,22 +22,94 @@ public class NetworkVariables implements Runnable {
 
             try {
 
-                Thread.sleep(1000 * 60 * 15);
+                Thread.sleep(5000); // 15 minutes
 
-                save("/AutoSaveAutonomous.txt");
+                write("autonomous_auto_save.conf");
 
             } catch (InterruptedException e) { e.printStackTrace(); }
         }
     }
 
-    public static void save(String file) {
+    public static void read(String file) {
+
+        try {
+
+            ArrayList<double[]> list = new ArrayList<>();
+
+            BufferedReader reader = new BufferedReader(new FileReader(new File(file)));
+
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+
+                if (!line.startsWith("#")) {
+
+                    if (line.startsWith("Stage")) {
+
+                        line = line.substring(6);
+
+                        int i = Integer.parseInt(line.substring(0, line.indexOf(' ')));
+
+                        double c, s, t;
+
+                        if (line.substring(line.indexOf("C")).contains(","))
+                            c = Double.parseDouble(line.substring(line.indexOf("C") + 2,
+                                    line.indexOf(",", line.indexOf("C"))));
+
+                        else c = Double.parseDouble(line.substring(line.indexOf("C") + 2));
+
+                        if (line.substring(line.indexOf("S")).contains(","))
+                            s = Double.parseDouble(line.substring(line.indexOf("S") + 2,
+                                    line.indexOf(",", line.indexOf("S"))));
+
+                        else s = Double.parseDouble(line.substring(line.indexOf("S") + 2));
+
+                        if (line.substring(line.indexOf("T")).contains(","))
+                            t = Double.parseDouble(line.substring(line.indexOf("T") + 2,
+                                    line.indexOf(",", line.indexOf("T"))));
+
+                        else t = Double.parseDouble(line.substring(line.indexOf("T") + 2));
+
+                        if (i > list.size() + 1) for (; i != list.size() + 1;) list.add(new double[3]);
+
+                        list.add(new double[] {c, s, t});
+
+                    } else System.out.println("file " + file + " isn't a properly formatted");
+                }
+            }
+
+            stageCount = new double[list.size()];
+            stageSpeed = new double[list.size()];
+            stageTimeout = new double[list.size()];
+
+            for (int i = 0; i < list.size(); i++) {
+
+                stageCount[i] = list.get(i)[0];
+                stageSpeed[i] = list.get(i)[1];
+                stageTimeout[i] = list.get(i)[2];
+            }
+
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    public static void write(String file) {
 
         try {
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(file)));
 
-            for (int i = 0; i < Autonomous.finalStage; i++)
-                writer.write(stageCount[i] + " " + stageSpeed[i] + " " + stageTimeout[0]);
+            writer.write("# This File Contains The Autonomous Run Configuration #\n");
+            writer.write("# Auto-save configuration via NetworkTable            #\n");
+            writer.write("# # # # # # # # # # # # # # # # # # # # # # # # # # # #\n");
+
+            for (int i = 0; i < stageCount.length; i++) {
+
+                if (stageCount[i] != 0 || stageSpeed[i] != 0 || stageTimeout[i] != 0) {
+
+                    writer.write("Stage " + i + " ");
+                    writer.write("C=" + stageCount[i] + ", ");
+                    writer.write("S=" + stageSpeed[i] + ", ");
+                    writer.write("T=" + stageTimeout[i] + "\n");
+                }
+            }
 
             writer.close();
 
@@ -59,7 +118,7 @@ public class NetworkVariables implements Runnable {
 
     public static class Autonomous {
 
-        public static int finalStage = 0;
+        public static int finalStage = 12;
 
         public static double[] stageCount = new double[finalStage]; // In Meters
         public static double[] stageSpeed = new double[finalStage]; // In Decimal Percent

@@ -26,6 +26,7 @@ public class Main extends IterativeRobot {
 
     public void autonomousInit() {
 
+        NetworkVariables.autonomousInit();
         drive.autonomousInit();
 
         currentStage = 0;
