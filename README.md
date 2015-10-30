@@ -1,8 +1,8 @@
 <div align="center"><h1>RecycleRush STEMly Competition</h1></div>
 ![FRC Image](http://team4619.com/wp-content/uploads/2015/06/936381_orig.png)
 <h3>Steps for Integration:<h3>
-<h4>Requirements:</h4>
 ***
+<h4>Requirements:</h4>
 (see FRC requirments for version details)
 * Eclipse
 * Windows Mac or Linux 
