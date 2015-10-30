@@ -7,23 +7,15 @@ import ca.team4976.io.NetworkVariables.Autonomous;
 
 public class Main extends IterativeRobot {
 
-    public Rake rake;
-    public Elevator elevator;
-    public Claw claw;
-    public DriveTrain drive;
+    public Rake rake = new Rake();
+    public Elevator elevator = new Elevator();
+    public Claw claw = new Claw();
+    public DriveTrain drive = new DriveTrain();
 
     private int currentStage = 0;
     private long timeoutFlag = 0;
 
-    public void robotInit() {
-
-        rake = new Rake();
-        elevator = new Elevator();
-        claw = new Claw();
-        drive = new DriveTrain();
-
-        NetworkVariables.robotInit();
-    }
+    public void robotInit() { NetworkVariables.robotInit(); }
 
     public void disabledInit() {
 
@@ -97,6 +89,8 @@ public class Main extends IterativeRobot {
                 break;
 
             case 6:
+
+                //TODO Finish Autonomous COMMANDS
         }
     }
 
