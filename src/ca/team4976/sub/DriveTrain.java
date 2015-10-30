@@ -120,7 +120,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         if (waitTime == 0) {
 
-            directDrive(0, 0);
+           if (!continuous) directDrive(0, 0);
             currentTickTiming = defaultTickTiming;
             return true;
         }
@@ -145,7 +145,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         if (waitTime == 0) {
 
-            directDrive(0, 0);
+            if (!continuous) directDrive(0, 0);
             currentTickTiming = defaultTickTiming;
             return true;
         }
@@ -170,7 +170,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         if (waitTime == 0) {
 
-            directDrive(0, 0);
+            if (!continuous) directDrive(0, 0);
             currentTickTiming = defaultTickTiming;
             return true;
         }
@@ -195,7 +195,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         if (waitTime == 0) {
 
-            directDrive(0, 0);
+            if (!continuous) directDrive(0, 0);
             currentTickTiming = defaultTickTiming;
             return true;
         }
