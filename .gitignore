@@ -6,6 +6,10 @@ dist/
 *.xml
 *.iml
 
+##            FRC            ##
+
+!build.xml
+
 ##          Eclipse          ##
 
 .classpath
