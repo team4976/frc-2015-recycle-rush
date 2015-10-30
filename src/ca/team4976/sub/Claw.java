@@ -9,24 +9,22 @@ import ca.team4976.io.Output;
  */
 public class Claw {
 
-    boolean openState, upState;
+    boolean openState = false; boolean upState = false;
 
-    public Claw()
-    {
-        openState = false;
-        upState = false;
+    public void teleopPeriodic() {
+
+        if (Controller.Primary.Button.A.isDownOnce()) openState = !openState;
+
+
+        if (Controller.Primary.Button.X.isDownOnce()) upState = !upState;
+
+        Output.PneumaticSolenoid.CLAW_OPEN.set(openState);
+        Output.PneumaticSolenoid.CLAW_UP.set(upState);
     }
-    public void update() {
-        //Open or close the claw
-        if(Controller.Primary.Button.A.isDownOnce()){
-            openState = !openState;
-            Output.PneumaticSolenoid.CLAW_OPEN.set(openState);
-        }else if(Controller.Primary.Button.X.isDownOnce()){
-            upState = !upState;
-            Output.PneumaticSolenoid.CLAW_UP.set(upState);
-        }
-    }
+
     public void reset() {
+
+        openState = false; upState = false;
         Output.PneumaticSolenoid.CLAW_UP.set(false);
         Output.PneumaticSolenoid.CLAW_OPEN.set(false);
     }

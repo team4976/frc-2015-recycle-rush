@@ -19,7 +19,7 @@ public class Elevator {
         percentError = 0.1;
     }
 
-    public void update() {
+    public void teleopPeriodic() {
         checkPrimaryController();
         if (checkSecondaryController())
             goToDesiredLevel();

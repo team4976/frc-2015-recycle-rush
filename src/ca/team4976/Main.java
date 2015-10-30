@@ -51,9 +51,9 @@ public class Main extends IterativeRobot {
 
     public void teleopPeriodic() {
 
-        rake.update();
-        elevator.update();
-        claw.update();
+        rake.teleopPeriodic();
+        elevator.teleopPeriodic();
+        claw.teleopPeriodic();
     }
 
     public void autonomousPeriodic() {
