@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public Thread thread = new Thread(this);
+    public Safety safety = new Safety(this);
 
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
@@ -279,4 +280,15 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     }
 
     public void setContinuous(boolean continuous) { this.continuous = continuous; }
+
+    public class Safety {
+
+        DriveTrain drive;
+
+        public Safety(DriveTrain drive) { this.drive = drive; }
+
+        public void stopTurn(int id) { turnCount.remove(id); }
+
+        public void stopMove(int id) { moveCount.remove(id); }
+    }
 }
