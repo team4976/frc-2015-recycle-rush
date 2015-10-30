@@ -11,7 +11,7 @@ public class NetworkVariables implements Runnable {
 
     private static NetworkTable table = NetworkTable.getTable("Autonomous");
 
-    public static void robotInit() { read("autonomous.conf"); }
+    public static void robotInit() { read("autonomous.conf"); System.out.println(System.getProperty("user.dir")); }
 
     public static void autonomousInit() { write("autonomous_auto_save.conf"); }
 
