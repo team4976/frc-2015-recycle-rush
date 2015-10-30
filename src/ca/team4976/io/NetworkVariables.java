@@ -1,10 +1,10 @@
-package ca.team4976.sub;
+package ca.team4976.io;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import java.io.*;
 
-import static ca.team4976.sub.NetworkVariables.Autonomous.*;
+import static ca.team4976.io.NetworkVariables.Autonomous.*;
 
 public class NetworkVariables implements Runnable {
 

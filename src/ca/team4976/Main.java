@@ -3,7 +3,7 @@ package ca.team4976;
 import ca.team4976.io.*;
 import ca.team4976.sub.*;
 import edu.wpi.first.wpilibj.*;
-import ca.team4976.sub.NetworkVariables.Autonomous;
+import ca.team4976.io.NetworkVariables.Autonomous;
 
 public class Main extends IterativeRobot {
 
