@@ -3,7 +3,6 @@ package ca.team4976;
 import ca.team4976.io.*;
 import ca.team4976.sub.*;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import ca.team4976.sub.NetworkVariables.Autonomous;
 
 public class Main extends IterativeRobot {
@@ -14,31 +13,23 @@ public class Main extends IterativeRobot {
     public DriveTrain drive;
 
     private int currentStage = 0;
-    private long timoutFlag = 0;
+    private long timeoutFlag = 0;
 
     public void robotInit() {
 
-        Output.Motor.ELEVATOR.enableBrake(true);
-        Output.Digital.LED.set(true);
-
-        Input.AnalogGyro.DRIVE.gyroInit();
-        System.out.println("Gyro has been Initialized");
-        Output.Motor.ELEVATOR.enableBrake(true);
         rake = new Rake();
         elevator = new Elevator();
         claw = new Claw();
-
         drive = new DriveTrain();
 
-        new Thread(new NetworkVariables()).start();
-        drive.thread.start();
+        NetworkVariables.robotInit();
     }
 
     public void disabledInit() {
 
         if (!Input.AnalogGyro.DRIVE.isInitalized()) Input.AnalogGyro.DRIVE.gyroInit();
 
-        drive.disable();
+        drive.disableInit();
     }
 
     public void autonomousInit() {
@@ -46,7 +37,7 @@ public class Main extends IterativeRobot {
         drive.autonomousInit();
 
         currentStage = 0;
-        timoutFlag = System.currentTimeMillis();
+        timeoutFlag = System.currentTimeMillis();
 
         Input.DigitalEncoder.DRIVE_LEFT.reset();
         Input.AnalogGyro.DRIVE.reset();
@@ -55,8 +46,6 @@ public class Main extends IterativeRobot {
     public void teleopInit() {
 
         Input.DigitalEncoder.ELEVATOR.reset();
-        drive.arcadeDrive(0, 0);
-        drive.useDeadBand = true;
         drive.teleopInit();
     }
 
@@ -72,14 +61,46 @@ public class Main extends IterativeRobot {
         switch (currentStage) {
 
             case 0:
-                drive.setMoveCount(Autonomous.stageDistance[0], Autonomous.stageSpeed[0]);
-                timoutFlag = System.currentTimeMillis();
+                Output.PneumaticSolenoid.RAKE.set(true);
+                drive.addMoveCount(Autonomous.stageCount[0], Autonomous.stageSpeed[0]);
+                timeoutFlag = System.currentTimeMillis();
                 stage(); break;
 
             case 1:
-                if (drive.isMoveComplete() ||
+                if (drive.isLastMoveComplete() ||
+                        System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[0] * 1000)
+                    stage();
+
+                break;
+
+            case 2:
+                timeoutFlag = System.currentTimeMillis();
+                stage(); break;
+
+            case 3:
+                if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[1])
+                    stage();
+
+                break;
+
+            case 4:
+                drive.setContinuous(false);
+                drive.addTurnCount(-Autonomous.stageCount[2], Autonomous.stageSpeed[2]);
+                timeoutFlag = System.currentTimeMillis();
+                stage(); break;
+
+            case 5:
+                if (drive.isLastMoveComplete()) stage();
+
+                else if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[2] * 1000) stage(8);
+
+                break;
+
+            case 6:
         }
     }
 
     public void stage() { if (currentStage < Autonomous.finalStage - 1) currentStage++;}
+
+    public void stage(int stage) { currentStage = stage; }
 }

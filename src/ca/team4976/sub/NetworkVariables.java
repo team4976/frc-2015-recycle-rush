@@ -20,7 +20,7 @@ public class NetworkVariables implements Runnable {
 
                 String line = reader.readLine();
 
-                stageDistance[i] = Double.parseDouble(line.substring(0, line.indexOf(" ")));
+                stageCount[i] = Double.parseDouble(line.substring(0, line.indexOf(" ")));
                 stageSpeed[i] = Double.parseDouble(line.substring(line.indexOf(" ") + 1, line.lastIndexOf(" ")));
                 stageTimeout[i] = Double.parseDouble(line.substring(line.lastIndexOf(" ") + 1));
 
@@ -50,7 +50,7 @@ public class NetworkVariables implements Runnable {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(file)));
 
             for (int i = 0; i < Autonomous.finalStage; i++)
-                writer.write(stageDistance[i] + " " + stageSpeed[i] + " " + stageTimeout[0]);
+                writer.write(stageCount[i] + " " + stageSpeed[i] + " " + stageTimeout[0]);
 
             writer.close();
 
@@ -61,7 +61,7 @@ public class NetworkVariables implements Runnable {
 
         public static int finalStage = 0;
 
-        public static double[] stageDistance = new double[finalStage]; // In Meters
+        public static double[] stageCount = new double[finalStage]; // In Meters
         public static double[] stageSpeed = new double[finalStage]; // In Decimal Percent
         public static double[] stageTimeout = new double[finalStage]; // In Seconds
     }

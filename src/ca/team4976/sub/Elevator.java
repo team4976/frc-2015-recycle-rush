@@ -11,6 +11,9 @@ public class Elevator {
     private double percentError;
 
     public Elevator() {
+
+        Output.Motor.ELEVATOR.enableBrake(true);
+
         currentLevel = 0;
         desiredLevel = 0;
         percentError = 0.1;

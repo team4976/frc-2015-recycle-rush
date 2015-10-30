@@ -1,15 +1,8 @@
 package ca.team4976.sub;
 
-import ca.team4976.io.Input;
 import ca.team4976.io.Output;
 
-/**
-* @author Marc Levesque
-* @version 1.1.1
-*/
 public class CustomRobotDrive {
-
-    public boolean useDeadBand = false;
 
     public void arcadeDrive(double steering, double throttle) {
 

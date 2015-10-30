@@ -3,25 +3,31 @@ package ca.team4976.sub;
 import ca.team4976.io.Controller;
 import ca.team4976.io.Input;
 
+import java.util.ArrayList;
+
 
 public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public Thread thread = new Thread(this);
 
-    private boolean shouldHalt = false;
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
     private int defaultTickTiming = 1000 / 50;
-    private int currentTickTiming = 0;
+    private int currentTickTiming = defaultTickTiming;
     private long waitTime = 20;
 
-    private static double[] turnCount = new double[2];
-    private static double[] moveCount = new double[2];
+    private ArrayList<double[]> turnCount = new ArrayList<>();
+    private ArrayList<double[]> moveCount = new ArrayList<>();
+
+    private ArrayList<Boolean> isTurnComplete;
+    private ArrayList<Boolean> isMoveComplete;
 
     private final int gearDefault = 1;
     private int gear = gearDefault;
 
     private double[] gears = new double[] {0.3, 0.5, 1};
+
+    private boolean continuous = false;
 
     private void userControl() {
 
@@ -29,17 +35,15 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         Controller.Primary.Trigger left = Controller.Primary.Trigger.LEFT;
         Controller.Primary.Trigger right = Controller.Primary.Trigger.RIGHT;
 
-        if (Controller.Primary.DPad.WEST.isDownOnce()) {
+        if (Controller.Primary.DPad.WEST.isDownOnce())
 
-            turnCount[0] += -90;
-            turnCount[1] = gears[gear];
+            addTurnCount(-90, gears[gear]);
 
-        } else if (Controller.Primary.DPad.EAST.isDownOnce()) {
+        else if (Controller.Primary.DPad.EAST.isDownOnce())
 
-            turnCount[0] += 90;
-            turnCount[1] = gears[gear];
+            addTurnCount(90, gears[gear]);
 
-        } else if (Controller.Primary.DPad.NORTH.isDownOnce()) incrementGear(1);
+        else if (Controller.Primary.DPad.NORTH.isDownOnce()) incrementGear(1);
 
         else if (Controller.Primary.DPad.WEST.isDownOnce()) incrementGear(-1);
 
@@ -49,19 +53,25 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     private void checkTurn() {
 
-        if (turnCount[0] != 0 && moveCount[0] != 0)
+        if (turnCount.get(0)[0] != 0 && moveCount.get(0)[0] != 0)
 
             System.out.println("ERROR: DRIVE_443");
 
         else {
 
-            if (turnCount[0] < 0) {
+            if (turnCount.get(0)[0] < 0) {
 
-                if (turnLeft(-turnCount[0], turnCount[1])) turnCount[0] = 0;
+                if (turnLeft(-turnCount.get(0)[0], turnCount.get(0)[1])) {
 
-            } else if (turnCount[0] > 0) {
+                    turnCount.remove(0); isTurnComplete.add(true);
+                }
 
-                if (turnRight(turnCount[0], turnCount[1])) turnCount[0] = 0;
+            } else if (turnCount.get(0)[0] > 0) {
+
+                if (turnRight(turnCount.get(0)[0], turnCount.get(0)[1])) {
+
+                    turnCount.remove(0); isTurnComplete.add(true);
+                }
 
             } else Input.AnalogGyro.DRIVE.reset();
         }
@@ -69,19 +79,25 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public void checkMove() {
 
-        if (turnCount[0] != 0 && moveCount[0] != 0)
+        if (turnCount.get(0)[0] != 0 && moveCount.get(0)[0] != 0)
 
             System.out.println("ERROR: DRIVE_443");
 
         else {
 
-            if (moveCount[0] < 0) {
+            if (moveCount.get(0)[0] < 0) {
 
-                if (moveBackwards(-moveCount[0], moveCount[1])) moveCount[0] = 0;
+                if (moveBackwards(-moveCount.get(0)[0], moveCount.get(0)[1])) {
 
-            } else if (moveCount[0] > 0) {
+                    moveCount.remove(0); isMoveComplete.add(true);
+                }
 
-                if (moveForward(moveCount[0], moveCount[1])) moveCount[0] = 0;
+            } else if (moveCount.get(0)[0] > 0) {
+
+                if (moveForward(moveCount.get(0)[0], moveCount.get(0)[1])) {
+
+                    moveCount.remove(0); isMoveComplete.add(true);
+                }
 
             } else Input.DigitalEncoder.DRIVE_LEFT.reset();
         }
@@ -192,13 +208,13 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         long lastTick = System.currentTimeMillis();
 
-        while (!shouldHalt) {
+        while (isEnabled) {
 
             if (lastTick - System.currentTimeMillis() >= currentTickTiming) {
 
                 if (teleopEnabled) {
 
-                    if (turnCount[0] == 0) userControl();
+                    if (turnCount.get(0)[0] == 0) userControl();
 
                     else checkTurn();
 
@@ -220,29 +236,47 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         else gear = gearDefault;
     }
 
-    public void teleopInit() { teleopEnabled = true; isEnabled = true; }
+    public void teleopInit() {
 
-    public void autonomousInit() { teleopEnabled = false; isEnabled = true; }
-
-    public void disable() { teleopEnabled = false; isEnabled = false; }
-
-    public void keepRunning(boolean shouldStop) { shouldHalt = shouldStop; }
-
-    public static void setTurnCount(int count, double speed) {
-
-        if (isTurnComplete()) turnCount = new double[] {count, speed};
-
-        else System.out.println("ERROR: DRIVE_444");
+        teleopEnabled = true;
+        isEnabled = true;
+        thread.start();
+        isTurnComplete = new ArrayList<>();
+        isMoveComplete = new ArrayList<>();
     }
 
-    public static void setMoveCount(int count, double speed) {
+    public void autonomousInit() {
 
-        if (isMoveComplete()) moveCount = new double[] {count, speed};
-
-        else System.out.println("ERROR: DRIVE_444");
+        teleopEnabled = false;
+        isEnabled = true;
+        thread.start();
+        isTurnComplete = new ArrayList<>();
+        isMoveComplete = new ArrayList<>();
     }
 
-    public static boolean isTurnComplete() { return turnCount[0] == 0; }
+    public void disableInit() { teleopEnabled = false; isEnabled = false; }
 
-    public static boolean isMoveComplete() { return moveCount[0] == 0; }
+    public void addTurnCount(double count, double speed) { turnCount.add(new double[] {count, speed}); }
+
+    public void addMoveCount(double count, double speed) { moveCount.add(new double[] {count, speed}); }
+
+    public boolean isLastTurnComplete() {
+
+        boolean returnVal = isTurnComplete.get(0);
+
+        isTurnComplete.remove(0);
+
+        return returnVal;
+    }
+
+    public boolean isLastMoveComplete() {
+
+        boolean returnVal = isMoveComplete.get(0);
+
+        isMoveComplete.remove(0);
+
+        return returnVal;
+    }
+
+    public void setContinuous(boolean continuous) { this.continuous = continuous; }
 }
