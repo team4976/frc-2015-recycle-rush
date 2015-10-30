@@ -1,10 +1,22 @@
+##       Intellij IDEA       ##
+
 .idea/
 build/
 dist/
-sysProps.xml
-Robot.iml
-RecycleRush-MAIN.iml
+*.xml
+*.iml
+
+##          Eclipse          ##
+
 .classpath
 .project
+
+##            JAVA           ##
+
+*.class
+*.jar
+
+##          Floobits         ##
+
 .flooignore
 .floo
