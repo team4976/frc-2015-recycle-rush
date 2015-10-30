@@ -257,9 +257,17 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public void disableInit() { teleopEnabled = false; isEnabled = false; }
 
-    public void addTurnCount(double count, double speed) { turnCount.add(new double[] {count, speed}); }
+    public int addTurnCount(double count, double speed) {
 
-    public void addMoveCount(double count, double speed) { moveCount.add(new double[] {count, speed}); }
+        turnCount.add(new double[] {count, speed});
+        return turnCount.size() - 1;
+    }
+
+    public int addMoveCount(double count, double speed) {
+
+        moveCount.add(new double[] {count, speed});
+        return moveCount.size() - 1;
+    }
 
     public boolean isLastTurnComplete() {
 
@@ -287,8 +295,10 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         public Safety(DriveTrain drive) { this.drive = drive; }
 
-        public void stopTurn(int id) { turnCount.remove(id); }
+        public void stopTurn(int id) { turnCount.remove(id); stopDrive(); }
 
-        public void stopMove(int id) { moveCount.remove(id); }
+        public void stopMove(int id) { moveCount.remove(id); stopDrive(); }
+
+        private void stopDrive() { drive.directDrive(0, 0); }
     }
 }

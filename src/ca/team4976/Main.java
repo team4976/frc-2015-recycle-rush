@@ -49,20 +49,27 @@ public class Main extends IterativeRobot {
         claw.teleopPeriodic();
     }
 
+    int id;
+
     public void autonomousPeriodic() {
 
         switch (currentStage) {
 
             case 0:
                 Output.PneumaticSolenoid.RAKE.set(true);
-                drive.addMoveCount(Autonomous.stageCount[0], Autonomous.stageSpeed[0]);
+                id = drive.addMoveCount(Autonomous.stageCount[0], Autonomous.stageSpeed[0]);
                 timeoutFlag = System.currentTimeMillis();
                 stage(); break;
 
             case 1:
-                if (drive.isLastMoveComplete() ||
-                        System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[0] * 1000)
+                if (drive.isLastMoveComplete())
                     stage();
+
+                else if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[0] * 1000) {
+
+                    drive.safety.stopMove(id);
+                    stage();
+                }
 
                 break;
 
