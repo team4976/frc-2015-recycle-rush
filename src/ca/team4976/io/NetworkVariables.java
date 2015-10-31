@@ -7,26 +7,32 @@ import java.util.ArrayList;
 
 import static ca.team4976.io.NetworkVariables.Autonomous.*;
 
-public class NetworkVariables implements Runnable {
+public class NetworkVariables {
 
     private static NetworkTable table = NetworkTable.getTable("Autonomous");
 
-    public static void robotInit() { read("autonomous.conf"); System.out.println(System.getProperty("user.dir")); }
+    public static void robotInit() {
+
+        read("autonomous.conf");
+        System.out.println(System.getProperty("user.dir"));
+
+        for(int i = 0; i < stageCount.length; i++) {
+
+            table.putNumber("Stage_Count_" + i, stageCount[i]);
+            table.putNumber("Stage_Speed_" + i, stageSpeed[i]);
+            table.putNumber("Stage_Timeout_" + i, stageTimeout[i]);
+        }
+    }
 
     public static void autonomousInit() { write("autonomous_auto_save.conf"); }
 
-    @Override
-    public void run() {
+    public static void disabledPeriodic() {
 
-        while (true) {
+        for(int i = 0; i < stageCount.length; i++) {
 
-            try {
-
-                Thread.sleep(5000); // 15 minutes
-
-                write("autonomous_auto_save.conf");
-
-            } catch (InterruptedException e) { e.printStackTrace(); }
+            stageCount[i] = table.getNumber("Stage_Count_" + i, stageCount[i]);
+            stageSpeed[i] = table.getNumber("Stage_Speed_" + i, stageSpeed[i]);
+            stageTimeout[i] = table.getNumber("Stage_Timeout_" + i, stageTimeout[i]);
         }
     }
 

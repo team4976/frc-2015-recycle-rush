@@ -42,6 +42,8 @@ public class Main extends IterativeRobot {
         drive.teleopInit();
     }
 
+    public void disabledPeriodic() { NetworkVariables.disabledPeriodic(); }
+
     public void teleopPeriodic() {
 
         rake.teleopPeriodic();
