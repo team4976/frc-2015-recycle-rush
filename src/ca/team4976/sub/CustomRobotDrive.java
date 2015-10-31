@@ -30,6 +30,8 @@ public class CustomRobotDrive {
 
         public PID(double kp, double ki, double kd) { this.kp = kp; this.ki = ki; this.kd = kd; }
 
+        public void setConstants(double kp, double ki, double kd) { this.kp = kp; this.ki = ki; this.kd = kd; }
+
         public double getPID(double error, double speed, long startTimeMillis) {
 
             double dt = ((System.currentTimeMillis() - startTimeMillis) / 1000);
