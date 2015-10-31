@@ -57,50 +57,7 @@ public class Main extends IterativeRobot {
 
         switch (currentStage) {
 
-            case 0:
-                Output.PneumaticSolenoid.RAKE.set(true);
-                id = drive.addMoveCount(Autonomous.stageCount[0], Autonomous.stageSpeed[0]);
-                timeoutFlag = System.currentTimeMillis();
-                stage(); break;
-
-            case 1:
-                if (drive.isLastMoveComplete())
-                    stage();
-
-                else if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[0] * 1000) {
-
-                    drive.safety.stopMove(id);
-                    stage();
-                }
-
-                break;
-
-            case 2:
-                timeoutFlag = System.currentTimeMillis();
-                stage(); break;
-
-            case 3:
-                if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[1])
-                    stage();
-
-                break;
-
-            case 4:
-                drive.setContinuous(false);
-                drive.addTurnCount(-Autonomous.stageCount[2], Autonomous.stageSpeed[2]);
-                timeoutFlag = System.currentTimeMillis();
-                stage(); break;
-
-            case 5:
-                if (drive.isLastMoveComplete()) stage();
-
-                else if (System.currentTimeMillis() - timeoutFlag > Autonomous.stageTimeout[2] * 1000) stage(8);
-
-                break;
-
-            case 6:
-
-                //TODO Finish Autonomous COMMANDS
+            
         }
     }
 
