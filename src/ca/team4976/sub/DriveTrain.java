@@ -11,6 +11,9 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     public Thread thread = new Thread(this);
     public Safety safety = new Safety(this);
 
+    PID turnPID = new PID(0, 0, 0);
+    PID movePID = new PID(0, 0, 0);
+
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
     private int defaultTickTiming = 1000 / 50;
@@ -64,14 +67,14 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
                 if (turnLeft(-turnCount.get(0)[0], turnCount.get(0)[1])) {
 
-                    turnCount.remove(0); isTurnComplete.add(true);
+                    turnCount.remove(0); isTurnComplete.add(true); turnPID.reset();
                 }
 
             } else if (turnCount.get(0)[0] > 0) {
 
                 if (turnRight(turnCount.get(0)[0], turnCount.get(0)[1])) {
 
-                    turnCount.remove(0); isTurnComplete.add(true);
+                    turnCount.remove(0); isTurnComplete.add(true); turnPID.reset();
                 }
 
             } else Input.AnalogGyro.DRIVE.reset();
@@ -90,32 +93,34 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
                 if (moveBackwards(-moveCount.get(0)[0], moveCount.get(0)[1])) {
 
-                    moveCount.remove(0); isMoveComplete.add(true);
+                    moveCount.remove(0); isMoveComplete.add(true); movePID.reset();
                 }
 
             } else if (moveCount.get(0)[0] > 0) {
 
                 if (moveForward(moveCount.get(0)[0], moveCount.get(0)[1])) {
 
-                    moveCount.remove(0); isMoveComplete.add(true);
+                    moveCount.remove(0); isMoveComplete.add(true); movePID.reset();
                 }
 
             } else Input.DigitalEncoder.DRIVE_LEFT.reset();
         }
     }
 
-    private boolean moveForward(double distance, double speed) {
+    private boolean moveForward(double target, double speed) {
 
         currentTickTiming = 1000 / 200;
 
-        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() >= distance) {
+        double distance = Input.DigitalEncoder.DRIVE_LEFT.getDistance();
+
+        if (distance >= target) {
 
             directDrive(-0.2, -0.2);
             waitTime--;
 
         } else {
 
-            directDrive(speed, speed);
+            directDrive(movePID.getPID(target -distance, speed), movePID.getPID(target -distance, speed));
             waitTime = 20;
         }
 
@@ -129,18 +134,20 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         return true;
     }
 
-    private boolean moveBackwards(double distance, double speed) {
+    private boolean moveBackwards(double target, double speed) {
 
         currentTickTiming = 1000 / 200;
 
-        if (Input.DigitalEncoder.DRIVE_LEFT.getDistance() <= -distance) {
+        double distance = Input.DigitalEncoder.DRIVE_LEFT.getDistance();
+
+        if (distance <= -target) {
 
             directDrive(0.2, 0.2);
             waitTime--;
 
         } else {
 
-            directDrive(-speed, -speed);
+            directDrive(-movePID.getPID(target + distance, speed), -movePID.getPID(target + distance, speed));
             waitTime = 20;
         }
 
@@ -154,18 +161,20 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         return true;
     }
 
-    private boolean turnLeft(double angle, double speed) {
+    private boolean turnLeft(double target, double speed) {
 
         currentTickTiming = 1000 / 200;
 
-        if (Input.AnalogGyro.DRIVE.getAngle() <= -angle) {
+        double angle = Input.AnalogGyro.DRIVE.getAngle();
+
+        if (angle <= -target) {
 
             directDrive(0.2, -0.2);
             waitTime--;
 
         } else {
 
-            directDrive(-speed, speed);
+            directDrive(-turnPID.getPID(target + angle, speed), turnPID.getPID(target + angle, speed));
             waitTime = 20;
         }
 
@@ -179,11 +188,13 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         return true;
     }
 
-    private boolean turnRight(double angle, double speed) {
+    private boolean turnRight(double target, double speed) {
 
         currentTickTiming = 1000 / 200;
 
-        if (Input.AnalogGyro.DRIVE.getAngle() >= angle) {
+        double angle = Input.AnalogGyro.DRIVE.getAngle();
+
+        if (angle >= target) {
 
             directDrive(0.2, -0.2);
             waitTime--;

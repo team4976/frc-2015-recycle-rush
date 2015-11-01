@@ -24,24 +24,33 @@ public class CustomRobotDrive {
 
         double kp, ki, kd;
 
+        long startTimeMillis = 0;
         double previousError = 0;
         double i = 0;
-        double d = 0;
 
         public PID(double kp, double ki, double kd) { this.kp = kp; this.ki = ki; this.kd = kd; }
 
         public void setConstants(double kp, double ki, double kd) { this.kp = kp; this.ki = ki; this.kd = kd; }
 
-        public double getPID(double error, double speed, long startTimeMillis) {
+        public double getPID(double error, double speed) {
+
+            if (startTimeMillis == 0) startTimeMillis = System.currentTimeMillis();
 
             double dt = ((System.currentTimeMillis() - startTimeMillis) / 1000);
 
             i += error * dt;
-            d = (error - previousError) / dt;
+            double d = (error - previousError) / dt;
 
             previousError = error;
 
             return (error * kp) + (i * ki) + (d * kd);
+        }
+
+        public void reset() {
+
+            startTimeMillis = 0;
+            previousError = 0;
+            i = 0;
         }
     }
 }
