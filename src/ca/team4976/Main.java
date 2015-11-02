@@ -15,7 +15,11 @@ public class Main extends IterativeRobot {
     private int currentStage = 0;
     private long timeoutFlag = 0;
 
-    public void robotInit() { NetworkVariables.robotInit(); }
+    public void robotInit() {
+
+        NetworkVariables.robotInit();
+        drive.robotInit();
+    }
 
     public void disabledInit() {
 

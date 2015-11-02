@@ -26,7 +26,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     private ArrayList<Boolean> isTurnComplete;
     private ArrayList<Boolean> isMoveComplete;
 
-    private final int gearDefault = 1;
+    private final int gearDefault = 2;
     private int gear = gearDefault;
 
     private double[] gears = new double[] {0.3, 0.5, 1};
@@ -43,16 +43,18 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
             addTurnCount(-90, gears[gear]);
 
-        else if (Controller.Primary.DPad.EAST.isDownOnce())
+        if (Controller.Primary.DPad.EAST.isDownOnce())
 
             addTurnCount(90, gears[gear]);
 
-        else if (Controller.Primary.DPad.NORTH.isDownOnce()) incrementGear(1);
+        if (Controller.Primary.DPad.NORTH.isDownOnce()) incrementGear(1);
 
-        else if (Controller.Primary.DPad.WEST.isDownOnce()) incrementGear(-1);
+        if (Controller.Primary.DPad.WEST.isDownOnce()) incrementGear(-1);
 
-        arcadeDrive(stick.horizontal() * gears[gear],
-                (right.value() - left.value() * gears[gear]));
+        double steering = Math.pow(stick.horizontal(), 2);
+        steering = stick.horizontal() > 0 ? -steering : steering;
+
+        arcadeDrive(-steering * gears[gear], (right.value() - left.value()) * gears[gear]);
     }
 
     private void checkTurn() {
@@ -220,13 +222,13 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         long lastTick = System.currentTimeMillis();
 
-        while (isEnabled) {
+        while (true) {
 
-            if (lastTick - System.currentTimeMillis() >= currentTickTiming) {
+            if (System.currentTimeMillis() - lastTick >= currentTickTiming) {
 
                 if (teleopEnabled) {
 
-                    if (turnCount.get(0)[0] == 0) userControl();
+                    if (turnCount.size() == 0) userControl();
 
                     else checkTurn();
 
@@ -252,7 +254,6 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         teleopEnabled = true;
         isEnabled = true;
-        thread.start();
         isTurnComplete = new ArrayList<>();
         isMoveComplete = new ArrayList<>();
     }
@@ -273,6 +274,8 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         turnCount.add(new double[] {count, speed});
         return turnCount.size() - 1;
     }
+
+    public void robotInit() { thread.start(); }
 
     public int addMoveCount(double count, double speed) {
 
