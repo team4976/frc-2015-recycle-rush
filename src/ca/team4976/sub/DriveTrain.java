@@ -11,8 +11,10 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     public Thread thread = new Thread(this);
     public Safety safety = new Safety(this);
 
-    PID turnPID = new PID(1, 0, 0);
-    PID movePID = new PID(1, 0, 0);
+    public boolean isRunning = true;
+
+    private PID turnPID = new PID(1, 0, 0);
+    private PID movePID = new PID(1, 0, 0);
 
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
@@ -225,7 +227,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         int ticks = 0;
 
-        while (true) {
+        while (isRunning) {
 
             if (System.currentTimeMillis() - lastTick >= currentTickTiming) {
 
@@ -284,7 +286,12 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
         isMoveComplete = new ArrayList<>();
     }
 
-    public void disableInit() { teleopEnabled = false; isEnabled = false; }
+    public void disableInit() {
+
+        isTurnComplete = new ArrayList<>();
+        isMoveComplete = new ArrayList<>();
+        teleopEnabled = false; isEnabled = false;
+    }
 
     public int addTurnCount(double count, double speed) {
 
