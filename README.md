@@ -19,8 +19,8 @@ Setup
 5. The Following should look as follows before clicking clone
 
  Git Repository URL: https://github.com/frc4976/RecycleRush-MAIN.git<br>
- Parent Directoty: //the default is will work fine<br>
- Directory Name: RecyleRush-MAIN
+ Parent Directory: //the default is will work fine<br>
+ Directory Name: RecycleRush-MAIN
 6. click clone
 7. if prompted to open in new window or this window click select this window
 8. Double Click RecycleRush-MAIN
@@ -32,7 +32,7 @@ Setup
 
  Windows: C:\Users\\(your username)\wpilib\java\current\lib - Windows <br>
  Linux: /home/(your username)/wpilib/java/current/lib - linux <br>
- Mac: ? Possibly simmilar to linux
+ Mac: ? Possibly similar to linux
 14. after selecting the directory click ok
 
 Now your ready to develop to your hearts content remember to commit regularly. 
