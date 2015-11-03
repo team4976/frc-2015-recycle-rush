@@ -13,8 +13,7 @@ public class NetworkVariables {
 
     public static void robotInit() {
 
-        read("autonomous.conf");
-        System.out.println(System.getProperty("user.dir"));
+        read(System.getProperty("user.home") + "/autonomous.conf");
 
         for(int i = 0; i < stageCount.length; i++) {
 
