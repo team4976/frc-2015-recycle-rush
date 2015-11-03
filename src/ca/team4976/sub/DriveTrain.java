@@ -11,8 +11,8 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     public Thread thread = new Thread(this);
     public Safety safety = new Safety(this);
 
-    PID turnPID = new PID(0, 0, 0);
-    PID movePID = new PID(0, 0, 0);
+    PID turnPID = new PID(1, 0, 0);
+    PID movePID = new PID(1, 0, 0);
 
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
@@ -59,7 +59,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     private void checkTurn() {
 
-        if (turnCount.get(0)[0] != 0 && moveCount.get(0)[0] != 0)
+        if (turnCount.size() != 0 && moveCount.size() != 0)
 
             System.out.println("ERROR: DRIVE_443");
 
@@ -85,7 +85,7 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public void checkMove() {
 
-        if (turnCount.get(0)[0] != 0 && moveCount.get(0)[0] != 0)
+        if (turnCount.size() != 0 && moveCount.size() != 0)
 
             System.out.println("ERROR: DRIVE_443");
 
@@ -221,10 +221,15 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
     public void run() {
 
         long lastTick = System.currentTimeMillis();
+        long lastPrint = System.currentTimeMillis();
+
+        int ticks = 0;
 
         while (true) {
 
             if (System.currentTimeMillis() - lastTick >= currentTickTiming) {
+
+                System.out.println(gears[gear]);
 
                 if (teleopEnabled) {
 
@@ -237,6 +242,18 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
                     checkTurn();
                     checkMove();
                 }
+
+                ticks++;
+                lastTick = System.currentTimeMillis();
+            }
+
+            if (System.currentTimeMillis() - lastPrint >= 1000) {
+
+                System.out.print("Current_TPS: " + ticks + " ");
+                System.out.println("Current_Gear: " + gear + " ");
+
+                ticks = 0;
+                lastPrint = System.currentTimeMillis();
             }
         }
     }
