@@ -13,8 +13,8 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
     public boolean isRunning = true;
 
-    private PID turnPID = new PID(1, 0, 0);
-    private PID movePID = new PID(1, 0, 0);
+    public PID turnPID = new PID(1, 0, 0);
+    public PID movePID = new PID(1, 0, 0);
 
     private boolean teleopEnabled = false;
     private boolean isEnabled = false;
@@ -67,14 +67,14 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         else {
 
-            if (turnCount.get(0)[0] < 0) {
+            if (turnCount.size() != 0 && turnCount.get(0)[0] < 0) {
 
                 if (turnLeft(-turnCount.get(0)[0], turnCount.get(0)[1])) {
 
                     turnCount.remove(0); isTurnComplete.add(true); turnPID.reset();
                 }
 
-            } else if (turnCount.get(0)[0] > 0) {
+            } else if (turnCount.size() != 0 && turnCount.get(0)[0] > 0) {
 
                 if (turnRight(turnCount.get(0)[0], turnCount.get(0)[1])) {
 
@@ -93,14 +93,14 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         else {
 
-            if (moveCount.get(0)[0] < 0) {
+            if (moveCount.size() != 0 && moveCount.get(0)[0] < 0) {
 
                 if (moveBackwards(-moveCount.get(0)[0], moveCount.get(0)[1])) {
 
                     moveCount.remove(0); isMoveComplete.add(true); movePID.reset();
                 }
 
-            } else if (moveCount.get(0)[0] > 0) {
+            } else if (moveCount.size() != 0 && moveCount.get(0)[0] > 0) {
 
                 if (moveForward(moveCount.get(0)[0], moveCount.get(0)[1])) {
 
@@ -117,25 +117,22 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         double distance = Input.DigitalEncoder.DRIVE_LEFT.getDistance();
 
-        if (distance >= target) {
+        System.out.println("error: " + (target - distance));
 
-            directDrive(-0.2, -0.2);
-            waitTime--;
+        directDrive(movePID.getPID(target - distance, speed), movePID.getPID(target -distance, speed));
 
-        } else {
+        //if (distance >= target - 0.01 && distance <= target + 0.01) waitTime--;
 
-            directDrive(movePID.getPID(target -distance, speed), movePID.getPID(target -distance, speed));
-            waitTime = 20;
-        }
+        //else waitTime = 20;
 
         if (waitTime == 0) {
 
-           if (!continuous) directDrive(0, 0);
+            if (!continuous) directDrive(0, 0);
             currentTickTiming = defaultTickTiming;
             return true;
         }
 
-        return true;
+        return false;
     }
 
     private boolean moveBackwards(double target, double speed) {
@@ -231,11 +228,9 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
             if (System.currentTimeMillis() - lastTick >= currentTickTiming) {
 
-                System.out.println(gears[gear]);
-
                 if (teleopEnabled) {
 
-                    if (turnCount.size() == 0) userControl();
+                    if (turnCount.size() == 0 && moveCount.size() == 0) userControl();
 
                     else checkTurn();
 
@@ -281,7 +276,6 @@ public class DriveTrain extends CustomRobotDrive implements Runnable {
 
         teleopEnabled = false;
         isEnabled = true;
-        thread.start();
         isTurnComplete = new ArrayList<>();
         isMoveComplete = new ArrayList<>();
     }

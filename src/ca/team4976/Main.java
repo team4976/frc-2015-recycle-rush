@@ -4,6 +4,7 @@ import ca.team4976.io.*;
 import ca.team4976.sub.*;
 import edu.wpi.first.wpilibj.*;
 import ca.team4976.io.NetworkVariables.Autonomous;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import java.io.BufferedWriter;
 import java.io.*;
@@ -26,7 +27,12 @@ public class Main extends IterativeRobot {
 
     public void disabledInit() {
 
-        if (!Input.AnalogGyro.DRIVE.isInitalized()) Input.AnalogGyro.DRIVE.gyroInit();
+        if (!Input.AnalogGyro.DRIVE.isInitalized()) {
+
+            System.out.println("Running Gyro Init. Expect System hang");
+            Input.AnalogGyro.DRIVE.gyroInit();
+            System.out.println("Gyro has been initialized");
+        }
 
         drive.disableInit();
     }
@@ -59,13 +65,19 @@ public class Main extends IterativeRobot {
     }
 
     int id;
+    boolean done = false;
+
+    NetworkTable table = NetworkTable.getTable("auto");
 
     public void autonomousPeriodic() {
 
-        switch (currentStage) {
+        double kp = table.getNumber("kp", 0);
+        double ki = table.getNumber("ki", 0);
+        double kd = table.getNumber("kd", 0);
 
-            
-        }
+        drive.turnPID.setConstants(kp, ki, kd);
+
+        if (!done) { drive.addMoveCount(1, 0.1); done = true; }
     }
 
     public void stage() { if (currentStage < Autonomous.finalStage - 1) currentStage++;}

@@ -23,7 +23,7 @@ public class NetworkVariables {
         }
     }
 
-    public static void autonomousInit() { write("autonomous_auto_save.conf"); }
+    public static void autonomousInit() { write(System.getProperty("user.home") + "/autonomous_auto_save.conf"); }
 
     public static void disabledPeriodic() {
 

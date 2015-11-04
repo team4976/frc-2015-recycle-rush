@@ -20,7 +20,7 @@ public class Input {
     }
 
     public enum DigitalEncoder {
-        DRIVE_LEFT(0, 1, 2, 0.025),
+        DRIVE_LEFT(0, 1, 2, 2.27E-4),
         //DRIVE_RIGHT(3, 4, 5, 0.025),
         ELEVATOR(6, 7, 8,  2E-1);
 

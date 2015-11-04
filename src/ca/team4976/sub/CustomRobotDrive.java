@@ -16,8 +16,8 @@ public class CustomRobotDrive {
 
         Output.Motor.DRIVE_LEFT_1.set(left);
         Output.Motor.DRIVE_LEFT_2.set(left);
-        Output.Motor.DRIVE_RIGHT_1.set(right);
-        Output.Motor.DRIVE_RIGHT_2.set(right);
+        Output.Motor.DRIVE_RIGHT_1.set(-right);
+        Output.Motor.DRIVE_RIGHT_2.set(-right);
     }
 
     public class PID {
@@ -43,7 +43,9 @@ public class CustomRobotDrive {
 
             previousError = error;
 
-            return (error * kp) + (i * ki) + (d * kd);
+            double returnVal = ((error * kp) + (i * ki) + (d * kd));
+
+            return returnVal > speed ? speed : returnVal;
         }
 
         public void reset() {
