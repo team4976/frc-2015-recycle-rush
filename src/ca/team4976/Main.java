@@ -21,6 +21,10 @@ public class Main extends IterativeRobot {
 
     public void robotInit() {
 
+        table.putNumber("kp", 0);
+        table.putNumber("ki", 0);
+        table.putNumber("kd", 0);
+
         NetworkVariables.robotInit();
         drive.robotInit();
     }
@@ -70,13 +74,7 @@ public class Main extends IterativeRobot {
     NetworkTable table = NetworkTable.getTable("auto");
 
     public void autonomousPeriodic() {
-
-        double kp = table.getNumber("kp", 0);
-        double ki = table.getNumber("ki", 0);
-        double kd = table.getNumber("kd", 0);
-
-        drive.turnPID.setConstants(kp, ki, kd);
-
+        
         if (!done) { drive.addMoveCount(1, 0.1); done = true; }
     }
 

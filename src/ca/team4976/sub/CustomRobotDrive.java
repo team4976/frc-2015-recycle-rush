@@ -1,6 +1,7 @@
 package ca.team4976.sub;
 
 import ca.team4976.io.Output;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class CustomRobotDrive {
 
@@ -24,6 +25,8 @@ public class CustomRobotDrive {
 
         double kp, ki, kd;
 
+        NetworkTable table = NetworkTable.getTable("auto");
+
         long startTimeMillis = 0;
         double previousError = 0;
         double i = 0;
@@ -33,6 +36,10 @@ public class CustomRobotDrive {
         public void setConstants(double kp, double ki, double kd) { this.kp = kp; this.ki = ki; this.kd = kd; }
 
         public double getPID(double error, double speed) {
+
+            kp = table.getNumber("kp", 0);
+            ki = table.getNumber("ki", 0);
+            kd = table.getNumber("kd", 0);
 
             if (startTimeMillis == 0) startTimeMillis = System.currentTimeMillis();
 
