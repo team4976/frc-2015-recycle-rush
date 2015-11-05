@@ -74,7 +74,7 @@ public class Main extends IterativeRobot {
     NetworkTable table = NetworkTable.getTable("auto");
 
     public void autonomousPeriodic() {
-        
+
         if (!done) { drive.addMoveCount(1, 0.1); done = true; }
     }
 
